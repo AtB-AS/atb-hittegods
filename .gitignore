@@ -1,4 +1,10 @@
 node_modules
+
+# Mac folder files
 .DS_Store
 
+# Intellij config files
 .idea
+
+# Backend build output
+dist

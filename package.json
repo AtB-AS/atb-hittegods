@@ -5,6 +5,13 @@
   "repository": "git@github.com:kantega/hittegods.git",
   "author": "",
   "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "start": "yarn lerna run start"
+  },
   "devDependencies": {
     "lerna": "^3.22.1"
   }

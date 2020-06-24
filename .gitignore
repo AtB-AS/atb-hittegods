@@ -8,3 +8,7 @@ node_modules
 
 # Backend build output
 dist
+
+.env
+
+$HOME

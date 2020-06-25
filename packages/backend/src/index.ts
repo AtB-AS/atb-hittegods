@@ -2,93 +2,41 @@ import express = require("express");
 import dotenv = require("dotenv");
 import bodyParser = require("body-parser");
 import cors = require("cors");
+import apiRoutes from "./api";
+import pg = require("pg");
 
 dotenv.config();
 
 const port = process.env.PORT || 5000;
 const app = express();
-app.use(cors());
-
-app.use(express.static("build"));
-
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-app.post("/api/insert", (req, res) => {
-  //TODO implement this
-  res.send(req.body);
-})
-
-app.get("/api/list", (req, res) => {
-  //TODO actually implement this
-  const res_json = {
-    data: [{'apples': 12}, {'bananas': 6}, {'peaches': 55}]
-  }
-  res.json(res_json);
-})
-
-app.post("/test", (req, res) => {
-  res.send("respons test");
-});
-
-app.get("/", (req, res) => {
-  res.send("An alligator is approaching");
-});
-
-
-app.listen(port);
-
-/*import pg = require("pg");
-
-
-const port = process.env.PORT || 5000;
-const app = express();
-console.log(process.env.DB_PASSWORD);
-
+//TODO imporve structure by putting db code somewhere else
 const config = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   port: 5432,
-  ssl: true,
+  ssl: false,
 };
-console.log("test");
-console.log(process.env.DB_HOST);
-console.log(process.env.DB_USER);
-console.log(process.env.DB_PASSWORD);
-console.log(process.env.DB_NAME);
-
 const client = new pg.Client(config);
+
+async function startServer() {
+  app.use(cors());
+
+  app.use(express.static("build"));
+
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json());
+  await apiRoutes({ app }, { client });
+  app.listen(port);
+  console.log("Server running");
+}
+
+startServer();
 
 client.connect((err) => {
   if (err) throw err;
   else {
-    queryDatabase();
+    console.log("Database connected");
   }
 });
-
-function queryDatabase() {
-  const query = `
-        DROP TABLE IF EXISTS inventory;
-        CREATE TABLE inventory (id serial PRIMARY KEY, name VARCHAR(50), quantity INTEGER);
-        INSERT INTO inventory (name, quantity) VALUES ('banana', 150);
-        INSERT INTO inventory (name, quantity) VALUES ('orange', 154);
-        INSERT INTO inventory (name, quantity) VALUES ('apple', 100);
-    `;
-
-  client
-    .query(query)
-    .then(() => {
-      console.log("Table created successfully!");
-      client.end((err) => {
-        console.log("disconnect");
-      });
-    })
-    .catch((err) => console.log(err))
-    .then(() => {
-      console.log("Finished execution, exiting now");
-      process.exit();
-    });
-}
-*/

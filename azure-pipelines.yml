@@ -45,7 +45,7 @@ stages:
       # Copy files from a source folder to a target folder using patterns matching file paths (not folder paths)
     - task: CopyFiles@2
       inputs:
-        sourceFolder: '$(Build.SourcesDirectory)/node_modules'
+        sourceFolder: '$(Build.SourcesDirectory)/packages/backend'
         contents: |
           **/*
         targetFolder: '$(System.DefaultWorkingDirectory)'

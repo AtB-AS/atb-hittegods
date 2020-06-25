@@ -45,8 +45,8 @@ stages:
     - task: CopyFiles@2
       inputs:
         #sourceFolder: '$(System.DefaultWorkingDirectory)/packages/backend/src'
-        contents: $(System.DefaultWorkingDirectory)/packages/backend
-        targetFolder: $(Build.ArtifactStagingDirectory)/build
+        contents: $(System.DefaultWorkingDirectory)
+        targetFolder: $(Build.ArtifactStagingDirectory)
         #cleanTargetFolder: false # Optional
         #overWrite: false # Optional
         #flattenFolders: false # Optional

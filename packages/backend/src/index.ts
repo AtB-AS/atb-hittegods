@@ -14,8 +14,20 @@ app.use(express.static("build"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.post("/api/insert", (req, res) => {
+  //TODO implement this
+  res.send(req.body);
+})
+
+app.get("/api/list", (req, res) => {
+  //TODO actually implement this
+  const res_json = {
+    data: [{'apples': 12}, {'bananas': 6}, {'peaches': 55}]
+  }
+  res.json(res_json);
+})
+
 app.post("/test", (req, res) => {
-  console.log(req.body.data);
   res.send("respons test");
 });
 
@@ -23,9 +35,6 @@ app.get("/", (req, res) => {
   res.send("An alligator is approaching");
 });
 
-/*app.use("/", (req, res) => {
-  res.json("Hello World!");
-});*/
 
 app.listen(port);
 

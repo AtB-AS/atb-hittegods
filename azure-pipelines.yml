@@ -45,10 +45,9 @@ stages:
       # Copy files from a source folder to a target folder using patterns matching file paths (not folder paths)
     - task: CopyFiles@2
       inputs:
-        sourceFolder: '$(Build.SourcesDirectory)'
+        sourceFolder: '$(Build.SourcesDirectory)/node_modules'
         contents: |
           **/*
-          !.git/**/*
         targetFolder: '$(System.DefaultWorkingDirectory)'
         #cleanTargetFolder: false # Optional
         #overWrite: false # Optional

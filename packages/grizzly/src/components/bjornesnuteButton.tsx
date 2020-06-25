@@ -1,22 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 
-type Props = {
-  title: string;
-};
 
-function BjornesnuteButton(props: Props) {
+function BjornesnuteButton() {
+  const [buttonTitle, setButtonTitle] = useState("Grizzly hilser til backend");
   function handleClick(){
     fetch('http://localhost:5000')
         .then(response => response.json())
-        .then(data => console.log(data));
+        .then(data => {
+            setButtonTitle(data)
+            console.log(data);
+        })
+        .catch(error =>{
+          console.log("Noe gikk galt", error)
+
+    })
+
     console.log("knapp er klikket og grizzly hilser til backend:):):)")
   }
-
-  console.log(props);
     return (
-      <button onClick={handleClick}>
-        {props.title}
-      </button>
+          <button onClick={handleClick} >
+            {buttonTitle}
+          </button>
     );
   }
 

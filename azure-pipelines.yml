@@ -49,20 +49,20 @@ stages:
         contents: |
           **/*
           !.git/**/*
-        targetFolder: '$(Build.ArtifactStagingDirectory)'
+        targetFolder: '$(System.DefaultWorkingDirectory)'
         #cleanTargetFolder: false # Optional
         #overWrite: false # Optional
         #flattenFolders: false # Optional
         #preserveTimestamp: false # Optional
       
-#    - task: ArchiveFiles@2
-#      displayName: 'Archive files'
-#      inputs:
-#        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
-#        includeRootFolder: false
-#        archiveType: zip
-#        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-#        replaceExistingArchive: true
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
 
     - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop

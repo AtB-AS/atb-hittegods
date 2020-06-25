@@ -10,10 +10,10 @@ variables:
 
   # Azure Resource Manager connection created during pipeline creation
   azureSubscription: '10fee736-323c-4f06-8320-87f09d6172f1'
-  
+
   # Web app name
   webAppName: 'hittegods'
-  
+
   # Environment name
   environmentName: 'hittegods'
 
@@ -23,12 +23,12 @@ variables:
 stages:
 - stage: Build
   displayName: Build stage
-  jobs:  
+  jobs:
   - job: Build
     displayName: Build
     pool:
       vmImage: $(vmImageName)
-      
+
     steps:
     - task: NodeTool@0
       inputs:
@@ -36,8 +36,8 @@ stages:
       displayName: 'Install Node.js'
 
     - script: |
-        npm install
-        npm run build --if-present
+        yarn install
+        yarn run build
         echo $(Build.SourcesDirectory)
       displayName: 'npm install, build and test'
 
@@ -53,7 +53,7 @@ stages:
         #overWrite: false # Optional
         #flattenFolders: false # Optional
         #preserveTimestamp: false # Optional
-      
+
     - task: ArchiveFiles@2
       displayName: 'Archive files'
       inputs:
@@ -74,12 +74,12 @@ stages:
   - deployment: Deploy
     displayName: Deploy
     environment: $(environmentName)
-    pool: 
+    pool:
       vmImage: $(vmImageName)
     strategy:
       runOnce:
         deploy:
-          steps:            
+          steps:
           - task: AzureWebApp@1
             displayName: 'Azure Web App Deploy: hittegods'
             inputs:

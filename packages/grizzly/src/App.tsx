@@ -10,6 +10,7 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Inventory from "./components/inventory";
 
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
                   </Row>
           </Container>
           <BjornesnuteButton/>
+          <Inventory />
 
       </header>
     </Col>

@@ -7,7 +7,7 @@ dotenv.config();
 const port = process.env.PORT || 5000;
 const app = express();
 
-app.use(express.static("client"));
+app.use(express.static("build"));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

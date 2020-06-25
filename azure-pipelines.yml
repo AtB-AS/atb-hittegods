@@ -42,7 +42,7 @@ stages:
 
       # Copy files
       # Copy files from a source folder to a target folder using patterns matching file paths (not folder paths)
-    - task: CopyFiles@1
+    - task: CopyFiles@2
       inputs:
         sourceFolder: '$(Build.SourcesDirectory)/packages/backend/dist'
         contents: |
@@ -64,7 +64,7 @@ stages:
         #flattenFolders: false # Optional
         #preserveTimestamp: false # Optional
 
-    - task: CopyFiles@3
+    - task: CopyFiles@2
       inputs:
         sourceFolder: '$(Build.SourcesDirectory)/packages/backend/packages.json'
         contents: |
@@ -75,7 +75,7 @@ stages:
         #flattenFolders: false # Optional
         #preserveTimestamp: false # Optional
 
-    - task: CopyFiles@4
+    - task: CopyFiles@2
       inputs:
         sourceFolder: '$(Build.SourcesDirectory)/packages/backend/node_modules'
         contents: |

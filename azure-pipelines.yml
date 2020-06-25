@@ -54,37 +54,37 @@ stages:
         #preserveTimestamp: false # Optional
 
     - task: CopyFiles@frontend_copy
-        inputs:
-          sourceFolder: '$(Build.SourcesDirectory)/packages/grizzly/build'
-          contents: |
-            **/*
-          targetFolder: '$(build.artifactstagingdirectory/build)'
-          #cleanTargetFolder: false # Optional
-          #overWrite: false # Optional
-          #flattenFolders: false # Optional
-          #preserveTimestamp: false # Optional
+      inputs:
+        sourceFolder: '$(Build.SourcesDirectory)/packages/grizzly/build'
+        contents: |
+          **/*
+        targetFolder: '$(build.artifactstagingdirectory/build)'
+        #cleanTargetFolder: false # Optional
+        #overWrite: false # Optional
+        #flattenFolders: false # Optional
+        #preserveTimestamp: false # Optional
 
     - task: CopyFiles@packages_json_copy
-        inputs:
-          sourceFolder: '$(Build.SourcesDirectory)/packages/backend/packages.json'
-          contents: |
-            **/*
-          targetFolder: '$(build.artifactstagingdirectory/)'
-          #cleanTargetFolder: false # Optional
-          #overWrite: false # Optional
-          #flattenFolders: false # Optional
-          #preserveTimestamp: false # Optional
+      inputs:
+        sourceFolder: '$(Build.SourcesDirectory)/packages/backend/packages.json'
+        contents: |
+          **/*
+        targetFolder: '$(build.artifactstagingdirectory/)'
+        #cleanTargetFolder: false # Optional
+        #overWrite: false # Optional
+        #flattenFolders: false # Optional
+        #preserveTimestamp: false # Optional
 
     - task: CopyFiles@modules_copy
-        inputs:
-          sourceFolder: '$(Build.SourcesDirectory)/packages/backend/node_modules'
-          contents: |
-            **/*
-          targetFolder: '$(build.artifactstagingdirectory/node_modules)'
-          #cleanTargetFolder: false # Optional
-          #overWrite: false # Optional
-          #flattenFolders: false # Optional
-          #preserveTimestamp: false # Optional
+      inputs:
+        sourceFolder: '$(Build.SourcesDirectory)/packages/backend/node_modules'
+        contents: |
+          **/*
+        targetFolder: '$(build.artifactstagingdirectory/node_modules)'
+        #cleanTargetFolder: false # Optional
+        #overWrite: false # Optional
+        #flattenFolders: false # Optional
+        #preserveTimestamp: false # Optional
 
     - task: ArchiveFiles@2
       displayName: 'Archive files'

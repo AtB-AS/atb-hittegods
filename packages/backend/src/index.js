@@ -1,32 +1,25 @@
-import express = require("express");
-import dotenv = require("dotenv");
-import bodyParser = require("body-parser");
-
+"use strict";
+exports.__esModule = true;
+var express = require("express");
+var dotenv = require("dotenv");
+var bodyParser = require("body-parser");
 dotenv.config();
-
-const port = process.env.PORT || 5000;
-const app = express();
-
-app.use(express.static("client"));
-
+var port = process.env.PORT || 5000;
+var app = express();
+app.use(express.static("../../packages/grizzly/build/"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-app.post("/test", (req, res) => {
-  console.log(req.body.data);
-  res.send("respons test");
+app.post("/test", function (req, res) {
+    console.log(req.body.data);
+    res.send("respons test");
 });
-
-app.get("/", (req, res) => {
-  res.send("An alligator is approaching");
+app.get("/", function (req, res) {
+    res.send("An alligator is approaching");
 });
-
 /*app.use("/", (req, res) => {
   res.json("Hello World!");
 });*/
-
 app.listen(port);
-
 /*import pg = require("pg");
 
 

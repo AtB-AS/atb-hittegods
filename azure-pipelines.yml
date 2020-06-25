@@ -66,7 +66,7 @@ stages:
 
     - task: CopyFiles@2
       inputs:
-        sourceFolder: '$(Build.SourcesDirectory)/packages/backend/packages.json'
+        sourceFolder: '$(Build.SourcesDirectory)/packages/backend/package.json'
         contents: |
           **/*
         targetFolder: '$(build.artifactstagingdirectory/)'

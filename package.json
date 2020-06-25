@@ -12,7 +12,7 @@
   },
   "scripts": {
     "start": "yarn lerna run start",
-    "build": "lerna run build"
+    "build": "yarn lerna run build"
   },
   "devDependencies": {
     "lerna": "^3.22.1"

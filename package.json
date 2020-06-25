@@ -11,7 +11,8 @@
     "nohoist": ["**/backend", "**/backend/**"]
   },
   "scripts": {
-    "start": "yarn lerna run start"
+    "start": "yarn lerna run start",
+    "build": "lerna run build"
   },
   "devDependencies": {
     "lerna": "^3.22.1"

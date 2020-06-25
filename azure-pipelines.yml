@@ -45,10 +45,10 @@ stages:
       # Copy files from a source folder to a target folder using patterns matching file paths (not folder paths)
     - task: CopyFiles@2
       inputs:
-        sourceFolder: '$(Build.SourcesDirectory)/packages/backend'
+        sourceFolder: '$(Build.SourcesDirectory)/packages/backend/dist'
         contents: |
           **/*
-        targetFolder: '$(System.DefaultWorkingDirectory)'
+        targetFolder: '$(build.artifactstagingdirectory)'
         #cleanTargetFolder: false # Optional
         #overWrite: false # Optional
         #flattenFolders: false # Optional
@@ -57,10 +57,10 @@ stages:
     - task: ArchiveFiles@2
       displayName: 'Archive files'
       inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+        rootFolderOrFile: '$(build.artifactstagingdirectory)'
         includeRootFolder: false
         archiveType: zip
-        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        archiveFile: $(build.artifactstagingdirectory)/$(Build.BuildId).zip
         replaceExistingArchive: true
 
     - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip

@@ -6,9 +6,10 @@
   "author": "",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": ["packages/*"],
+    "nohoist": ["**/backend", "**/backend/**"]
+  },
   "scripts": {
     "start": "yarn lerna run start"
   },

@@ -44,9 +44,11 @@ stages:
       # Copy files from a source folder to a target folder using patterns matching file paths (not folder paths)
     - task: CopyFiles@2
       inputs:
-        #sourceFolder: '$(System.DefaultWorkingDirectory)/packages/backend/src'
-        contents: $(System.DefaultWorkingDirectory)
-        targetFolder: $(Build.ArtifactStagingDirectory)
+        sourceFolder: '$(Build.SourcesDirectory)'
+        contents: |
+          **/*
+          !.git/**/*
+        targetFolder: '$(Build.ArtifactStagingDirectory)'
         #cleanTargetFolder: false # Optional
         #overWrite: false # Optional
         #flattenFolders: false # Optional

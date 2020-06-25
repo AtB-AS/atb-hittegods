@@ -47,7 +47,7 @@ stages:
         sourceFolder: '$(Build.SourcesDirectory)/packages/backend/dist'
         contents: |
           **/*
-        targetFolder: '$(Build.SourcesDirectory/dist)'
+        targetFolder: '$(System.DefaultWorkingDirectory)/build/dist'
         #cleanTargetFolder: false # Optional
         #overWrite: false # Optional
         #flattenFolders: false # Optional
@@ -58,7 +58,7 @@ stages:
         sourceFolder: '$(Build.SourcesDirectory)/packages/grizzly/build'
         contents: |
           **/*
-        targetFolder: '$(Build.SourcesDirectory/build)'
+        targetFolder: ' $(System.DefaultWorkingDirectory)/build/build'
         #cleanTargetFolder: false # Optional
         #overWrite: false # Optional
         #flattenFolders: false # Optional
@@ -69,7 +69,7 @@ stages:
         sourceFolder: '$(Build.SourcesDirectory)/packages/backend/package.json'
         contents: |
           **/*
-        targetFolder: '$(Build.SourcesDirectory/package.json)'
+        targetFolder: '$(System.DefaultWorkingDirectory)/build/package.json'
         #cleanTargetFolder: false # Optional
         #overWrite: false # Optional
         #flattenFolders: false # Optional
@@ -80,7 +80,7 @@ stages:
         sourceFolder: '$(Build.SourcesDirectory)/packages/backend/node_modules'
         contents: |
           **/*
-        targetFolder: '$(Build.SourcesDirectory/node_modules)'
+        targetFolder: '$(System.DefaultWorkingDirectory)/build/node_modules'
         #cleanTargetFolder: false # Optional
         #overWrite: false # Optional
         #flattenFolders: false # Optional
@@ -89,7 +89,7 @@ stages:
     - task: ArchiveFiles@2
       displayName: 'Archive files'
       inputs:
-        rootFolderOrFile: '$(Build.SourcesDirectory)'
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/build'
         includeRootFolder: false
         archiveType: zip
         archiveFile: $(build.artifactstagingdirectory)/$(Build.BuildId).zip

@@ -36,15 +36,27 @@ stages:
       displayName: 'Install Node.js'
 
     - script: |
-        npm install
-        npm run build --if-present
+        yarn
+        yarn tsc packages/backend/src/index.ts --if-present
         npm run test --if-present
       displayName: 'npm install, build and test'
+
+      # Copy files
+      # Copy files from a source folder to a target folder using patterns matching file paths (not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        #sourceFolder: '$(System.DefaultWorkingDirectory)/packages/backend/src'
+        contents: $(System.DefaultWorkingDirectory)/packages/backend
+        targetFolder: $(Build.ArtifactStagingDirectory)/backendOutput
+        #cleanTargetFolder: false # Optional
+        #overWrite: false # Optional
+        #flattenFolders: false # Optional
+        #preserveTimestamp: false # Optional
       
     - task: ArchiveFiles@2
       displayName: 'Archive files'
       inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/build'
         includeRootFolder: false
         archiveType: zip
         archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip

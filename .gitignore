@@ -12,3 +12,6 @@ dist
 .env
 
 $HOME
+
+#other stuff
+yarn-error.log

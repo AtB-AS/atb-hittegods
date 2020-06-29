@@ -1,5 +1,11 @@
 import express from "express";
 import pg = require("pg");
+import {
+  registerGetValidator,
+  registerPostValidator,
+} from "./validators/registerValidator";
+import { v4 as uuidv4 } from "uuid";
+import { getColorId, getLineId, getSubCategoryId, getCategoryId } from "./db";
 
 export default async (
   { app }: { app: express.Application },
@@ -7,122 +13,67 @@ export default async (
 ) => {
   const registerEndpoint = "/api/register";
 
-  interface LooseObject {
-    [key: string]: any;
-  }
-
   app.get(registerEndpoint, (req, res) => {
-    const refnum = req.body.refnum;
-    const responseJson: LooseObject = {};
-    if (refnum == null) {
-      responseJson.status = "error";
-      responseJson.errorMessage =
-        "refnum parameter is required in request body";
+    const body = req.body;
+    const { error, value } = registerGetValidator.validate(req.body);
+    if (error != undefined) {
+      //TODO figure out if error message leaks server information
+      res.json({ status: "error", errorMessage: error.details });
     } else {
-      //TODO: implement with database
-      //TODO: error if refnum is not in database
-      responseJson.status = "success";
+      const selectQuery = "select * from mistet where refnr=$1";
+      client.query(selectQuery, [body.refnum]).then((queryRes) => {
+        if (queryRes.rowCount === 0) {
+          res.json({ status: "error", errorMessage: "unknown refnum" });
+        } else {
+          res.json({ status: "success", data: queryRes.rows });
+        }
+      });
     }
-    res.json(responseJson);
   });
 
   app.post(registerEndpoint, (req, res) => {
-    const name = req.body.name;
-    const email = req.body.email;
-    const phoneNumber = req.body.phoneNumber;
-    const category = req.body.category;
-    const subCategory = req.body.subCategory;
-    const line = req.body.line;
-    const description = req.body.description;
-    const brand = req.body.brand;
-    const color = req.body.color;
-    const date = req.body.date;
-    const to = req.body.to;
-    const from = req.body.from;
-    //TODO: validate category, subcat, line, color against database tables. Error if they do not exist in database
-    //TODO inset data into database
-    const responseJson: LooseObject = {};
-    responseJson.status = "success";
-    res.json(responseJson);
-  });
-
-  app.put(registerEndpoint, (req, res) => {
-    const refnum = req.body.refnum;
-    const name = req.body.name;
-    const email = req.body.email;
-    const phoneNumber = req.body.phoneNumber;
-    const category = req.body.category;
-    const subCategory = req.body.subCategory;
-    const line = req.body.line;
-    const description = req.body.description;
-    const brand = req.body.brand;
-    const color = req.body.color;
-    const date = req.body.date;
-    const to = req.body.to;
-    const from = req.body.from;
-    //TODO: validate category, subcat, line, color against database tables. Error if they do not exist in database
-    //TODO update data in database
-    const responseJson: LooseObject = {};
-    if (refnum == null) {
-      responseJson.status = "error";
-      responseJson.errorMessage =
-        "refnum parameter is required in request body";
+    const body = req.body;
+    const { error, value } = registerPostValidator.validate(body);
+    if (error != undefined) {
+      //TODO figure out if error message leaks server information
+      res.json({ status: "error", errorMessage: error.details });
     } else {
-      //TODO: implement with database
-      //TODO: error if refnum is not in database
-      responseJson.status = "success";
-    }
-    res.json(responseJson);
-  });
-
-  app.delete(registerEndpoint, (req, res) => {
-    const refnum = req.body.refnum;
-    const responseJson: LooseObject = {};
-    if (refnum == null) {
-      responseJson.status = "error";
-      responseJson.errorMessage =
-        "refnum parameter is required in request body";
-    } else {
-      //TODO: implement with database
-      //TODO: error if refnum is not in database
-      responseJson.status = "success";
-    }
-    res.json(responseJson);
-  });
-
-  app.post("/api/insert", (req, res) => {
-    //TODO implement this
-    const name = req.body.name;
-    const quantity = req.body.quantity;
-    //TODO figure out proper js validation
-    const query = "insert into inventory (name, quantity) values ($1, $2)";
-    client
-      .query(query, [name, quantity])
-      .then((res) => {})
-      .catch((e) => console.error(e.stack));
-    res.send(req.body);
-  });
-
-  app.get("/api/list", (req, res) => {
-    const query = "select name, quantity from inventory";
-    client
-      .query(query)
-      .then((query_res) => {
-        console.log(query_res.rows);
-        res.json({
-          data: query_res.rows,
-        });
-      })
-      .catch((e) => {
-        //TODO better error handling
-        res.send("Error");
+      const refnum = uuidv4();
+      /*const categoryIdPromise = getCategoryId(req.body.category, { client });
+      const subCategoryIdPromise = getSubCategoryId(req.body.subCategory, {
+        client,
       });
+      const lineIdPromise = getLineId(req.body.line, { client });
+      const colorIdPromise = getColorId(req.body.color, { client });*/
+      Promise.all([1, 1, 1, 1])
+        .then((data) => {
+          //TODO: validate category, subcat, line, color against database tables. Error if they do not exist in database
+          if (1 == 1) {
+            //TODO fix query
+            const insertQuery =
+              "insert into mistet (navn, epost, refnr) values ($1, $2, $3)";
+            client
+              .query(insertQuery, [body.name, body.email, refnum])
+              .then((queryRes) => {
+                res.json({ status: "success", body });
+                //TODO determine possible errors
+              })
+              .catch(() => {
+                res.json({
+                  status: "error",
+                  errorMessage: "unknown database error",
+                });
+              });
+          }
+          //TODO determine possible errors
+        })
+        .catch(() => {
+          res.json({ status: "error", errorMessage: "unknown database error" });
+        });
+    }
   });
 
-  app.post("/test", (req, res) => {
-    res.send("respons test");
-  });
-  app.get("/", (req, res) => {
-    res.send("An alligator is approaching");
-  });
+  app.put(registerEndpoint, (req, res) => {});
+
+  app.delete(registerEndpoint, (req, res) => {});
 };

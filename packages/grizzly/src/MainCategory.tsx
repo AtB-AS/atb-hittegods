@@ -31,11 +31,9 @@ function MainCategory(props: Props) {
           <button onClick={() => props.onCategorySelect(mainCategory.CLOTHING)}>
             <img src={categoryClothing} />
           </button>
-
           <h2>Vesker og bager</h2>
           <img src={categoryBags} />
         </Paper>
-        <Paper></Paper>
         <Paper>
           <h2>Personlige effecter</h2>
           <img src={categoryPersonalEffects} />

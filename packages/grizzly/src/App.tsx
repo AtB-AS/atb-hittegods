@@ -24,25 +24,24 @@ type reg = {
 function App() {
   const [cat, setCat] = useState("");
   const [subCat, setSubCat] = useState("");
-  const [characteristics, setChar] = useState({});
+  const [characteristics, setChar] = useState({
+    color: "",
+    brand: "",
+    description: "",
+  });
   const [loc, setLoc] = useState("");
   const [date, setNewDate] = useState("");
-  const [contactInfo, setContInfo] = useState({});
+  const [contactInfo, setContInfo] = useState({
+    name: "",
+    phone: "",
+    email: "",
+  });
   const history = useHistory();
 
   function nextPage(path: string) {
     console.log("push", history);
     history.push(path);
   }
-
-  const regForm: reg = {
-    category: "",
-    subCategory: "",
-    characteristics: "",
-    location: "",
-    date: "",
-    contactInfo: "",
-  };
 
   function setCategory(cat: string) {
     setCat(cat);
@@ -79,6 +78,7 @@ function App() {
     setContInfo(contactInfo);
     console.log("KontaktInfo: ", contactInfo);
     nextPage("/bekreftelse");
+    prepareObject();
   }
 
   /*
@@ -87,6 +87,26 @@ function App() {
     console.log(regForm);
   }
   */
+
+  function prepareObject() {
+    const regForm: reg = {};
+    regForm["name"] = contactInfo.name;
+    regForm["email"] = contactInfo.email;
+    regForm["phoneNumber"] = contactInfo.phone;
+    regForm["categpry"] = cat;
+    regForm["subCategpry"] = subCat;
+    regForm["line"] = loc;
+    regForm["description"] = characteristics.description;
+    regForm["brand"] = characteristics.brand;
+    regForm["color"] = characteristics.color;
+    regForm["date"] = date;
+    regForm["to"] = "to";
+    regForm["from"] = "from";
+
+    //const regFormJson = regForm.json;
+    console.log(regForm);
+    return regForm;
+  }
 
   return (
     <div>

@@ -24,15 +24,23 @@ const client = new pg.Client(config);
 async function startServer() {
   app.use(cors());
 
+  // static resources, like images and js from both grizzly and admin builds
   app.use(express.static("grizzly"));
   app.use(express.static("admin"));
 
-  app.use("/admin", (req, res) => {
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json());
+
+  // Serving grizzly frontend
+  app.get("/", (req, res) => {
+    res.sendFile(path.join(process.cwd() + "/grizzly/index.html"));
+  });
+
+  // Serving admin frontend
+  app.get("/admin", (req, res) => {
     res.sendFile(path.join(process.cwd() + "/admin/index.html"));
   });
 
-  app.use(bodyParser.urlencoded({ extended: false }));
-  app.use(bodyParser.json());
   await apiRoutes({ app }, { client });
   app.listen(port);
   console.log("Server running");

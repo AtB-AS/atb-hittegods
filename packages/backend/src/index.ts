@@ -24,8 +24,8 @@ const client = new pg.Client(config);
 async function startServer() {
   app.use(cors());
 
-  app.use(express.static(path.join(__dirname + "grizzly")));
-  app.use(express.static(path.join(__dirname + "admin")));
+  app.use("/", express.static(path.join(__dirname, "grizzly")));
+  app.use("/admin", express.static(path.join(__dirname, "admin")));
 
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());

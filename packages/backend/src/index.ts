@@ -29,12 +29,27 @@ async function startServer() {
 
   app.use("/", (req, res) => {
     // serve index.html far grizzly
-    res.sendFile(path.join(__dirname + "/grizzly/index.html"));
+    res.sendFile("grizzly/index.html");
+  });
+
+  app.use("/grizzly", (req, res) => {
+    // serve index.html far grizzly
+    res.sendFile(path.join("grizzly/index.html"));
   });
 
   app.use("/admin", (req, res) => {
     // serve index.html fra admin
-    res.sendFile(path.join(__dirname + '/admin/index.html'));
+    res.sendFile("admin/index.html");
+  });
+
+  app.use("/admin2", (req, res) => {
+    // serve index.html far grizzly
+    res.sendFile("/admin/index.html");
+  });
+
+  app.use("/admin3", (req, res) => {
+    // serve index.html far grizzly
+    res.sendFile("/admin/index.html");
   });
 
   app.use(bodyParser.urlencoded({ extended: false }));

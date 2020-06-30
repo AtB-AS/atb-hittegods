@@ -1,7 +1,7 @@
 import React from "react";
 
 function Confirmation() {
-  return <div></div>;
+  return <div>nice</div>;
 }
 
 export default Confirmation;

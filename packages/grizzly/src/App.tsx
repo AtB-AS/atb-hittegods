@@ -1,55 +1,119 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
-import BjornesnuteButton from "./components/bjornesnuteButton";
-import categoryBags from "./components/img/categoryBags.png";
-import categoryClothing from "./components/img/categoryClothing.png";
-import categoryElectronics from "./components/img/categoryElectronics.png";
-import categoryPersonalEffects from "./components/img/PersonalEffects.png";
-import logo from "./components/img/AtB_gra-kopi.png";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
 import "bootstrap/dist/css/bootstrap.min.css";
 import MainCategory from "./MainCategory";
 import SubCategory from "./SubCategory";
-import Characteristics from "./Characteristics";
 import Location from "./Location";
 import MissingDate from "./MissingDate";
 import ContactInfo from "./ContactInfo";
 import Confirmation from "./Confirmation";
 
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useHistory,
+} from "react-router-dom";
+import Wizard from "./Wizard";
+import Characteristics from "./Characteristics";
+
+type reg = {
+  [key: string]: string;
+};
 
 function App() {
+  const [cat, setCat] = useState("");
+  const [subCat, setSubCat] = useState("");
+  const [characteristics, setChar] = useState({});
+  const [loc, setLoc] = useState("");
+  const [date, setNewDate] = useState("");
+  const [contactInfo, setContInfo] = useState({});
+  const history = useHistory();
+
+  function nextPage(path: string) {
+    console.log("push", history);
+    history.push(path);
+  }
+
+  const regForm: reg = {
+    category: "",
+    subCategory: "",
+    characteristics: "",
+    location: "",
+    date: "",
+    contactInfo: "",
+  };
+
+  function setCategory(cat: string) {
+    setCat(cat);
+    nextPage("/underkategori");
+    //updateRegForm(value, "category");
+    console.log("Kategori: ", cat);
+  }
+
+  function setSubCategory(subCat: string) {
+    setSubCat(subCat);
+    nextPage("/kjennetegn");
+    console.log("underkategori: ", subCat);
+  }
+
+  function setCharacteristics(characteristics: Characteristics) {
+    setChar(characteristics);
+    console.log("kjennetegn ", characteristics);
+    nextPage("lokasjon");
+  }
+
+  function setLocation(location: string) {
+    setLoc(location);
+    console.log("linje: ", location);
+    nextPage("/tidspunkt");
+  }
+
+  function setDate(date: string) {
+    setNewDate(date);
+    console.log("Dato: ", date);
+    nextPage("/personopplysninger");
+  }
+
+  function setContactInfo(contactInfo: ContactInfo) {
+    setContInfo(contactInfo);
+    console.log("KontaktInfo: ", contactInfo);
+    nextPage("/bekreftelse");
+  }
+
+  /*
+  function updateRegForm(value: string, key: string) {
+    regForm[key] = value;
+    console.log(regForm);
+  }
+  */
+
   return (
-    <Router>
-      <div>
-        <Switch>
-          <Route path="/hovedkategori">
-            <MainCategory />
-          </Route>
-          <Route path="/underkategori">
-            <SubCategory />
-          </Route>
-          <Route path="/kjennetegn">
-            {" "}
-            <Characteristics />
-          </Route>
-          <Route path="/lokasjon">
-            <Location />
-          </Route>
-          <Route path="/tidspunkt">
-            <MissingDate />
-          </Route>
-          <Route path="/personopplysninger">
-            <ContactInfo />
-          </Route>
-          <Route path="/bekreftelse">
-            <Confirmation />
-          </Route>
-        </Switch>
-      </div>
-    </Router>
+    <div>
+      <Switch>
+        <Route path="/hovedkategori">
+          <MainCategory onCategorySelect={setCategory} />
+        </Route>
+        <Route path="/underkategori">
+          <SubCategory onCategorySelect={setSubCategory} />
+        </Route>
+        <Route path="/kjennetegn">
+          <Characteristics onCharacteristicsSelect={setCharacteristics} />
+        </Route>
+        <Route path="/lokasjon">
+          <Location onLocationSelect={setLocation} />
+        </Route>
+        <Route path="/tidspunkt">
+          <MissingDate onDateSelect={setDate} />
+        </Route>
+        <Route path="/personopplysninger">
+          <ContactInfo onContactInfoSelect={setContactInfo} />
+        </Route>
+        <Route path="/bekreftelse">
+          <Confirmation />
+        </Route>
+      </Switch>
+    </div>
   );
 }
 

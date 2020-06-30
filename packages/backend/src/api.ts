@@ -4,6 +4,7 @@ import {
   registerGetValidator,
   registerPostValidator,
 } from "./validators/registerValidator";
+import { registerPutStatusValidator } from "./validators/statusValidator";
 import { v4 as uuidv4 } from "uuid";
 import {
   getColorId,
@@ -132,13 +133,12 @@ export default async (
     }
   });
 
-  app.put("/api/update", (req, res) => {
+  app.put("/api/updateStatus", (req, res) => {
     const refnum = req.body.refnum;
-    if (refnum == null) {
-      return res.json({
-        status: "error",
-        errorMessage: "refnum parameter is required in request body",
-      });
+    const { error, value } = registerPutStatusValidator.validate(req.body);
+    if (error != undefined) {
+      //TODO figure out if error message leaks server information
+      res.json({ status: "error", errorMessage: error.details });
     } else {
       client
         .query(updateStatusUserDelete, [refnum])

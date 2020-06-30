@@ -20,9 +20,6 @@ const config = {
   ssl: false,
 };
 const client = new pg.Client(config);
-const options = {
-  index: "index.html",
-};
 
 async function startServer() {
   app.use(cors());
@@ -30,17 +27,12 @@ async function startServer() {
   app.use(express.static("grizzly"));
   app.use(express.static("admin"));
 
-  app.use("/admin", express.static("/home/site/wwwroot/", options));
-  app.use("/admin4", express.static("/home/site/admin/", options));
-  app.use("/admin2", express.static(__dirname + "/admin"));
-  app.use("/admin5", express.static(__dirname + "/admin/index.html"));
-
-  app.use("/admin3", (req, res) => {
+  app.use("/admin", (req, res) => {
     // serve index.html far grizzly
     console.log("__dirname", __dirname);
-    console.log(`process.cwd`, process.cwd);
+    console.log(`process.cwd`, process.cwd());
     console.log(`path.join("admin/index.html")`, path.join("admin/index.html"));
-    res.sendFile(path.join("admin/index.html"));
+    res.sendFile("../admin/index.html");
   });
 
   app.use(bodyParser.urlencoded({ extended: false }));

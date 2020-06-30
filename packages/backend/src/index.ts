@@ -37,6 +37,9 @@ async function startServer() {
 
   app.use("/admin3", (req, res) => {
     // serve index.html far grizzly
+    console.log("__dirname", __dirname);
+    console.log(`process.cwd`, process.cwd);
+    console.log(`path.join("admin/index.html")`, path.join("admin/index.html"));
     res.sendFile(path.join("admin/index.html"));
   });
 

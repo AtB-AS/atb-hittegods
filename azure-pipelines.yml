@@ -47,7 +47,7 @@ stages:
         sourceFolder: '$(Build.SourcesDirectory)/packages/backend/dist'
         contents: |
           **/*
-        targetFolder: '$(System.DefaultWorkingDirectory)/build/dist'
+        targetFolder: '$(System.DefaultWorkingDirectory)/build/server'
         #cleanTargetFolder: false # Optional
         #overWrite: false # Optional
         #flattenFolders: false # Optional
@@ -58,7 +58,18 @@ stages:
         sourceFolder: '$(Build.SourcesDirectory)/packages/grizzly/build'
         contents: |
           **/*
-        targetFolder: ' $(System.DefaultWorkingDirectory)/build/build'
+        targetFolder: ' $(System.DefaultWorkingDirectory)/build/grizzly'
+        #cleanTargetFolder: false # Optional
+        #overWrite: false # Optional
+        #flattenFolders: false # Optional
+        #preserveTimestamp: false # Optional
+
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: '$(Build.SourcesDirectory)/packages/admin/build'
+        contents: |
+          **/*
+        targetFolder: ' $(System.DefaultWorkingDirectory)/build/admin'
         #cleanTargetFolder: false # Optional
         #overWrite: false # Optional
         #flattenFolders: false # Optional

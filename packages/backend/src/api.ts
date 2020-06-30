@@ -1,48 +1,245 @@
 import express from "express";
 import pg = require("pg");
+import {
+  registerGetValidator,
+  registerPostValidator,
+  registerPutValidator,
+} from "./validators/registerValidator";
+import { registerPutStatusValidator } from "./validators/statusValidator";
+import { v4 as uuidv4 } from "uuid";
+import {
+  getColorId,
+  getLineId,
+  getSubCategoryId,
+  getCategoryId,
+  getStatusId,
+} from "./db";
+import {
+  selectLostByRefnum,
+  insertNewLost,
+  updateStatusUserDelete,
+  updateLost,
+} from "./queries";
 
 export default async (
   { app }: { app: express.Application },
   { client }: { client: pg.Client }
 ) => {
-  app.post("/api/insert", (req, res) => {
-    //TODO implement this
-    const name = req.body.name;
-    const quantity = req.body.quantity;
-    console.log(name);
-    console.log(quantity);
-    //TODO figure out proper js validation
-    const query = "insert into inventory (name, quantity) values ($1, $2)";
-    client
-      .query(query, [name, quantity])
-      .then((res) => {
-        console.log("Insert succesful");
-      })
-      .catch((e) => console.error(e.stack));
-    res.send(req.body);
-  });
+  const registerEndpoint = "/api/register";
 
-  app.get("/api/list", (req, res) => {
-    const query = "select name, quantity from inventory";
-    client
-      .query(query)
-      .then((query_res) => {
-        console.log(query_res.rows);
-        res.json({
-          data: query_res.rows,
+  app.get(registerEndpoint, (req, res) => {
+    const body = req.body;
+    const { error, value } = registerGetValidator.validate(req.body);
+    if (error != undefined) {
+      //TODO figure out if error message leaks server information
+      res.json({ status: "error", errorMessage: error.details });
+    } else {
+      client
+        .query(selectLostByRefnum, [body.refnum])
+        .then((queryRes) => {
+          if (queryRes.rowCount === 0) {
+            res.json({ status: "error", errorMessage: "unknown refnum" });
+          } else {
+            res.json({ status: "success", data: queryRes.rows });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          res.json({
+            status: "error",
+            errorMessage:
+              "invalid values for category, subcategory, line or color",
+          });
         });
-      })
-      .catch((e) => {
-        //TODO better error handling
-        console.error(e.stack);
-        res.send("Error");
-      });
+    }
   });
 
-  app.post("/test", (req, res) => {
-    res.send("respons test");
+  app.post(registerEndpoint, (req, res) => {
+    const body = req.body;
+    const { error, value } = registerPostValidator.validate(body);
+    if (error != undefined) {
+      //TODO figure out if error message leaks server information
+      res.json({ status: "error", errorMessage: error.details });
+    } else {
+      const refnum = uuidv4();
+      const categoryIdPromise = getCategoryId(req.body.category, { client });
+      const subCategoryIdPromise = getSubCategoryId(req.body.subCategory, {
+        client,
+      });
+      const lineIdPromise = getLineId(req.body.line, { client });
+      const colorIdPromise = getColorId(req.body.color, { client });
+      const statusIdPromise = getStatusId("Mistet", { client });
+      Promise.all([
+        categoryIdPromise,
+        subCategoryIdPromise,
+        lineIdPromise,
+        colorIdPromise,
+        statusIdPromise,
+      ])
+        .then((data) => {
+          //TODO: validate category, subcat, line, color against database tables. Error if they do not exist in database
+          if (
+            data.every((queryResult) => {
+              return queryResult.rowCount != 0;
+            })
+          ) {
+            const categoryId = data[0].rows[0].categoryid;
+            const subCategoryId = data[1].rows[0].subcategoryid;
+            const lineId = data[2].rows[0].lineid;
+            const colorId = data[3].rows[0].colorid;
+            const statusId = data[4].rows[0].statusid;
+            client
+              .query(insertNewLost, [
+                body.name,
+                body.email,
+                body.phoneNumber,
+                body.description,
+                body.brand,
+                body.date,
+                body.time,
+                body.from,
+                body.to,
+                lineId,
+                colorId,
+                categoryId,
+                subCategoryId,
+                statusId,
+                refnum,
+              ])
+              .then((queryRes) => {
+                res.json({ status: "success", body });
+                //TODO send confirmation email or sms
+                //TODO determine possible errors
+              })
+              .catch((e) => {
+                console.error(e.stack);
+                res.json({
+                  status: "error",
+                  errorMessage: "unknown database error",
+                });
+              });
+          } else {
+            res.json({
+              status: "error",
+              errorMessage:
+                "invalid values for category, subcategory, line or color",
+            });
+          }
+          //TODO determine possible errors, status code 500?
+        })
+        .catch((e) => {
+          console.error(e.stack);
+          res.json({ status: "error", errorMessage: "unknown database error" });
+        });
+    }
   });
-  app.get("/", (req, res) => {
-    res.send("An alligator is approaching");
+
+  app.put(registerEndpoint, (req, res) => {
+    const body = req.body;
+    const { error, value } = registerPutValidator.validate(body);
+    if (error != undefined) {
+      //TODO figure out if error message leaks server information
+      res.json({ status: "error", errorMessage: error.details });
+    } else {
+      const categoryIdPromise = getCategoryId(req.body.category, { client });
+      const subCategoryIdPromise = getSubCategoryId(req.body.subCategory, {
+        client,
+      });
+      const lineIdPromise = getLineId(req.body.line, { client });
+      const colorIdPromise = getColorId(req.body.color, { client });
+      Promise.all([
+        categoryIdPromise,
+        subCategoryIdPromise,
+        lineIdPromise,
+        colorIdPromise,
+      ])
+        .then((data) => {
+          //TODO: validate category, subcat, line, color against database tables. Error if they do not exist in database
+          if (
+            data.every((queryResult) => {
+              return queryResult.rowCount != 0;
+            })
+          ) {
+            const categoryId = data[0].rows[0].categoryid;
+            const subCategoryId = data[1].rows[0].subcategoryid;
+            const lineId = data[2].rows[0].lineid;
+            const colorId = data[3].rows[0].colorid;
+            client
+              .query(updateLost, [
+                body.description,
+                body.brand,
+                body.date,
+                body.from,
+                body.to,
+                lineId,
+                colorId,
+                categoryId,
+                subCategoryId,
+                body.refnum,
+              ])
+              .then((queryRes) => {
+                res.json({ status: "success", body });
+                //TODO determine possible errors
+              })
+              .catch((e) => {
+                console.error(e.stack);
+                res.json({
+                  status: "error",
+                  errorMessage: "unknown database error",
+                });
+              });
+          } else {
+            res.json({
+              status: "error",
+              errorMessage:
+                "invalid values for category, subcategory, line or color",
+            });
+          }
+          //TODO determine possible errors, status code 500?
+        })
+        .catch((e) => {
+          console.error(e.stack);
+          res.json({ status: "error", errorMessage: "unknown database error" });
+        });
+    }
+  });
+
+  app.put("/api/updateStatus", (req, res) => {
+    const refnum = req.body.refnum;
+    const { error, value } = registerPutStatusValidator.validate(req.body);
+    if (error != undefined) {
+      //TODO figure out if error message leaks server information
+      res.json({ status: "error", errorMessage: error.details });
+    } else {
+      getStatusId("Slettet av reisende", { client })
+        .then((queryResult) => {
+          if (queryResult.rowCount != 0) {
+            const statusid = queryResult.rows[0].statusid;
+            client
+              .query(updateStatusUserDelete, [statusid, refnum])
+              .then((queryRes) => {
+                res.json({ status: "success", data: { refnum: refnum } });
+              })
+              .catch((e) => {
+                console.error(e.stack);
+                //TODO closer look at this error. More things than wrong refnum might cause an error
+                res.json({
+                  status: "error",
+                  errorMessage: "unknown refnr error",
+                });
+              });
+          } else {
+            console.log("no Slettet av reisende in database");
+            res.json({
+              status: "error",
+              errorMessage: "unknown database error",
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e.stack);
+          res.json({ status: "error", errorMessage: "unknown database error" });
+        });
+    }
   });
 };

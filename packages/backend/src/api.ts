@@ -140,17 +140,34 @@ export default async (
       //TODO figure out if error message leaks server information
       res.json({ status: "error", errorMessage: error.details });
     } else {
-      client
-        .query(updateStatusUserDelete, [refnum])
-        .then((queryRes) => {
-          res.json({ status: "success", refnum });
+      getStatusId("Slettet av reisende", { client })
+        .then((queryResult) => {
+          if (queryResult.rowCount != 0) {
+            const statusid = queryResult.rows[0].statusid;
+            client
+              .query(updateStatusUserDelete, [statusid, refnum])
+              .then((queryRes) => {
+                res.json({ status: "success", data: { refnum: refnum } });
+              })
+              .catch((e) => {
+                console.error(e.stack);
+                //TODO closer look at this error. More things than wrong refnum might cause an error
+                res.json({
+                  status: "error",
+                  errorMessage: "unknown refnr error",
+                });
+              });
+          } else {
+            console.log("no Slettet av reisende in database");
+            res.json({
+              status: "error",
+              errorMessage: "unknown database error",
+            });
+          }
         })
         .catch((e) => {
           console.error(e.stack);
-          res.json({
-            status: "error",
-            errorMessage: "unknown refnr error",
-          });
+          res.json({ status: "error", errorMessage: "unknown database error" });
         });
     }
   });

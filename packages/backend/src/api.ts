@@ -3,6 +3,7 @@ import pg = require("pg");
 import {
   registerGetValidator,
   registerPostValidator,
+  registerPutValidator,
 } from "./validators/registerValidator";
 import { registerPutStatusValidator } from "./validators/statusValidator";
 import { v4 as uuidv4 } from "uuid";
@@ -17,6 +18,7 @@ import {
   selectLostByRefnum,
   insertNewLost,
   updateStatusUserDelete,
+  updateLost,
 } from "./queries";
 
 export default async (
@@ -78,7 +80,6 @@ export default async (
           //TODO: validate category, subcat, line, color against database tables. Error if they do not exist in database
           if (
             data.every((queryResult) => {
-              console.log(queryResult.rowCount != 0);
               return queryResult.rowCount != 0;
             })
           ) {
@@ -108,6 +109,76 @@ export default async (
               .then((queryRes) => {
                 res.json({ status: "success", body });
                 //TODO send confirmation email or sms
+                //TODO determine possible errors
+              })
+              .catch((e) => {
+                console.error(e.stack);
+                res.json({
+                  status: "error",
+                  errorMessage: "unknown database error",
+                });
+              });
+          } else {
+            res.json({
+              status: "error",
+              errorMessage:
+                "invalid values for category, subcategory, line or color",
+            });
+          }
+          //TODO determine possible errors, status code 500?
+        })
+        .catch((e) => {
+          console.error(e.stack);
+          res.json({ status: "error", errorMessage: "unknown database error" });
+        });
+    }
+  });
+
+  app.put(registerEndpoint, (req, res) => {
+    const body = req.body;
+    const { error, value } = registerPutValidator.validate(body);
+    if (error != undefined) {
+      //TODO figure out if error message leaks server information
+      res.json({ status: "error", errorMessage: error.details });
+    } else {
+      const categoryIdPromise = getCategoryId(req.body.category, { client });
+      const subCategoryIdPromise = getSubCategoryId(req.body.subCategory, {
+        client,
+      });
+      const lineIdPromise = getLineId(req.body.line, { client });
+      const colorIdPromise = getColorId(req.body.color, { client });
+      Promise.all([
+        categoryIdPromise,
+        subCategoryIdPromise,
+        lineIdPromise,
+        colorIdPromise,
+      ])
+        .then((data) => {
+          //TODO: validate category, subcat, line, color against database tables. Error if they do not exist in database
+          if (
+            data.every((queryResult) => {
+              return queryResult.rowCount != 0;
+            })
+          ) {
+            const categoryId = data[0].rows[0].categoryid;
+            const subCategoryId = data[1].rows[0].subcategoryid;
+            const lineId = data[2].rows[0].lineid;
+            const colorId = data[3].rows[0].colorid;
+            client
+              .query(updateLost, [
+                body.description,
+                body.brand,
+                body.date,
+                body.from,
+                body.to,
+                lineId,
+                colorId,
+                categoryId,
+                subCategoryId,
+                body.refnum,
+              ])
+              .then((queryRes) => {
+                res.json({ status: "success", body });
                 //TODO determine possible errors
               })
               .catch((e) => {
@@ -171,6 +242,4 @@ export default async (
         });
     }
   });
-
-  app.delete(registerEndpoint, (req, res) => {});
 };

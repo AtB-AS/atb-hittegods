@@ -15,5 +15,12 @@ lineid, colorid, catid, subcatid, statusid, refnr)
 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
 $11, $12, $13, $14, $15)`;
 
+export const updateLost = `
+update lost
+set description=$1, brand=$2, date=$3, "from"=$4, "to"=$5, lineid=$6,
+colorid=$7, catid=$8, subcatid=$9
+where refnr=$10
+`;
+
 export const updateStatusUserDelete = `
 update lost set statusid = $1 where refnr = $2`;

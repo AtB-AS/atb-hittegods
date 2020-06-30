@@ -28,11 +28,7 @@ async function startServer() {
   app.use(express.static("admin"));
 
   app.use("/admin", (req, res) => {
-    // serve index.html far grizzly
-    console.log("__dirname", __dirname);
-    console.log(`process.cwd`, process.cwd());
-    console.log(`path.join("admin/index.html")`, path.join("admin/index.html"));
-    res.sendFile("../admin/index.html");
+    res.sendFile(path.join(process.cwd() + "/admin/index.html"));
   });
 
   app.use(bodyParser.urlencoded({ extended: false }));

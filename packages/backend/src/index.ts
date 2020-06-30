@@ -4,6 +4,7 @@ import bodyParser = require("body-parser");
 import cors = require("cors");
 import apiRoutes from "./api";
 import pg = require("pg");
+import path from "path";
 
 dotenv.config();
 
@@ -23,7 +24,8 @@ const client = new pg.Client(config);
 async function startServer() {
   app.use(cors());
 
-  app.use(express.static("build"));
+  app.use(express.static(path.join(__dirname + "grizzly")));
+  app.use(express.static(path.join(__dirname + "admin")));
 
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());

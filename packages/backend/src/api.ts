@@ -12,7 +12,11 @@ import {
   getCategoryId,
   getStatusId,
 } from "./db";
-import { selectLostByRefnum, insertNewLost } from "./queries";
+import {
+  selectLostByRefnum,
+  insertNewLost,
+  updateStatusUserDelete,
+} from "./queries";
 
 export default async (
   { app }: { app: express.Application },
@@ -128,7 +132,28 @@ export default async (
     }
   });
 
-  app.put(registerEndpoint, (req, res) => {});
+  app.put("/api/update", (req, res) => {
+    const refnum = req.body.refnum;
+    if (refnum == null) {
+      return res.json({
+        status: "error",
+        errorMessage: "refnum parameter is required in request body",
+      });
+    } else {
+      client
+        .query(updateStatusUserDelete, [refnum])
+        .then((queryRes) => {
+          res.json({ status: "success", refnum });
+        })
+        .catch((e) => {
+          console.error(e.stack);
+          res.json({
+            status: "error",
+            errorMessage: "unknown refnr error",
+          });
+        });
+    }
+  });
 
   app.delete(registerEndpoint, (req, res) => {});
 };

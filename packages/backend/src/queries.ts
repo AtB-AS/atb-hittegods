@@ -14,3 +14,6 @@ insert into lost (name, email, phone, description, brand, date, time, "from", "t
 lineid, colorid, catid, subcatid, statusid, refnr)
 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
 $11, $12, $13, $14, $15)`;
+
+export const updateStatusUserDelete = `
+update lost set statusid = '9' where refnr = $1`;

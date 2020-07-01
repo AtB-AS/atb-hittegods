@@ -7,14 +7,33 @@
   "license": "MIT",
   "private": true,
   "workspaces": {
-    "packages": ["packages/*"],
-    "nohoist": ["**/backend", "**/backend/**"]
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/backend",
+      "**/backend/**"
+    ]
   },
   "scripts": {
     "start": "yarn lerna run start",
-    "build": "yarn lerna run build"
+    "build": "yarn lerna run build",
+    "prettier": "prettier --write 'packages/**/src/**/*.{js,ts,tsx}'"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "./packages/**/src/**/*.{js,jsx,ts,tsx}": [
+      "npm run prettier"
+    ]
   },
   "devDependencies": {
-    "lerna": "^3.22.1"
+    "husky": "^4.2.5",
+    "lerna": "^3.22.1",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.0.5"
   }
 }

@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development nodemon src/index.ts",
-    "start:prod": "NODE_ENV=production node dist/index.js",
+    "start:prod": "NODE_ENV=production node server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "lint": "eslint"
   },
+  "proxy": "http://localhost:5000",
   "keywords": [],
   "author": "",
   "license": "ISC",

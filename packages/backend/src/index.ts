@@ -4,6 +4,7 @@ import bodyParser = require("body-parser");
 import cors = require("cors");
 import apiRoutes from "./api";
 import pg = require("pg");
+import path from "path";
 
 dotenv.config();
 
@@ -23,10 +24,23 @@ const client = new pg.Client(config);
 async function startServer() {
   app.use(cors());
 
-  app.use(express.static("build"));
+  // static resources, like images and js from both grizzly and admin builds
+  app.use(express.static("grizzly"));
+  app.use(express.static("admin"));
 
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
+
+  // Serving grizzly frontend
+  app.get("/", (req, res) => {
+    res.sendFile(path.join(process.cwd() + "/grizzly/index.html"));
+  });
+
+  // Serving admin frontend
+  app.get("/admin", (req, res) => {
+    res.sendFile(path.join(process.cwd() + "/admin/index.html"));
+  });
+
   await apiRoutes({ app }, { client });
   app.listen(port);
   console.log("Server running");

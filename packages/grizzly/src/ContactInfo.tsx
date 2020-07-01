@@ -5,6 +5,7 @@ import { Paper } from "@material-ui/core";
 
 type Props = {
   onContactInfoSelect: (contactInfo: ContactInfo) => void;
+  name: string;
 };
 
 type ContactInfo = {
@@ -14,7 +15,7 @@ type ContactInfo = {
 };
 
 function ContactInfo(props: Props) {
-  const [name, setName] = useState("");
+  const [name, setName] = useState(props.name);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
 
@@ -29,6 +30,7 @@ function ContactInfo(props: Props) {
         <Paper>
           <h2>Navn</h2>
           <input
+            value={name}
             type="text"
             onChange={(event) => setName(event.target.value)}
           ></input>

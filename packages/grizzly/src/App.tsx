@@ -46,7 +46,6 @@ function App() {
   function onCategorySelect(cat: string) {
     setCategory(cat);
     nextPage("/underkategori");
-    //updateRegForm(value, "category");
     console.log("Kategori: ", cat);
   }
 
@@ -110,7 +109,10 @@ function App() {
     <div>
       <Switch>
         <Route path="/hovedkategori">
-          <MainCategory onCategorySelect={onCategorySelect} />
+          <MainCategory
+            category={category}
+            onCategorySelect={onCategorySelect}
+          />
         </Route>
         <Route path="/underkategori">
           <SubCategory onCategorySelect={onSubCategorySelected} />
@@ -125,7 +127,10 @@ function App() {
           <MissingDate onDateSelect={setDate} />
         </Route>
         <Route path="/personopplysninger">
-          <ContactInfo onContactInfoSelect={setContactInfo} />
+          <ContactInfo
+            name={contactInfo.name}
+            onContactInfoSelect={setContactInfo}
+          />
         </Route>
         <Route path="/bekreftelse">
           <Confirmation name={contactInfo.name} email={contactInfo.email} />

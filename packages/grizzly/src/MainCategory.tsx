@@ -10,10 +10,11 @@ import { useHistory } from "react-router-dom";
 
 type Props = {
   onCategorySelect: (category: string) => void;
+  category: string;
 };
 
 function MainCategory(props: Props) {
-  const [cat, setCat] = useState("");
+  const [cat, setCat] = useState(props.category);
   const h = useHistory();
   console.log(h);
   console.log(cat);

@@ -36,6 +36,11 @@ function App() {
     phone: "",
     email: "",
   });
+
+  useEffect(() => {
+    console.log("contactinfo updated", contactInfo);
+  }, [contactInfo]);
+
   const history = useHistory();
 
   function nextPage(path: string) {
@@ -74,11 +79,43 @@ function App() {
     nextPage("/personopplysninger");
   }
 
-  function setContactInfo(contactInfo: ContactInfo) {
-    setContInfo(contactInfo);
-    console.log("KontaktInfo: ", contactInfo);
-    nextPage("/bekreftelse");
-    prepareObject();
+  function setContactInfo(contInfo: ContactInfo) {
+    setContInfo(contInfo);
+    setTimeout(() => {
+      console.log("KontaktInfo: ", contactInfo);
+      sendForm()
+        .then(() => {
+          nextPage("/bekreftelse");
+        })
+        .catch((err) => {
+          console.log("oh no, it broke");
+        });
+    }, 100);
+  }
+
+  function sendForm() {
+    const form = prepareObject();
+    console.log("returned form: ", form);
+
+    const obj = {
+      name: "AtBjornar",
+      email: "ren@kje.no",
+      phoneNumber: "12345678",
+      category: "Elektronikk",
+      subCategory: "Briller",
+      line: 10,
+      description: "Myk",
+      brand: "Bamse",
+      color: "Rød",
+      date: "6/26/2020",
+      to: "",
+      from: "",
+    };
+    console.log(JSON.stringify(obj));
+    return fetch("/api/register", {
+      method: "post",
+      body: JSON.stringify(obj),
+    });
   }
 
   /*
@@ -89,21 +126,21 @@ function App() {
   */
 
   function prepareObject() {
-    const regForm: reg = {};
-    regForm["name"] = contactInfo.name;
-    regForm["email"] = contactInfo.email;
-    regForm["phoneNumber"] = contactInfo.phone;
-    regForm["categpry"] = cat;
-    regForm["subCategpry"] = subCat;
-    regForm["line"] = loc;
-    regForm["description"] = characteristics.description;
-    regForm["brand"] = characteristics.brand;
-    regForm["color"] = characteristics.color;
-    regForm["date"] = date;
-    regForm["to"] = "to";
-    regForm["from"] = "from";
-
-    //const regFormJson = regForm.json;
+    console.log(contactInfo);
+    const regForm: reg = {
+      name: contactInfo.name,
+      email: contactInfo.email,
+      phoneNumber: contactInfo.phone,
+      category: cat,
+      subCategory: subCat,
+      line: loc,
+      description: characteristics.description,
+      brand: characteristics.brand,
+      color: characteristics.color,
+      date: date,
+      to: "to",
+      from: "from",
+    };
     console.log(regForm);
     return regForm;
   }
@@ -130,7 +167,7 @@ function App() {
           <ContactInfo onContactInfoSelect={setContactInfo} />
         </Route>
         <Route path="/bekreftelse">
-          <Confirmation />
+          <Confirmation /*onLoadPage={sendForm}*/ />
         </Route>
       </Switch>
     </div>

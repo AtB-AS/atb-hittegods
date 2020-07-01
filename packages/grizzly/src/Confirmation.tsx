@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 
-type Props = {
-  obj: {};
-};
-
 function Confirmation() {
-  return <div>{props.obj}</div>;
+  return <div>bekreftet</div>
 }
 
 export default Confirmation;

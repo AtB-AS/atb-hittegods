@@ -37,11 +37,6 @@ function App() {
     email: "",
   });
 
-  const [obj, setObj] = useState({
-    name: "AtBjørnar",
-    phone: "98989898",
-    email: "atb@atb.no",
-  });
 
   useEffect(() => {
     console.log("contactinfo updated", contactInfo);

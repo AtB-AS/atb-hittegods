@@ -40,7 +40,11 @@ function MainCategory(props: Props) {
         </Paper>
         <Paper>
           <h2>Elektronikk</h2>
-          <img src={categoryElectronics} />
+          <button
+            onClick={() => props.onCategorySelect(mainCategory.ELECTRONICS)}
+          >
+            <img src={categoryElectronics} />
+          </button>
         </Paper>
       </Grid>
     </Grid>

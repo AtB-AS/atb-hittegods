@@ -9,17 +9,17 @@ type Props = {
 
 type ContactInfo = {
   name: string;
-  phone: string;
+  phoneNumber: string;
   email: string;
 };
 
 function ContactInfo(props: Props) {
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
 
   function onSubmit() {
-    props.onContactInfoSelect({ name, phone, email });
+    props.onContactInfoSelect({ name, phoneNumber, email });
   }
 
   return (
@@ -37,7 +37,7 @@ function ContactInfo(props: Props) {
           <h2>Mobil</h2>
           <input
             type="text"
-            onChange={(event) => setPhone(event.target.value)}
+            onChange={(event) => setPhoneNumber(event.target.value)}
           ></input>
         </Paper>
         <Paper>

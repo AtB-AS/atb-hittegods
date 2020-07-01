@@ -36,11 +36,6 @@ function App() {
     phoneNumber: "",
     email: "",
   });
-
-  useEffect(() => {
-    console.log("contactinfo updated", contactInfo);
-  }, [contactInfo]);
-
   const history = useHistory();
 
   function nextPage(path: string) {
@@ -133,7 +128,7 @@ function App() {
           <ContactInfo onContactInfoSelect={setContactInfo} />
         </Route>
         <Route path="/bekreftelse">
-          <Confirmation />
+          <Confirmation name={contactInfo.name} email={contactInfo.email} />
         </Route>
       </Switch>
     </div>

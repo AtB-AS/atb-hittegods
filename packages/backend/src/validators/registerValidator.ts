@@ -2,38 +2,38 @@ import Joi = require("@hapi/joi");
 
 //See https://hapi.dev/module/joi/ for documentation of how this works
 export const registerGetValidator = Joi.object({
-  refnum: Joi.string().required(),
+  refnum: Joi.string().required().guid(),
 });
 
 export const registerPostValidator = Joi.object({
-  name: Joi.string(),
-  email: Joi.string().email(),
+  name: Joi.string().required(),
+  email: Joi.string().required().email(),
   //TODO better phone number
-  phoneNumber: Joi.string(),
-  category: Joi.string(),
-  subCategory: Joi.string(),
-  line: Joi.number().integer(),
-  description: Joi.string(),
-  brand: Joi.string(),
-  color: Joi.string(),
-  date: Joi.date(),
-  to: Joi.string(),
-  from: Joi.string(),
+  phoneNumber: Joi.string().required(),
+  category: Joi.string().required(),
+  subCategory: Joi.string().required(),
+  line: Joi.number().required().integer(),
+  description: Joi.string().required(),
+  brand: Joi.string().required(),
+  color: Joi.string().required(),
+  date: Joi.date().required(),
+  to: Joi.string().required(),
+  from: Joi.string().required(),
 });
 
 export const registerPutValidator = Joi.object({
-  refnum: Joi.string().required(),
-  name: Joi.string(),
-  email: Joi.string().email(),
+  refnum: Joi.string().required().guid(),
+  name: Joi.string().required(),
+  email: Joi.string().required().email(),
   //TODO better phone number
-  phoneNumber: Joi.string(),
-  category: Joi.string(),
-  subCategory: Joi.string(),
-  line: Joi.number().integer(),
-  description: Joi.string(),
-  brand: Joi.string(),
-  color: Joi.string(),
-  date: Joi.date(),
-  to: Joi.string(),
-  from: Joi.string(),
+  phoneNumber: Joi.string().required(),
+  category: Joi.string().required(),
+  subCategory: Joi.string().required(),
+  line: Joi.number().integer().required(),
+  description: Joi.string().required(),
+  brand: Joi.string().required(),
+  color: Joi.string().required(),
+  date: Joi.date().required(),
+  to: Joi.string().required(),
+  from: Joi.string().required(),
 });

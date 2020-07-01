@@ -42,7 +42,7 @@ export default async (
           if (queryRes.rowCount === 0) {
             res
               .status(404)
-              .json({ status: "error", errorMessage: "unknown refnum" });
+              .json({ status: "error", errorMessage: "Unknown refnum" });
           } else {
             res.json({ status: "success", data: queryRes.rows });
           }
@@ -128,7 +128,6 @@ export default async (
               status: "error",
               errorMessage:
                 "invalid values for category, subcategory, line or color",
-              tempErrorTest: data,
             });
           }
         })

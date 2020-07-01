@@ -55,12 +55,14 @@ export default async (
   });
 
   app.post(registerEndpoint, (req, res) => {
+    console.log(req.params);
     const body = req.body;
     const { error, value } = registerPostValidator.validate(body);
     if (error != undefined) {
       //TODO figure out if error message leaks server information
       res.json({ status: "error", errorMessage: error.details });
     } else {
+      console.log(req.body);
       const refnum = uuidv4();
       const categoryIdPromise = getCategoryId(req.body.category, { client });
       const subCategoryIdPromise = getSubCategoryId(req.body.subCategory, {
@@ -112,7 +114,6 @@ export default async (
                 //TODO determine possible errors
               })
               .catch((e) => {
-                console.error(e.stack);
                 res.json({
                   status: "error",
                   errorMessage: "unknown database error",

@@ -1,13 +1,11 @@
-import React from "react";
-/*
-type Props = {
-  onloadPage: () => void;
-};
-*/
-function Confirmation() {
-  // window.onload = props.onloadPage;
+import React, { useState } from "react";
 
-  return <div>nice</div>;
+type Props = {
+  obj: {};
+};
+
+function Confirmation() {
+  return <div>{props.obj}</div>;
 }
 
 export default Confirmation;

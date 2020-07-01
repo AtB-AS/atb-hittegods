@@ -37,6 +37,12 @@ function App() {
     email: "",
   });
 
+  const [obj, setObj] = useState({
+    name: "AtBjørnar",
+    phone: "98989898",
+    email: "atb@atb.no",
+  });
+
   useEffect(() => {
     console.log("contactinfo updated", contactInfo);
   }, [contactInfo]);
@@ -108,22 +114,19 @@ function App() {
       brand: "Bamse",
       color: "Rød",
       date: "6/26/2020",
-      to: "",
-      from: "",
+      to: "hjem til jobb",
+      from: "hvor som helst",
     };
     console.log(JSON.stringify(obj));
     return fetch("/api/register", {
       method: "post",
       body: JSON.stringify(obj),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
     });
   }
-
-  /*
-  function updateRegForm(value: string, key: string) {
-    regForm[key] = value;
-    console.log(regForm);
-  }
-  */
 
   function prepareObject() {
     console.log(contactInfo);
@@ -167,7 +170,7 @@ function App() {
           <ContactInfo onContactInfoSelect={setContactInfo} />
         </Route>
         <Route path="/bekreftelse">
-          <Confirmation /*onLoadPage={sendForm}*/ />
+          <Confirmation />
         </Route>
       </Switch>
     </div>

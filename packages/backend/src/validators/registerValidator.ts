@@ -2,7 +2,7 @@ import Joi = require("@hapi/joi");
 
 //See https://hapi.dev/module/joi/ for documentation of how this works
 export const registerGetValidator = Joi.object({
-  refnum: Joi.string().required(),
+  refnum: Joi.string().required().guid(),
 });
 
 export const registerPostValidator = Joi.object({
@@ -22,7 +22,7 @@ export const registerPostValidator = Joi.object({
 });
 
 export const registerPutValidator = Joi.object({
-  refnum: Joi.string().required(),
+  refnum: Joi.string().required().guid(),
   name: Joi.string(),
   email: Joi.string().email(),
   //TODO better phone number

@@ -150,7 +150,7 @@ function App() {
           <MainCategory onCategorySelect={setCategory} />
         </Route>
         <Route path="/underkategori">
-          <SubCategory onCategorySelect={setSubCategory} />
+          <SubCategory getMainCat={cat} onCategorySelect={setSubCategory} />
         </Route>
         <Route path="/kjennetegn">
           <Characteristics onCharacteristicsSelect={setCharacteristics} />

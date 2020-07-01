@@ -7,10 +7,18 @@ import categoryPersonalEffects from "./components/img/PersonalEffects.png";
 import categoryElectronics from "./components/img/categoryElectronics.png";
 import { mainCategory } from "./components/constants";
 import { useHistory } from "react-router-dom";
+import {categoryData} from "./components/subCategoryData";
 
 type Props = {
   onCategorySelect: (category: string) => void;
 };
+
+type catProps = {
+  name: string,
+  imgUrl: string
+
+}
+
 
 function MainCategory(props: Props) {
   const [cat, setCat] = useState("");
@@ -22,26 +30,33 @@ function MainCategory(props: Props) {
     console.log("mounted", h);
   }, []);
 
+
+  const catData = categoryData
+
+
+  function CategoryComponent(subprops: catProps) {
+    return (
+        <Paper>
+          <h2>{subprops.name}</h2>
+          <button onClick={() => props.onCategorySelect(subprops.name)}>
+            <img src={subprops.imgUrl}/>
+          </button>
+        </Paper>
+    )
+  }
+
+
+
   return (
     <Grid container spacing={3}>
       <Grid item sm={6}>
         <h1>Kategorier</h1>
-        <Paper>
-          <h2>Klær</h2>
-          <button onClick={() => props.onCategorySelect(mainCategory.CLOTHING)}>
-            <img src={categoryClothing} />
-          </button>
-          <h2>Vesker og bager</h2>
-          <img src={categoryBags} />
-        </Paper>
-        <Paper>
-          <h2>Personlige effecter</h2>
-          <img src={categoryPersonalEffects} />
-        </Paper>
-        <Paper>
-          <h2>Elektronikk</h2>
-          <img src={categoryElectronics} />
-        </Paper>
+        {
+          catData.map(mainCat => <div key={mainCat.name}>
+            <CategoryComponent {...mainCat}/>
+
+          </div>)
+        }
       </Grid>
     </Grid>
   );

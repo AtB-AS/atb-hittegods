@@ -6,38 +6,67 @@ import categoryClothing from "./components/img/categoryClothing.png";
 import categoryBags from "./components/img/categoryBags.png";
 import categoryPersonalEffects from "./components/img/PersonalEffects.png";
 import categoryElectronics from "./components/img/categoryElectronics.png";
-import { subCategory } from "./components/constants";
+import {categoryData} from "./components/subCategoryData";
 
 type Props = {
   onCategorySelect: (category: string) => void;
+  getMainCat: string;
 };
 
-function SubCategory(props: Props) {
-  return (
-    <Grid container spacing={3}>
-      <Grid item sm={6}>
-        <h1>Underkategorier</h1>
-        <Paper>
-          <h2>Jakker</h2>
-          <button onClick={() => props.onCategorySelect(subCategory.JACKETS)}>
-            <img src={categoryClothing} />
-          </button>
+type subCatProps = {
+  name:string,
+  imgUrl:string,
+}
 
-          <h2>Bukser</h2>
-          <img src={categoryBags} />
-        </Paper>
-        <Paper></Paper>
-        <Paper>
-          <h2>Votter og luer</h2>
-          <img src={categoryPersonalEffects} />
-        </Paper>
-        <Paper>
-          <h2>Andre</h2>
-          <img src={categoryElectronics} />
-        </Paper>
-      </Grid>
-    </Grid>
-  );
+
+
+
+
+function SubCategory(props: Props) {
+
+    const mainCat: string = props.getMainCat;
+
+
+    //const mainCatData = categoryData.find(mainCatName => mainCatName.name === mainCat)!;
+    //const mainCatData = categoryData[0];
+
+
+
+    function getSubCatData(mainCat:string) {
+
+        return categoryData.find(mainCatName => mainCatName.name === mainCat)!.subCategories;
+
+    }
+
+    const subCatData=getSubCatData(mainCat)
+
+
+
+    function SubCategoryComponent(subprops: subCatProps) {
+        return (
+            <Paper>
+                <h2>{subprops.name}</h2>
+                <button onClick={() => props.onCategorySelect(subprops.name)}>
+                    <img src={subprops.imgUrl}/>
+                </button>
+            </Paper>
+        )
+    }
+
+
+    return (
+        <Grid container spacing={3} key={"yes"}>
+            <Grid item sm={6}>
+                <h1>Underkategorier</h1>
+                {
+                    subCatData.map(data => <div key={data.name}>
+                        <SubCategoryComponent  {...data} />
+                    </div>)
+                }
+            </Grid>
+        </Grid>
+    );
+
 }
 
 export default SubCategory;

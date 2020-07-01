@@ -32,23 +32,26 @@ export default async (
     const { error, value } = registerGetValidator.validate(req.body);
     if (error != undefined) {
       //TODO figure out if error message leaks server information
-      res.json({ status: "error", errorMessage: error.details });
+      res
+        .status(400)
+        .json({ status: "error", errorMessage: error.details[0].message });
     } else {
       client
         .query(selectLostByRefnum, [body.refnum])
         .then((queryRes) => {
           if (queryRes.rowCount === 0) {
-            res.json({ status: "error", errorMessage: "unknown refnum" });
+            res
+              .status(404)
+              .json({ status: "error", errorMessage: "unknown refnum" });
           } else {
             res.json({ status: "success", data: queryRes.rows });
           }
         })
         .catch((e) => {
           console.error(e);
-          res.json({
+          res.status(500).json({
             status: "error",
-            errorMessage:
-              "invalid values for category, subcategory, line or color",
+            errorMessage: "Unknown database error",
           });
         });
     }
@@ -59,7 +62,9 @@ export default async (
     const { error, value } = registerPostValidator.validate(body);
     if (error != undefined) {
       //TODO figure out if error message leaks server information
-      res.json({ status: "error", errorMessage: error.details });
+      res
+        .status(500)
+        .json({ status: "error", errorMessage: error.details[0].message });
     } else {
       const refnum = uuidv4();
       const categoryIdPromise = getCategoryId(req.body.category, { client });
@@ -113,7 +118,7 @@ export default async (
               })
               .catch((e) => {
                 console.error(e.stack);
-                res.json({
+                res.status(500).json({
                   status: "error",
                   errorMessage: "unknown database error",
                 });
@@ -123,13 +128,15 @@ export default async (
               status: "error",
               errorMessage:
                 "invalid values for category, subcategory, line or color",
+              tempErrorTest: data,
             });
           }
-          //TODO determine possible errors, status code 500?
         })
         .catch((e) => {
           console.error(e.stack);
-          res.json({ status: "error", errorMessage: "unknown database error" });
+          res
+            .status(500)
+            .json({ status: "error", errorMessage: "unknown database error" });
         });
     }
   });
@@ -139,7 +146,9 @@ export default async (
     const { error, value } = registerPutValidator.validate(body);
     if (error != undefined) {
       //TODO figure out if error message leaks server information
-      res.json({ status: "error", errorMessage: error.details });
+      res
+        .status(400)
+        .json({ status: "error", errorMessage: error.details[0].message });
     } else {
       const categoryIdPromise = getCategoryId(req.body.category, { client });
       const subCategoryIdPromise = getSubCategoryId(req.body.subCategory, {
@@ -183,23 +192,24 @@ export default async (
               })
               .catch((e) => {
                 console.error(e.stack);
-                res.json({
+                res.status(500).json({
                   status: "error",
-                  errorMessage: "unknown database error",
+                  errorMessage: "Unknown database error",
                 });
               });
           } else {
-            res.json({
+            res.status(400).json({
               status: "error",
               errorMessage:
-                "invalid values for category, subcategory, line or color",
+                "Invalid values for category, subcategory, line or color",
             });
           }
-          //TODO determine possible errors, status code 500?
         })
         .catch((e) => {
           console.error(e.stack);
-          res.json({ status: "error", errorMessage: "unknown database error" });
+          res
+            .status(500)
+            .json({ status: "error", errorMessage: "Unknown database error" });
         });
     }
   });
@@ -209,7 +219,9 @@ export default async (
     const { error, value } = registerPutStatusValidator.validate(req.body);
     if (error != undefined) {
       //TODO figure out if error message leaks server information
-      res.json({ status: "error", errorMessage: error.details });
+      res
+        .status(400)
+        .json({ status: "error", errorMessage: error.details[0].message });
     } else {
       getStatusId("Slettet av reisende", { client })
         .then((queryResult) => {

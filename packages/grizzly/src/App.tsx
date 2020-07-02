@@ -22,26 +22,20 @@ type reg = {
 };
 
 function App() {
-  const [cat, setCat] = useState("");
-  const [subCat, setSubCat] = useState("");
-  const [characteristics, setChar] = useState({
+  const [category, setCategory] = useState("");
+  const [subCategory, setSubCategory] = useState("");
+  const [characteristics, setCharacteristics] = useState({
     color: "",
     brand: "",
     description: "",
   });
-  const [loc, setLoc] = useState("");
+  const [line, setLine] = useState("");
   const [date, setNewDate] = useState("");
   const [contactInfo, setContInfo] = useState({
     name: "",
-    phone: "",
+    phoneNumber: "",
     email: "",
   });
-
-
-  useEffect(() => {
-    console.log("contactinfo updated", contactInfo);
-  }, [contactInfo]);
-
   const history = useHistory();
 
   function nextPage(path: string) {
@@ -49,27 +43,27 @@ function App() {
     history.push(path);
   }
 
-  function setCategory(cat: string) {
-    setCat(cat);
+  function onCategorySelect(cat: string) {
+    setCategory(cat);
     nextPage("/underkategori");
     //updateRegForm(value, "category");
     console.log("Kategori: ", cat);
   }
 
-  function setSubCategory(subCat: string) {
-    setSubCat(subCat);
+  function onSubCategorySelected(subCat: string) {
+    setSubCategory(subCat);
     nextPage("/kjennetegn");
     console.log("underkategori: ", subCat);
   }
 
-  function setCharacteristics(characteristics: Characteristics) {
-    setChar(characteristics);
+  function onCharacteristicsDone(characteristics: Characteristics) {
+    setCharacteristics(characteristics);
     console.log("kjennetegn ", characteristics);
     nextPage("lokasjon");
   }
 
   function setLocation(location: string) {
-    setLoc(location);
+    setLine(location);
     console.log("linje: ", location);
     nextPage("/tidspunkt");
   }
@@ -81,41 +75,30 @@ function App() {
   }
 
   function setContactInfo(contInfo: ContactInfo) {
+    const payload = {
+      category,
+      subCategory,
+      ...characteristics,
+      line,
+      date,
+      from: "TODO", // TODO: Foreløpig påkrevd i database
+      to: "TODO", // TODO: Foreløpig påkrevd i database
+      ...contInfo,
+    };
     setContInfo(contInfo);
-    setTimeout(() => {
-      console.log("KontaktInfo: ", contactInfo);
-      sendForm()
-        .then(() => {
-          nextPage("/bekreftelse");
-        })
-        .catch((err) => {
-          console.log("oh no, it broke");
-        });
-    }, 100);
+    sendForm(payload)
+      .then(() => {
+        nextPage("/bekreftelse");
+      })
+      .catch(() => {
+        console.log("oh no, it broke");
+      });
   }
 
-  function sendForm() {
-    const form = prepareObject();
-    console.log("returned form: ", form);
-
-    const obj = {
-      name: "AtBjornar",
-      email: "ren@kje.no",
-      phoneNumber: "12345678",
-      category: "Elektronikk",
-      subCategory: "Briller",
-      line: 10,
-      description: "Myk",
-      brand: "Bamse",
-      color: "Rød",
-      date: "6/26/2020",
-      to: "hjem til jobb",
-      from: "hvor som helst",
-    };
-    console.log(JSON.stringify(obj));
+  function sendForm(payload: reg) {
     return fetch("/api/register", {
       method: "post",
-      body: JSON.stringify(obj),
+      body: JSON.stringify(payload),
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -123,37 +106,17 @@ function App() {
     });
   }
 
-  function prepareObject() {
-    console.log(contactInfo);
-    const regForm: reg = {
-      name: contactInfo.name,
-      email: contactInfo.email,
-      phoneNumber: contactInfo.phone,
-      category: cat,
-      subCategory: subCat,
-      line: loc,
-      description: characteristics.description,
-      brand: characteristics.brand,
-      color: characteristics.color,
-      date: date,
-      to: "to",
-      from: "from",
-    };
-    console.log(regForm);
-    return regForm;
-  }
-
   return (
     <div>
       <Switch>
         <Route path="/hovedkategori">
-          <MainCategory onCategorySelect={setCategory} />
+          <MainCategory onCategorySelect={onCategorySelect} />
         </Route>
         <Route path="/underkategori">
           <SubCategory getMainCat={cat} onCategorySelect={setSubCategory} />
         </Route>
         <Route path="/kjennetegn">
-          <Characteristics onCharacteristicsSelect={setCharacteristics} />
+          <Characteristics onCharacteristicsSelect={onCharacteristicsDone} />
         </Route>
         <Route path="/lokasjon">
           <Location onLocationSelect={setLocation} />
@@ -165,7 +128,7 @@ function App() {
           <ContactInfo onContactInfoSelect={setContactInfo} />
         </Route>
         <Route path="/bekreftelse">
-          <Confirmation />
+          <Confirmation name={contactInfo.name} email={contactInfo.email} />
         </Route>
       </Switch>
     </div>

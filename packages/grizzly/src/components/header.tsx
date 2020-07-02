@@ -24,6 +24,10 @@ const useStyles = makeStyles((theme: Theme) =>
       height: "36px",
       paddingRight: "24px",
     },
+    header: {
+      backgroundColor: "white",
+      color: "black",
+    },
   })
 );
 
@@ -32,7 +36,7 @@ export default function ButtonAppBar() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar className={classes.header} position="static">
         <Toolbar>
           <img src={logo} className={classes.btn}></img>
 

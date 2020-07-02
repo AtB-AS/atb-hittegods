@@ -35,5 +35,8 @@
     "lerna": "^3.22.1",
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5"
+  },
+  "dependencies": {
+    "cross-env": "^7.0.2"
   }
 }

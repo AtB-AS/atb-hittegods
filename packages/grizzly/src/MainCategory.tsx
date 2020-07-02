@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {},
     paper: {
       textAlign: "center",
+      backgroundColor: theme.palette.primary.main,
     },
   })
 );
@@ -69,7 +70,7 @@ function MainCategory(props: Props) {
   }
 
   return (
-    <Container maxWidth="sm">
+    <div>
       <Box mt={6}>
         <h2>Velg Kategori</h2>
       </Box>
@@ -89,7 +90,7 @@ function MainCategory(props: Props) {
           ))}
         </Grid>
       </Box>
-    </Container>
+    </div>
   );
 }
 

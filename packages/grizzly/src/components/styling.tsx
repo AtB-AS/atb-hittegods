@@ -15,5 +15,4 @@ export const theme = createMuiTheme({
   typography: {
     fontFamily: ["Unit pro regular", "Calibri", "sans-serif"].join(","),
   },
-  spacing: 4,
 });

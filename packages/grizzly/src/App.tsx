@@ -11,6 +11,7 @@ import Header from "./components/header";
 import { theme } from "./components/styling";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+import Container from "@material-ui/core/Container";
 
 import {
   BrowserRouter as Router,
@@ -113,45 +114,47 @@ function App() {
     <MuiThemeProvider theme={theme}>
       <div>
         <Header />
-        <Switch>
-          <Route path="/hovedkategori">
-            <MainCategory
-              category={category}
-              onCategorySelect={onCategorySelect}
-            />
-          </Route>
-          <Route path="/underkategori">
-            <SubCategory
-              getMainCat={category}
-              onSubCategorySelect={onSubCategorySelected}
-            />
-          </Route>
-          <Route path="/kjennetegn">
-            <Characteristics
-              color={characteristics.color}
-              brand={characteristics.brand}
-              description={characteristics.description}
-              onCharacteristicsSelect={onCharacteristicsDone}
-            />
-          </Route>
-          <Route path="/lokasjon">
-            <Location line={line} onLocationSelect={setLocation} />
-          </Route>
-          <Route path="/tidspunkt">
-            <MissingDate date={date} onDateSelect={setDate} />
-          </Route>
-          <Route path="/personopplysninger">
-            <ContactInfo
-              name={contactInfo.name}
-              phoneNumber={contactInfo.phoneNumber}
-              email={contactInfo.email}
-              onContactInfoSelect={setContactInfo}
-            />
-          </Route>
-          <Route path="/bekreftelse">
-            <Confirmation name={contactInfo.name} email={contactInfo.email} />
-          </Route>
-        </Switch>
+        <Container>
+          <Switch>
+            <Route path="/hovedkategori">
+              <MainCategory
+                category={category}
+                onCategorySelect={onCategorySelect}
+              />
+            </Route>
+            <Route path="/underkategori">
+              <SubCategory
+                getMainCat={category}
+                onSubCategorySelect={onSubCategorySelected}
+              />
+            </Route>
+            <Route path="/kjennetegn">
+              <Characteristics
+                color={characteristics.color}
+                brand={characteristics.brand}
+                description={characteristics.description}
+                onCharacteristicsSelect={onCharacteristicsDone}
+              />
+            </Route>
+            <Route path="/lokasjon">
+              <Location line={line} onLocationSelect={setLocation} />
+            </Route>
+            <Route path="/tidspunkt">
+              <MissingDate date={date} onDateSelect={setDate} />
+            </Route>
+            <Route path="/personopplysninger">
+              <ContactInfo
+                name={contactInfo.name}
+                phoneNumber={contactInfo.phoneNumber}
+                email={contactInfo.email}
+                onContactInfoSelect={setContactInfo}
+              />
+            </Route>
+            <Route path="/bekreftelse">
+              <Confirmation name={contactInfo.name} email={contactInfo.email} />
+            </Route>
+          </Switch>
+        </Container>
       </div>
     </MuiThemeProvider>
   );

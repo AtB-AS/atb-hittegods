@@ -37,7 +37,7 @@ function Characteristics(props: Props, characteristics: Characteristics) {
           <h2>Farge</h2>
           <input
             type="text"
-            value={description}
+            value={color}
             onChange={(event) => setColor(event.target.value)}
           ></input>
         </Paper>

@@ -22,7 +22,7 @@ function MissingDate(props: Props) {
           <h2>Dato</h2>
           <input
             type="text"
-            value={props.date}
+            value={date}
             onChange={(event) => setDate(event.target.value)}
           ></input>
         </Paper>

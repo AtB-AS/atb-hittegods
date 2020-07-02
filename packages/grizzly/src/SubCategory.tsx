@@ -9,7 +9,7 @@ import categoryElectronics from "./components/img/categoryElectronics.png";
 import {categoryData} from "./components/subCategoryData";
 
 type Props = {
-  onCategorySelect: (category: string) => void;
+  onSubCategorySelect: (category: string) => void;
   getMainCat: string;
 };
 
@@ -46,7 +46,7 @@ function SubCategory(props: Props) {
         return (
             <Paper>
                 <h2>{subprops.name}</h2>
-                <button onClick={() => props.onCategorySelect(subprops.name)}>
+                <button onClick={() => props.onSubCategorySelect(subprops.name)}>
                     <img src={subprops.imgUrl}/>
                 </button>
             </Paper>
@@ -55,7 +55,7 @@ function SubCategory(props: Props) {
 
 
     return (
-        <Grid container spacing={3} key={"yes"}>
+        <Grid container spacing={3} key={"subcategory"}>
             <Grid item sm={6}>
                 <h1>Underkategorier</h1>
                 {

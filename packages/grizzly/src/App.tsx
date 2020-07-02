@@ -115,7 +115,7 @@ function App() {
           />
         </Route>
         <Route path="/underkategori">
-          <SubCategory getMainCat={cat} onCategorySelect={setSubCategory} />
+          <SubCategory getMainCat={category} onSubCategorySelect={onSubCategorySelected} />
         </Route>
         <Route path="/kjennetegn">
           <Characteristics

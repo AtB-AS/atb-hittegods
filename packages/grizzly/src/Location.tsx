@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Grid } from "@material-ui/core";
 import { Paper } from "@material-ui/core";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 
 type Props = {
   onLocationSelect: (location: string) => void;
@@ -17,19 +19,26 @@ function Location(props: Props) {
   return (
     <Grid container spacing={3}>
       <Grid item sm={6}>
-        <h1>Kjennetegn</h1>
+        <h1>Hvor mistet du gjenstanden din?</h1>
         <Paper>
           <h2>Linje</h2>
-          <input
+          <TextField
             type="text"
             value={line}
+            label="Linje"
             onChange={(event) => setLocation(event.target.value)}
-          ></input>
+            variant="outlined"
+          ></TextField>
         </Paper>
         <Paper>
-          <button type="submit" onClick={onSubmit}>
+          <Button
+            color="primary"
+            variant="contained"
+            type="submit"
+            onClick={onSubmit}
+          >
             Neste
-          </button>
+          </Button>
         </Paper>
       </Grid>
     </Grid>

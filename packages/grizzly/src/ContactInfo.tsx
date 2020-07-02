@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import { Grid } from "@material-ui/core";
 import { Paper } from "@material-ui/core";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 
 type Props = {
   onContactInfoSelect: (contactInfo: ContactInfo) => void;
@@ -31,32 +33,44 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
         <h1>Kontaktinformasjon</h1>
         <Paper>
           <h2>Navn</h2>
-          <input
-            value={name}
+          <TextField
             type="text"
+            value={name}
+            label="Navn"
             onChange={(event) => setName(event.target.value)}
-          ></input>
+            variant="outlined"
+          ></TextField>
         </Paper>
         <Paper>
           <h2>Mobil</h2>
-          <input
-            value={phoneNumber}
+
+          <TextField
             type="text"
+            value={phoneNumber}
+            label="Telefonummer"
             onChange={(event) => setPhoneNumber(event.target.value)}
-          ></input>
+            variant="outlined"
+          ></TextField>
         </Paper>
         <Paper>
-          <h2>Mail</h2>
-          <input
+          <h2>E-post</h2>
+          <TextField
             type="text"
             value={email}
+            label="E-post"
             onChange={(event) => setEmail(event.target.value)}
-          ></input>
+            variant="outlined"
+          ></TextField>
         </Paper>
         <Paper>
-          <button type="submit" onClick={onSubmit}>
+          <Button
+            color="primary"
+            variant="contained"
+            type="submit"
+            onClick={onSubmit}
+          >
             Neste
-          </button>
+          </Button>
         </Paper>
       </Grid>
     </Grid>

@@ -6,6 +6,8 @@ import categoryPersonalEffects from "./components/img/PersonalEffects.png";
 import categoryElectronics from "./components/img/categoryElectronics.png";
 import { Grid } from "@material-ui/core";
 import { Paper } from "@material-ui/core";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 
 type Props = {
   onCharacteristicsSelect: (characteristics: Characteristics) => void;
@@ -35,32 +37,43 @@ function Characteristics(props: Props, characteristics: Characteristics) {
         <h1>Kjennetegn</h1>
         <Paper>
           <h2>Farge</h2>
-          <input
+          <TextField
             type="text"
             value={color}
+            label="Farge"
             onChange={(event) => setColor(event.target.value)}
-          ></input>
+            variant="outlined"
+          ></TextField>
         </Paper>
         <Paper>
           <h2>Merke</h2>
-          <input
+          <TextField
             type="text"
             value={brand}
+            label="Merke"
             onChange={(event) => setBrand(event.target.value)}
-          ></input>
+            variant="outlined"
+          ></TextField>
         </Paper>
         <Paper>
           <h2>Beskrivelse</h2>
-          <input
+          <TextField
             type="text"
             value={description}
+            label="Beskrivelse"
             onChange={(event) => setDescription(event.target.value)}
-          ></input>
+            variant="outlined"
+          ></TextField>
         </Paper>
         <Paper>
-          <button type="submit" onClick={onSubmit}>
+          <Button
+            color="primary"
+            variant="contained"
+            type="submit"
+            onClick={onSubmit}
+          >
             Neste
-          </button>
+          </Button>
         </Paper>
       </Grid>
     </Grid>

@@ -7,7 +7,7 @@ import categoryElectronics from "./img/categoryElectronics.png";
 export const mainCategory = {
   CLOTHING: "Klær",
   ELECTRONICS: "Elektronikk",
-  PERSONAL_EFFECTS: "Personlige Effekter",
+  PERSONAL_EFFECTS: "Personlige effekter",
   BAGS: "Bagasje",
   OTHER: "other",
 };

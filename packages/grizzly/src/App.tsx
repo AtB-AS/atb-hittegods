@@ -118,17 +118,24 @@ function App() {
           <SubCategory onCategorySelect={onSubCategorySelected} />
         </Route>
         <Route path="/kjennetegn">
-          <Characteristics onCharacteristicsSelect={onCharacteristicsDone} />
+          <Characteristics
+            color={characteristics.color}
+            brand={characteristics.brand}
+            description={characteristics.description}
+            onCharacteristicsSelect={onCharacteristicsDone}
+          />
         </Route>
         <Route path="/lokasjon">
-          <Location onLocationSelect={setLocation} />
+          <Location line={line} onLocationSelect={setLocation} />
         </Route>
         <Route path="/tidspunkt">
-          <MissingDate onDateSelect={setDate} />
+          <MissingDate date={date} onDateSelect={setDate} />
         </Route>
         <Route path="/personopplysninger">
           <ContactInfo
             name={contactInfo.name}
+            phoneNumber={contactInfo.phoneNumber}
+            email={contactInfo.email}
             onContactInfoSelect={setContactInfo}
           />
         </Route>

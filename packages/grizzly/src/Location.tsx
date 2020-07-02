@@ -4,10 +4,11 @@ import { Paper } from "@material-ui/core";
 
 type Props = {
   onLocationSelect: (location: string) => void;
+  line: string;
 };
 
 function Location(props: Props) {
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState(props.line);
 
   function onSubmit() {
     props.onLocationSelect(location);
@@ -21,6 +22,7 @@ function Location(props: Props) {
           <h2>Linje</h2>
           <input
             type="text"
+            value={props.line}
             onChange={(event) => setLocation(event.target.value)}
           ></input>
         </Paper>

@@ -4,10 +4,11 @@ import { Paper } from "@material-ui/core";
 
 type Props = {
   onDateSelect: (date: string) => void;
+  date: string;
 };
 
 function MissingDate(props: Props) {
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(props.date);
 
   function onSubmit() {
     props.onDateSelect(date);
@@ -21,6 +22,7 @@ function MissingDate(props: Props) {
           <h2>Dato</h2>
           <input
             type="text"
+            value={props.date}
             onChange={(event) => setDate(event.target.value)}
           ></input>
         </Paper>

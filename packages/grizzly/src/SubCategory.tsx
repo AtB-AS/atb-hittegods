@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { mainCategory } from "./components/constants";
 import { Grid } from "@material-ui/core";
 import { Paper } from "@material-ui/core";
@@ -22,15 +22,17 @@ function SubCategory(props: Props) {
           <button onClick={() => props.onCategorySelect(subCategory.JACKETS)}>
             <img src={categoryClothing} />
           </button>
-
+        </Paper>
+        <Paper>
           <h2>Bukser</h2>
           <img src={categoryBags} />
         </Paper>
-        <Paper></Paper>
+
         <Paper>
           <h2>Votter og luer</h2>
           <img src={categoryPersonalEffects} />
         </Paper>
+
         <Paper>
           <h2>Andre</h2>
           <img src={categoryElectronics} />

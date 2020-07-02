@@ -5,6 +5,9 @@ import { Paper } from "@material-ui/core";
 
 type Props = {
   onContactInfoSelect: (contactInfo: ContactInfo) => void;
+  name: string;
+  phoneNumber: string;
+  email: string;
 };
 
 type ContactInfo = {
@@ -13,10 +16,10 @@ type ContactInfo = {
   email: string;
 };
 
-function ContactInfo(props: Props) {
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
+function ContactInfo(props: Props, contactInfo: ContactInfo) {
+  const [name, setName] = useState(props.name);
+  const [phoneNumber, setPhoneNumber] = useState(props.phoneNumber);
+  const [email, setEmail] = useState(props.email);
 
   function onSubmit() {
     props.onContactInfoSelect({ name, phoneNumber, email });
@@ -29,6 +32,7 @@ function ContactInfo(props: Props) {
         <Paper>
           <h2>Navn</h2>
           <input
+            value={name}
             type="text"
             onChange={(event) => setName(event.target.value)}
           ></input>
@@ -36,6 +40,7 @@ function ContactInfo(props: Props) {
         <Paper>
           <h2>Mobil</h2>
           <input
+            value={phoneNumber}
             type="text"
             onChange={(event) => setPhoneNumber(event.target.value)}
           ></input>
@@ -44,6 +49,7 @@ function ContactInfo(props: Props) {
           <h2>Mail</h2>
           <input
             type="text"
+            value={email}
             onChange={(event) => setEmail(event.target.value)}
           ></input>
         </Paper>

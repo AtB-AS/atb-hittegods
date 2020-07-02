@@ -11,6 +11,7 @@ import {categoryData} from "./components/subCategoryData";
 
 type Props = {
   onCategorySelect: (category: string) => void;
+  category: string;
 };
 
 type catProps = {
@@ -21,7 +22,7 @@ type catProps = {
 
 
 function MainCategory(props: Props) {
-  const [cat, setCat] = useState("");
+  const [cat, setCat] = useState(props.category);
   const h = useHistory();
   console.log(h);
   console.log(cat);

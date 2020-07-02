@@ -9,6 +9,9 @@ import { Paper } from "@material-ui/core";
 
 type Props = {
   onCharacteristicsSelect: (characteristics: Characteristics) => void;
+  color: string;
+  brand: string;
+  description: string;
 };
 
 type Characteristics = {
@@ -17,10 +20,10 @@ type Characteristics = {
   description: string;
 };
 
-function Characteristics(props: Props) {
-  const [color, setColor] = useState("");
-  const [brand, setBrand] = useState("");
-  const [description, setDescription] = useState("");
+function Characteristics(props: Props, characteristics: Characteristics) {
+  const [color, setColor] = useState(props.color);
+  const [brand, setBrand] = useState(props.brand);
+  const [description, setDescription] = useState(props.description);
 
   function onSubmit() {
     props.onCharacteristicsSelect({ color, brand, description });
@@ -34,6 +37,7 @@ function Characteristics(props: Props) {
           <h2>Farge</h2>
           <input
             type="text"
+            value={color}
             onChange={(event) => setColor(event.target.value)}
           ></input>
         </Paper>
@@ -41,6 +45,7 @@ function Characteristics(props: Props) {
           <h2>Merke</h2>
           <input
             type="text"
+            value={brand}
             onChange={(event) => setBrand(event.target.value)}
           ></input>
         </Paper>
@@ -48,6 +53,7 @@ function Characteristics(props: Props) {
           <h2>Beskrivelse</h2>
           <input
             type="text"
+            value={description}
             onChange={(event) => setDescription(event.target.value)}
           ></input>
         </Paper>

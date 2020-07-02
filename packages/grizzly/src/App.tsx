@@ -46,7 +46,6 @@ function App() {
   function onCategorySelect(cat: string) {
     setCategory(cat);
     nextPage("/underkategori");
-    //updateRegForm(value, "category");
     console.log("Kategori: ", cat);
   }
 
@@ -110,22 +109,35 @@ function App() {
     <div>
       <Switch>
         <Route path="/hovedkategori">
-          <MainCategory onCategorySelect={onCategorySelect} />
+          <MainCategory
+            category={category}
+            onCategorySelect={onCategorySelect}
+          />
         </Route>
         <Route path="/underkategori">
           <SubCategory getMainCat={cat} onCategorySelect={setSubCategory} />
         </Route>
         <Route path="/kjennetegn">
-          <Characteristics onCharacteristicsSelect={onCharacteristicsDone} />
+          <Characteristics
+            color={characteristics.color}
+            brand={characteristics.brand}
+            description={characteristics.description}
+            onCharacteristicsSelect={onCharacteristicsDone}
+          />
         </Route>
         <Route path="/lokasjon">
-          <Location onLocationSelect={setLocation} />
+          <Location line={line} onLocationSelect={setLocation} />
         </Route>
         <Route path="/tidspunkt">
-          <MissingDate onDateSelect={setDate} />
+          <MissingDate date={date} onDateSelect={setDate} />
         </Route>
         <Route path="/personopplysninger">
-          <ContactInfo onContactInfoSelect={setContactInfo} />
+          <ContactInfo
+            name={contactInfo.name}
+            phoneNumber={contactInfo.phoneNumber}
+            email={contactInfo.email}
+            onContactInfoSelect={setContactInfo}
+          />
         </Route>
         <Route path="/bekreftelse">
           <Confirmation name={contactInfo.name} email={contactInfo.email} />

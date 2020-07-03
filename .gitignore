@@ -15,3 +15,4 @@ $HOME
 
 #other stuff
 yarn-error.log
+lerna-debug.log

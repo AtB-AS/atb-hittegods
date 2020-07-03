@@ -7,7 +7,15 @@ function AdminApp() {
   if (!authCtx?.user) {
     return (
       <div className="centered">
-        <a href="http://localhost:5000/auth/login">Logg inn</a>
+        <a
+          href={
+            process.env.NODE_ENV === "production"
+              ? "/auth/login"
+              : "http://localhost:5000/auth/login"
+          }
+        >
+          Logg inn
+        </a>
       </div>
     );
   } else {

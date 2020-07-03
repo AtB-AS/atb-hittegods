@@ -56,7 +56,7 @@ async function startServer() {
   app.use(express.static("admin"));
 
   // Serving admin frontend
-  app.get("/admin/*", (req, res) => {
+  app.get("/admin*", (req, res) => {
     res.sendFile(path.join(process.cwd() + "/admin/index.html"));
   });
 

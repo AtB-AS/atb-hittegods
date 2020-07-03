@@ -39,7 +39,6 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {},
     paper: {
       textAlign: "center",
-      backgroundColor: theme.palette.primary.main,
     },
   })
 );
@@ -72,7 +71,7 @@ function MainCategory(props: Props) {
   return (
     <div>
       <Box mt={6}>
-        <h2>Velg Kategori</h2>
+        <h2>Velg kategori</h2>
       </Box>
       <Box mt={4}>
         <Grid container spacing={3}>

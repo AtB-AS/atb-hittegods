@@ -29,9 +29,11 @@ authRoutes.get(
   passport.authenticate("azure_ad_oauth2", {
     //TODO figure out the paths
     successRedirect:
-      process.env.NODE_ENV === "production" ? "/" : "http://localhost:3000",
+      process.env.NODE_ENV === "production"
+        ? "/admin"
+        : "http://localhost:3006",
     failureRedirect:
-      process.env.NODE_ENV === "production" ? "/" : "http://localhost:3000",
+      process.env.NODE_ENV === "production" ? "/" : "http://localhost:3006",
   })
 );
 /**

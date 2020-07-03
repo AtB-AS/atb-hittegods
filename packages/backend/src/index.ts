@@ -32,16 +32,6 @@ async function startServer() {
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
 
-  // Serving admin frontend
-  app.get("/admin/*", (req, res) => {
-    res.sendFile(path.join(process.cwd() + "/admin/index.html"));
-  });
-
-  // Serving grizzly frontend
-  app.get("/*", (req, res) => {
-    res.sendFile(path.join(process.cwd() + "/grizzly/index.html"));
-  });
-
   // cookies
   const oneDay = 60 * 60 * 24 * 1000;
   app.use(cookieParser());
@@ -60,6 +50,16 @@ async function startServer() {
   await passportSetup({ app });
   app.use("/auth", authRoutes);
   await apiRoutes({ app }, { client });
+
+  // Serving admin frontend
+  app.get("/admin/*", (req, res) => {
+    res.sendFile(path.join(process.cwd() + "/admin/index.html"));
+  });
+
+  // Serving grizzly frontend
+  app.get("/*", (req, res) => {
+    res.sendFile(path.join(process.cwd() + "/grizzly/index.html"));
+  });
 
   // static resources, like images and js from both grizzly and admin builds
   app.use(express.static("grizzly"));

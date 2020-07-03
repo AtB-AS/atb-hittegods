@@ -9,7 +9,7 @@ function Welcome(props: Props) {
     <div className="centered">
       <div>
         <h1>Hei {props.name}</h1>
-        <a href="/auth/logout">Logg ut</a>
+        <a href="http://localhost:5000/auth/logout">Logg ut</a>
       </div>
     </div>
   );

@@ -34,6 +34,10 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       textAlign: "center",
     },
+    headingh2: {
+      fontWeight: 350,
+      fontSize: "36px",
+    },
   })
 );
 
@@ -66,7 +70,7 @@ function SubCategory(props: Props) {
   return (
     <div>
       <Box mt={6}>
-        <h2>Velg underkategori </h2>
+        <h2 className={styles.headingh2}>Velg underkategori </h2>
       </Box>
       <Box mt={4}>
         <Grid container spacing={3} key={"subcategory"}>

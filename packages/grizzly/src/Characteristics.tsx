@@ -32,6 +32,10 @@ const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 300,
       fontSize: "24px",
     },
+    headingh2: {
+      fontWeight: 350,
+      fontSize: "36px",
+    },
   })
 );
 
@@ -48,7 +52,9 @@ function Characteristics(props: Props, characteristics: Characteristics) {
   return (
     <div>
       <Box mt={6}>
-        <h2>Har gjenstanden din noen kjennetegn?</h2>
+        <h2 className={styles.headingh2}>
+          Har gjenstanden din noen kjennetegn?
+        </h2>
         <p>
           Fyll ut så godt du kan. Vi vil uansett gjøre det vi kan for å finne
           gjenstanden din.

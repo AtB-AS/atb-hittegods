@@ -15,6 +15,10 @@ const useStyles = makeStyles((theme: Theme) =>
     textfield: {
       display: "flex",
     },
+    headingh2: {
+      fontWeight: 350,
+      fontSize: "36px",
+    },
     heading: {
       fontWeight: 300,
       fontSize: "24px",
@@ -33,7 +37,9 @@ function Location(props: Props) {
   return (
     <div>
       <Box mt={6}>
-        <h2>Husker du hvor du mistet gjenstanden din?</h2>
+        <h2 className={styles.headingh2}>
+          Husker du hvor du mistet gjenstanden din?
+        </h2>
       </Box>
       <Box>
         <Grid container spacing={3}>

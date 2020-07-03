@@ -36,6 +36,10 @@ function MissingDate(props: Props) {
         padding: "0 30px",
         width: "100%",
       },
+      headingh2: {
+        fontWeight: 350,
+        fontSize: "36px",
+      },
     })
   );
   const classes = useStyles();
@@ -63,7 +67,7 @@ function MissingDate(props: Props) {
   return (
     <div>
       <Box mt={6}>
-        <h2>Når mistet du dette?</h2>
+        <h2 className={classes.headingh2}>Når mistet du gjenstanden din?</h2>
       </Box>
       <Box mt={3}>
         <Button

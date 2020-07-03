@@ -7,11 +7,28 @@ type Props = {
   email: string;
 };
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    textfield: {
+      display: "flex",
+    },
+    headingh2: {
+      fontWeight: 350,
+      fontSize: "36px",
+    },
+    heading: {
+      fontWeight: 300,
+      fontSize: "24px",
+    },
+  })
+);
+
 function Confirmation(props: Props) {
+  const styles = useStyles();
   return (
     <div>
       <Box mt={6}>
-        <h2>Din henvendelse er registrert!</h2>
+        <h2 className={styles.headingh2}>Din henvendelse er registrert!</h2>
         <p>Takk for din henvendelse, {props.name}.</p>
       </Box>
       <Box>

@@ -28,6 +28,10 @@ const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 300,
       fontSize: "24px",
     },
+    headingh2: {
+      fontWeight: 350,
+      fontSize: "36px",
+    },
   })
 );
 
@@ -44,12 +48,12 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
   return (
     <div>
       <Box mt={6}>
-        <h2>Kontaktinformasjon</h2>
+        <h2 className={styles.headingh2}>Kontaktinformasjon</h2>
       </Box>
       <Box>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <h2 className={styles.heading}>Navn</h2>
+            <h3 className={styles.heading}>Navn</h3>
             <TextField
               className={styles.textfield}
               type="text"
@@ -60,7 +64,7 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
             ></TextField>
           </Grid>
           <Grid item xs={12}>
-            <h2 className={styles.heading}>Mobil</h2>
+            <h3 className={styles.heading}>Mobil</h3>
 
             <TextField
               className={styles.textfield}
@@ -72,7 +76,7 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
             ></TextField>
           </Grid>
           <Grid item xs={12}>
-            <h2 className={styles.heading}>E-post</h2>
+            <h3 className={styles.heading}>E-post</h3>
             <TextField
               className={styles.textfield}
               type="text"

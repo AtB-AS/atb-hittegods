@@ -51,6 +51,10 @@ async function startServer() {
   app.use("/auth", authRoutes);
   await apiRoutes({ app }, { client });
 
+  // static resources, like images and js from both grizzly and admin builds
+  app.use(express.static("grizzly"));
+  app.use(express.static("admin"));
+
   // Serving admin frontend
   app.get("/admin/*", (req, res) => {
     res.sendFile(path.join(process.cwd() + "/admin/index.html"));
@@ -60,10 +64,6 @@ async function startServer() {
   app.get("/*", (req, res) => {
     res.sendFile(path.join(process.cwd() + "/grizzly/index.html"));
   });
-
-  // static resources, like images and js from both grizzly and admin builds
-  app.use(express.static("grizzly"));
-  app.use(express.static("admin"));
 
   app.listen(port);
   console.log("Server running");

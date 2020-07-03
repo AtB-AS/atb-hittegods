@@ -20,12 +20,13 @@ const AuthProvider: React.FC = ({ children }) => {
       .then((response) => {
         if (response.status === 401) {
           // Request was unauthorized, redirect to login
-          window.location.href = `${window.location.origin}/login`;
+          // window.location.href = `${window.location.origin}/login`;
         } else {
           return response.json();
         }
       })
       .then((data) => {
+        console.log(`set data`);
         setUser(data);
         setLoading(false);
       });

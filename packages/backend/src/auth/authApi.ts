@@ -18,7 +18,7 @@ authRoutes.get(
 authRoutes.get("/logout", async (req: Request, res: Response) => {
   req.logout();
   res.redirect(
-    process.env.NODE_ENV === "production" ? "/" : "http://localhost:3000"
+    process.env.NODE_ENV === "production" ? "/" : "http://localhost:3006"
   );
 });
 /**

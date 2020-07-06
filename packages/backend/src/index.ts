@@ -60,12 +60,6 @@ async function startServer() {
 
   // static resources, like images and js from both grizzly and admin builds
   app.use(express.static("grizzly"));
-  app.use(express.static("admin"));
-
-  // Serving admin frontend
-  app.get("/admin*", (req, res) => {
-    res.sendFile(path.join(process.cwd() + "/admin/index.html"));
-  });
 
   // Serving grizzly frontend
   app.get("/*", (req, res) => {

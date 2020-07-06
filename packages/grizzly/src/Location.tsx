@@ -4,6 +4,7 @@ import { Paper } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 type Props = {
   onLocationSelect: (location: string) => void;
@@ -27,12 +28,12 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function Location(props: Props) {
-  const [line, setLocation] = useState(props.line);
   const styles = useStyles();
+  const { register, handleSubmit, watch, errors } = useForm<Props>();
 
-  function onSubmit() {
-    props.onLocationSelect(line);
-  }
+  const onSubmit: SubmitHandler<Props> = (data) => {
+    props.onLocationSelect(data.line);
+  };
 
   return (
     <div>
@@ -43,27 +44,33 @@ function Location(props: Props) {
       </Box>
       <Box>
         <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <h3 className={styles.heading}>Linje</h3>
-            <TextField
-              className={styles.textfield}
-              type="text"
-              value={line}
-              label="Linje"
-              onChange={(event) => setLocation(event.target.value)}
-              variant="outlined"
-            ></TextField>
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              color="primary"
-              variant="contained"
-              type="submit"
-              onClick={onSubmit}
-            >
-              Neste
-            </Button>
-          </Grid>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid item xs={12}>
+              <h3 className={styles.heading}>Linje</h3>
+              <TextField
+                className={styles.textfield}
+                type="text"
+                name="line"
+                defaultValue={props.line}
+                label="Linje"
+                error={!!errors.line}
+                helperText={errors.line?.message}
+                variant="outlined"
+                inputRef={register({
+                  required: "Dette feltet må du fylle inn",
+                  maxLength: {
+                    value: 3,
+                    message: "Linjen kan ikke bestå av mer enn tre siffer",
+                  },
+                })}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button color="primary" type="submit" variant="contained">
+                Neste
+              </Button>
+            </Grid>
+          </form>
         </Grid>
       </Box>
     </div>

@@ -66,17 +66,6 @@ stages:
 
     - task: CopyFiles@2
       inputs:
-        sourceFolder: '$(Build.SourcesDirectory)/packages/admin/build'
-        contents: |
-          **/*
-        targetFolder: ' $(System.DefaultWorkingDirectory)/build/admin'
-        #cleanTargetFolder: false # Optional
-        #overWrite: false # Optional
-        #flattenFolders: false # Optional
-        #preserveTimestamp: false # Optional
-
-    - task: CopyFiles@2
-      inputs:
         sourceFolder: '$(Build.SourcesDirectory)/packages/backend'
         contents: 'package.json'
         targetFolder: '$(System.DefaultWorkingDirectory)/build'

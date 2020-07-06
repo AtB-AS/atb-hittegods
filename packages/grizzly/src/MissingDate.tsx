@@ -102,6 +102,12 @@ function MissingDate(props: Props) {
               shrink: true,
             }}
             value={date}
+            inputProps={{
+              min: ((d) => new Date(d.setDate(d.getDate() - 90)))(new Date())
+                .toJSON()
+                .split("T")[0],
+              max: new Date().toJSON().split("T")[0],
+            }}
             onChange={(event) => setDate(event.target.value)}
           />
         </form>

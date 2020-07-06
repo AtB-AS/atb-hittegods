@@ -9,6 +9,7 @@ import passportSetup from "./auth/init";
 import { authRoutes } from "./auth/authApi";
 import cookieParser from "cookie-parser";
 import session from "express-session";
+import pgSession from "connect-pg-simple";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ const config = {
   ssl: false,
 };
 const client = new pg.Client(config);
+const pgSessionStore = pgSession(session);
 
 async function startServer() {
   app.use(cors());
@@ -33,14 +35,19 @@ async function startServer() {
   app.use(bodyParser.json());
 
   // cookies
+  const pgPool = new pg.Pool(config);
   const oneDay = 60 * 60 * 24 * 1000;
   app.use(cookieParser());
   app.use(
     session({
+      store: new pgSessionStore({
+        pool: pgPool, // Connection pool
+      }),
       name: "hittegods",
       cookie: {
         maxAge: oneDay,
-        httpOnly: false,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
       },
       secret: "hittegods",
       resave: false,
@@ -53,12 +60,6 @@ async function startServer() {
 
   // static resources, like images and js from both grizzly and admin builds
   app.use(express.static("grizzly"));
-  app.use(express.static("admin"));
-
-  // Serving admin frontend
-  app.get("/admin*", (req, res) => {
-    res.sendFile(path.join(process.cwd() + "/admin/index.html"));
-  });
 
   // Serving grizzly frontend
   app.get("/*", (req, res) => {

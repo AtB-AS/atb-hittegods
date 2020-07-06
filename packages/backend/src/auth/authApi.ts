@@ -2,6 +2,9 @@ import { Router, Request, Response } from "express";
 const authRoutes = Router();
 import passport from "passport";
 import { isAuthenticated } from "./utils";
+
+const host =
+  process.env.NODE_ENV === "production" ? "/" : "http://localhost:3000/";
 /**
  * Redirects to azure/ad login
  */
@@ -17,9 +20,7 @@ authRoutes.get(
  */
 authRoutes.get("/logout", async (req: Request, res: Response) => {
   req.logout();
-  res.redirect(
-    process.env.NODE_ENV === "production" ? "/" : "http://localhost:3006"
-  );
+  res.redirect(`${host}admin`);
 });
 /**
  * Azure will call this after user has completed or cancelled login
@@ -27,13 +28,8 @@ authRoutes.get("/logout", async (req: Request, res: Response) => {
 authRoutes.get(
   "/azureoauth2/callback",
   passport.authenticate("azure_ad_oauth2", {
-    //TODO figure out the paths
-    successRedirect:
-      process.env.NODE_ENV === "production"
-        ? "/admin"
-        : "http://localhost:3006",
-    failureRedirect:
-      process.env.NODE_ENV === "production" ? "/" : "http://localhost:3006",
+    successRedirect: `${host}admin`,
+    failureRedirect: `${host}admin/innlogging-feilet`,
   })
 );
 /**

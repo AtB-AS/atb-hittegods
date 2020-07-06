@@ -26,6 +26,7 @@ const config = {
   ssl: false,
 };
 const client = new pg.Client(config);
+const pgSessionStore = pgSession(session);
 
 async function startServer() {
   app.use(cors());
@@ -39,13 +40,14 @@ async function startServer() {
   app.use(cookieParser());
   app.use(
     session({
-      store: new pgSession({
+      store: new pgSessionStore({
         pool: pgPool, // Connection pool
       }),
       name: "hittegods",
       cookie: {
         maxAge: oneDay,
-        httpOnly: false,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
       },
       secret: "hittegods",
       resave: false,

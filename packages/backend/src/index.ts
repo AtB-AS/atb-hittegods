@@ -9,6 +9,7 @@ import passportSetup from "./auth/init";
 import { authRoutes } from "./auth/authApi";
 import cookieParser from "cookie-parser";
 import session from "express-session";
+import pgSession from "connect-pg-simple";
 
 dotenv.config();
 
@@ -33,10 +34,14 @@ async function startServer() {
   app.use(bodyParser.json());
 
   // cookies
+  const pgPool = new pg.Pool(config);
   const oneDay = 60 * 60 * 24 * 1000;
   app.use(cookieParser());
   app.use(
     session({
+      store: new pgSession({
+        pool: pgPool, // Connection pool
+      }),
       name: "hittegods",
       cookie: {
         maxAge: oneDay,

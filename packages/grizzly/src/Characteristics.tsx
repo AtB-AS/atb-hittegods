@@ -4,7 +4,14 @@ import categoryClothing from "./components/img/categoryClothing.png";
 import categoryBags from "./components/img/categoryBags.png";
 import categoryPersonalEffects from "./components/img/PersonalEffects.png";
 import categoryElectronics from "./components/img/categoryElectronics.png";
-import { Box, createStyles, Grid, styled, Theme } from "@material-ui/core";
+import {
+  Box,
+  createStyles,
+  Grid,
+  RadioProps,
+  styled,
+  Theme,
+} from "@material-ui/core";
 import { Paper } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -15,6 +22,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import FormControl from "@material-ui/core/FormControl";
+import withStyles from "@material-ui/core/styles/withStyles";
 
 type Props = {
   onCharacteristicsSelect: (characteristics: Characteristics) => void;
@@ -48,12 +56,6 @@ const ColorData = [
   Color.BROWN,
 ];
 
-const ColorCircle = styled(FiberManualRecordIcon)({
-  border: 0,
-  height: "42px",
-  width: "42px",
-});
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     textfield: {
@@ -76,10 +78,6 @@ function Characteristics(props: Props, characteristics: Characteristics) {
   const [description, setDescription] = useState(props.description);
   const styles = useStyles();
 
-  function ColorButtonComponent(color: string) {
-    return <div></div>;
-  }
-
   function onSubmit() {
     props.onCharacteristicsSelect({ color, brand, description });
   }
@@ -95,76 +93,29 @@ function Characteristics(props: Props, characteristics: Characteristics) {
           gjenstanden din.
         </p>
       </Box>
-      <Box>
-        <FormControl component="fieldset">
-          <div></div>
-          <RadioGroup onChange={() => setColor(color)}>
-            {ColorData.map((color) => (
-              <FormControlLabel
-                key={color}
-                value={color}
-                control={<Radio />}
-                label={color}
-              />
-            ))}
-          </RadioGroup>
-        </FormControl>
-      </Box>
-      <Box>
-        {ColorData.map((color) => (
-          <Grid item key={color}>
-            <Button value={color} onClick={() => setColor(color)}>
-              <ColorCircle />
-              {color}
-            </Button>
-          </Grid>
-        ))}
-      </Box>
+
       <Box>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <h3 className={styles.heading}>Farge</h3>
+
+            <FormControl component="fieldset">
+              <RadioGroup
+                row
+                name="color"
+                onChange={(event) => setColor(event.target.value)}
+              >
+                {ColorData.map((color) => (
+                  <FormControlLabel
+                    control={<Radio />}
+                    label={color}
+                    value={color}
+                    key={color}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
           </Grid>
-          <div>
-            <Button
-              style={{ color: blue[500] }}
-              value={color}
-              onClick={() => setColor(Color.BLUE)}
-            >
-              <ColorCircle />
-            </Button>
-          </div>
-          <Button
-            style={{ color: red[500] }}
-            value={color}
-            onClick={() => setColor(Color.RED)}
-          >
-            <ColorCircle />
-          </Button>
-          <Button
-            style={{ color: yellow[500] }}
-            value={color}
-            onClick={() => setColor(Color.YELLOW)}
-          >
-            <ColorCircle />
-          </Button>
-          <Button
-            style={{ color: green[500] }}
-            value={color}
-            onClick={() => setColor(Color.GREEN)}
-          >
-            <ColorCircle />
-          </Button>
-          <Button
-            style={{ color: brown[500] }}
-            value={color}
-            onClick={() => setColor(Color.BROWN)}
-          >
-            <ColorCircle />
-          </Button>
-          <Button value={color} onClick={() => setColor(Color.BLACK)}>
-            <ColorCircle />
-          </Button>
         </Grid>
         <Grid item xs={12}>
           <h3 className={styles.heading}>Merke</h3>
@@ -175,7 +126,7 @@ function Characteristics(props: Props, characteristics: Characteristics) {
             label="Merke"
             onChange={(event) => setBrand(event.target.value)}
             variant="outlined"
-          ></TextField>
+          />
         </Grid>
         <Grid item xs={12}>
           <h3 className={styles.heading}>Beskrivelse</h3>
@@ -186,7 +137,7 @@ function Characteristics(props: Props, characteristics: Characteristics) {
             label="Beskrivelse"
             onChange={(event) => setDescription(event.target.value)}
             variant="outlined"
-          ></TextField>
+          />
         </Grid>
         <Grid item xs={12}>
           <Button

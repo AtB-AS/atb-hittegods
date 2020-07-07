@@ -12,13 +12,13 @@ export const registerPostValidator = Joi.object({
   phoneNumber: Joi.string().required(),
   category: Joi.string().required(),
   subCategory: Joi.string().required(),
-  line: Joi.number().required().integer(),
+  line: Joi.string().required().min(1).max(6),
   description: Joi.string().required(),
   brand: Joi.string().required(),
   color: Joi.string().required(),
   date: Joi.date().required(),
-  to: Joi.string().required(),
-  from: Joi.string().required(),
+  to: Joi.string(),
+  from: Joi.string(),
 });
 
 export const registerPutValidator = Joi.object({
@@ -29,11 +29,11 @@ export const registerPutValidator = Joi.object({
   phoneNumber: Joi.string().required(),
   category: Joi.string().required(),
   subCategory: Joi.string().required(),
-  line: Joi.number().integer().required(),
+  line: Joi.string().required().min(1).max(6),
   description: Joi.string().required(),
   brand: Joi.string().required(),
   color: Joi.string().required(),
   date: Joi.date().required(),
-  to: Joi.string().required(),
-  from: Joi.string().required(),
+  to: Joi.string(),
+  from: Joi.string(),
 });

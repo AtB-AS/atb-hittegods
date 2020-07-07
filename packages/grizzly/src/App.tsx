@@ -97,6 +97,7 @@ function App() {
       .catch(() => {
         console.log("oh no, it broke");
       });
+    console.log(contInfo);
   }
 
   function sendForm(payload: reg) {

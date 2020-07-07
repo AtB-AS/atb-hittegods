@@ -43,10 +43,19 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
   const onSubmit: SubmitHandler<Props> = (data) => {
     props.onContactInfoSelect({
       name: data.name,
-      phoneNumber: data.phoneNumber,
+      phoneNumber: formatPhonenumber(data.phoneNumber),
       email: data.email,
     });
   };
+
+  function formatPhonenumber(phoneNumber: string) {
+    let newNumber = phoneNumber.split(" ").join("");
+    let firstPart = newNumber.substring(0, 3);
+    let secondPart = newNumber.substring(3, 5);
+    let thirdPart = newNumber.substring(5, 8);
+    let finalNumberFormat = firstPart + " " + secondPart + " " + thirdPart;
+    return finalNumberFormat;
+  }
 
   return (
     <div>
@@ -67,6 +76,7 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
                 label="Navn"
                 error={!!errors.name}
                 variant="outlined"
+                inputProps={{ minLength: 2, maxLength: 40 }}
                 inputRef={register({
                   required: "Husk å legg til navn",
                   minLength: {
@@ -96,11 +106,11 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
                   required: "Husk å legge til ditt telefonnummer",
                   minLength: {
                     value: 8,
-                    message: "Telefonnummeret må bestå av 8 tall",
+                    message: "Telefonnummeret må bestå av minst 8 tall",
                   },
                   maxLength: {
-                    value: 8,
-                    message: "Telefonnummeret må bestå av 8 tall",
+                    value: 12,
+                    message: "Telefonnummeret er for langt",
                   },
                 })}
               />

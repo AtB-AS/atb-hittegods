@@ -24,3 +24,11 @@ where refnr=$10
 
 export const updateStatusUserDelete = `
 update lost set statusid = $1 where refnr = $2`;
+
+export const selectAllLost = `
+select lost.name, subcategory, lost.description, lost.lostid, match.matchid, match.new
+from lost
+join subcategory on subcatid=subcategoryid
+full outer join match on lost.lostid = match.lostid
+full outer join found on found.foundid = match.foundid
+where lost.statusid = $1`;

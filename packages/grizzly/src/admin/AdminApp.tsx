@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuth } from "./context/authContext";
 import Welcome from "./Welcome";
+import App from "./App";
 
 function AdminApp() {
   const authCtx = useAuth();
@@ -19,7 +20,7 @@ function AdminApp() {
       </div>
     );
   } else {
-    return <Welcome name={authCtx.user.given_name} />;
+    return <App />;
   }
 }
 

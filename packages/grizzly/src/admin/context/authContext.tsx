@@ -14,6 +14,7 @@ const AuthContext = React.createContext<AuthContextInterface | null>(null);
 const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState();
   const [isLoading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     fetch("/auth/user")
@@ -29,9 +30,15 @@ const AuthProvider: React.FC = ({ children }) => {
         console.log(`set data`);
         setUser(data);
         setLoading(false);
+      })
+      .catch(() => {
+        setError(true);
       });
   }, []);
 
+  if (error) {
+    return <p>Huffda</p>;
+  }
   if (isLoading) {
     return <p className="centered">Laster...</p>;
   }

@@ -48,3 +48,19 @@ export const getRefnum = async (
   const query = "select name from lost where refnr=$1";
   return await client.query(query, [refnum]);
 };
+
+export const getLostId = async (
+  lostid: number,
+  { client }: { client: pg.Client }
+): Promise<QueryResult> => {
+  const query = "select lostid from lost where lostid=$1";
+  return await client.query(query, [lostid]);
+};
+
+export const getFoundId = async (
+  foundid: number,
+  { client }: { client: pg.Client }
+): Promise<QueryResult> => {
+  const query = "select foundid from found where foundid=$1";
+  return await client.query(query, [foundid]);
+};

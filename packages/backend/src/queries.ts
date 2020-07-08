@@ -59,3 +59,7 @@ where foundid = $1`;
 export const insertConfirmedMatch = `
 insert into confirmedmatch(lostid, foundid)
 values($1, $2)`;
+
+export const deleteConfirmedMatch = `
+delete from confirmedmatch
+where lostid=$1 and foundid=$2`;

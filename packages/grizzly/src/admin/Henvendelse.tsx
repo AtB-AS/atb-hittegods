@@ -52,11 +52,11 @@ function Henvendelse(props: Props) {
   }, [props.match.params.id]);
 
   if (error) {
-    return <p>"Noe gikk galt :("</p>;
+    return <p>Noe gikk galt :(</p>;
   }
 
   if (isLoading) {
-    return <p>"Laster..."</p>;
+    return <p>Laster...</p>;
   }
 
   return (

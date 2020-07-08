@@ -9,6 +9,7 @@ import { registerPutStatusValidator } from "./validators/statusValidator";
 import {
   lostDetailsGetValidator,
   lostGetValidator,
+  matchPostValidator,
 } from "./validators/adminValidator";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -17,6 +18,8 @@ import {
   getSubCategoryId,
   getCategoryId,
   getStatusId,
+  getFoundId,
+  getLostId,
 } from "./db";
 import {
   selectLostByRefnum,
@@ -26,6 +29,7 @@ import {
   selectAllLost,
   selectLostDetails,
   selectFoundDetails,
+  insertConfirmedMatch,
 } from "./queries";
 import { isAuthenticated } from "./auth/utils";
 
@@ -117,6 +121,7 @@ export default async (
               ])
               .then((queryRes) => {
                 //TODO check that response is compliant with api docs
+                //fetch request to
                 res.json({ status: "success", data: body });
                 //TODO send confirmation email or sms
                 //TODO determine possible errors
@@ -405,6 +410,66 @@ export default async (
               res
                 .status(404)
                 .json({ status: "error", errorMessage: "id not found" });
+            }
+          })
+          .catch((e) => {
+            dbError(e, res);
+          });
+      }
+    }
+  );
+  app.post(
+    "/api/admin/match",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      const { error, value } = matchPostValidator.validate(req.body);
+      if (error != undefined) {
+        //TODO figure out if error message leaks server information
+        res
+          .status(400)
+          .json({ status: "error", errorMessage: error.details[0].message });
+      } else {
+        const foundid = parseInt(req.body.foundid);
+        const lostid = parseInt(req.body.lostid);
+        const foundidPromise = getFoundId(foundid, { client });
+        const lostidPromise = getLostId(lostid, { client });
+        Promise.all([foundidPromise, lostidPromise])
+          .then((data) => {
+            const validFoundid = data[0].rowCount > 0;
+            const validLostid = data[1].rowCount > 0;
+            if (validFoundid && validLostid) {
+              //TODO check for duplicates
+              client
+                .query(insertConfirmedMatch, [lostid, foundid])
+                .then((queryresult) => {
+                  //Check if succesful. if rows returned > 0
+                  res.json({ status: "success", data: req.body });
+                })
+                .catch((e) => {
+                  if (e.message.includes("confirmedmatch_foundid_key")) {
+                    res.json({
+                      status: "error",
+                      errorMessage: "foundid already has a match",
+                    });
+                  } else if (e.message.includes("confirmedmatch_lostid_key")) {
+                    res.json({
+                      status: "error",
+                      errorMessage: "lostid already has a match",
+                    });
+                  } else {
+                    dbError(e, res);
+                  }
+                });
+            } else {
+              if (validLostid) {
+                res
+                  .status(404)
+                  .json({ status: "error", errorMessage: "Unknown foundid" });
+              } else {
+                res
+                  .status(404)
+                  .json({ status: "error", errorMessage: "Unknown lostid" });
+              }
             }
           })
           .catch((e) => {

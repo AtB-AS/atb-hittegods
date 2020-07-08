@@ -8,3 +8,8 @@ export const lostGetValidator = Joi.object({
 export const lostDetailsGetValidator = Joi.object({
   id: Joi.number().required(),
 });
+
+export const matchPostValidator = Joi.object({
+  lostid: Joi.number().required(),
+  foundid: Joi.number().required(),
+});

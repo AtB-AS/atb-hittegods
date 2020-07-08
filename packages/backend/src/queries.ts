@@ -55,3 +55,7 @@ join category on found.catid = category.categoryid
 join subcategory on found.subcatid = subcategory.subcategoryid
 join status on found.statusid = status.statusid
 where foundid = $1`;
+
+export const insertConfirmedMatch = `
+insert into confirmedmatch(lostid, foundid)
+values($1, $2)`;

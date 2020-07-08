@@ -24,6 +24,7 @@ const config = {
   database: process.env.DB_NAME,
   port: 5432,
   ssl: false,
+  query_timeout: 10000,
 };
 const client = new pg.Client(config);
 const pgSessionStore = pgSession(session);

@@ -6,7 +6,10 @@ import {
   registerPutValidator,
 } from "./validators/registerValidator";
 import { registerPutStatusValidator } from "./validators/statusValidator";
-import { lostGetValidator } from "./validators/adminValidator";
+import {
+  lostDetailsGetValidator,
+  lostGetValidator,
+} from "./validators/adminValidator";
 import { v4 as uuidv4 } from "uuid";
 import {
   getColorId,
@@ -21,6 +24,8 @@ import {
   updateStatusUserDelete,
   updateLost,
   selectAllLost,
+  selectLostDetails,
+  selectFoundDetails,
 } from "./queries";
 import { isAuthenticated } from "./auth/utils";
 
@@ -309,6 +314,97 @@ export default async (
                 status: "error",
                 errorMessage: "Unknown database error",
               });
+            }
+          })
+          .catch((e) => {
+            dbError(e, res);
+          });
+      }
+    }
+  );
+
+  app.get(
+    "/api/admin/lostDetails",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      const { error, value } = lostDetailsGetValidator.validate(req.query);
+      if (error != undefined) {
+        //TODO figure out if error message leaks server information
+        res
+          .status(400)
+          .json({ status: "error", errorMessage: error.details[0].message });
+      } else {
+        const lostid = req.query.id;
+        client
+          .query(selectLostDetails, [lostid])
+          .then((queryResult) => {
+            if (queryResult.rowCount != 0) {
+              const foundIDs: Array<number> = [];
+              queryResult.rows.forEach((row) => {
+                if (row.foundid != null) {
+                  if (!foundIDs.includes(row.foundid)) {
+                    foundIDs.push(row.foundid);
+                  }
+                }
+              });
+              if (foundIDs.length != 0) {
+                let query = selectFoundDetails;
+                for (let i = 1; i < foundIDs.length; i++) {
+                  query += ` or foundid=$${i + 1}`;
+                }
+                client
+                  .query(query, foundIDs)
+                  .then((foundQueryResult) => {
+                    const row = queryResult.rows[0];
+                    const responseJson = {
+                      status: "success",
+                      data: {
+                        id: queryResult.rows[0].lostid,
+                        name: row.nameonitem,
+                        email: row.emailonitem,
+                        phoneNumber: row.phonenumberonitem,
+                        description: row.description,
+                        brand: row.brand,
+                        date: row.date,
+                        line: row.line,
+                        color: row.color,
+                        category: row.category,
+                        subcategory: row.subcategory,
+                        status: row.status,
+                        matches: foundQueryResult.rows,
+                      },
+                    };
+                    res.json(responseJson);
+                  })
+                  .catch((e) => {
+                    dbError(e, res);
+                  });
+              } else {
+                const row = queryResult.rows[0];
+                const responseJson = {
+                  status: "success",
+                  data: {
+                    id: queryResult.rows[0].lostid,
+                    name: row.nameonitem,
+                    email: row.emailonitem,
+                    phoneNumber: row.phonenumberonitem,
+                    description: row.description,
+                    brand: row.brand,
+                    date: row.date,
+                    line: row.line,
+                    color: row.color,
+                    category: row.category,
+                    subcategory: row.subcategory,
+                    status: row.status,
+                    matches: [],
+                  },
+                };
+                res.json(responseJson);
+              }
+            } else {
+              res
+                .status(404)
+                .json({ status: "error", errorMessage: "id not found" });
             }
           })
           .catch((e) => {

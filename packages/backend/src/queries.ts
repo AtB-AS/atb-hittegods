@@ -32,3 +32,26 @@ join subcategory on subcatid=subcategoryid
 full outer join match on lost.lostid = match.lostid
 full outer join found on found.foundid = match.foundid
 where lost.statusid = $1`;
+
+export const selectLostDetails = `
+select lost.lostid, name, email, phone, description, brand, "date", "line", color, subcategory, category, status,
+match.matchid, match.foundid
+from lost
+join "line" on lost.lineid = line.lineid
+join color on lost.colorid = color.colorid
+join category on lost.catid = category.categoryid
+join subcategory on lost.subcatid = subcategory.subcategoryid
+join status on lost.statusid = status.statusid
+left outer join match on lost.lostid=match.lostid
+where lost.lostid = $1`;
+
+export const selectFoundDetails = `
+select foundid, nameonitem, phonenumberonitem, emailonitem, description, brand,
+"date", "line", color, category, subcategory, status
+from found
+join "line" on found.lineid = line.lineid
+join color on found.colorid = color.colorid
+join category on found.catid = category.categoryid
+join subcategory on found.subcatid = subcategory.subcategoryid
+join status on found.statusid = status.statusid
+where foundid = $1`;

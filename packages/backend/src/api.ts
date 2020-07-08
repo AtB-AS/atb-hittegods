@@ -9,6 +9,7 @@ import { registerPutStatusValidator } from "./validators/statusValidator";
 import {
   lostDetailsGetValidator,
   lostGetValidator,
+  matchDeleteValidator,
   matchPostValidator,
 } from "./validators/adminValidator";
 import { v4 as uuidv4 } from "uuid";
@@ -30,6 +31,7 @@ import {
   selectLostDetails,
   selectFoundDetails,
   insertConfirmedMatch,
+  deleteConfirmedMatch,
 } from "./queries";
 import { isAuthenticated } from "./auth/utils";
 
@@ -447,12 +449,12 @@ export default async (
                 })
                 .catch((e) => {
                   if (e.message.includes("confirmedmatch_foundid_key")) {
-                    res.json({
+                    res.status(409).json({
                       status: "error",
                       errorMessage: "foundid already has a match",
                     });
                   } else if (e.message.includes("confirmedmatch_lostid_key")) {
-                    res.json({
+                    res.status(409).json({
                       status: "error",
                       errorMessage: "lostid already has a match",
                     });
@@ -470,6 +472,38 @@ export default async (
                   .status(404)
                   .json({ status: "error", errorMessage: "Unknown lostid" });
               }
+            }
+          })
+          .catch((e) => {
+            dbError(e, res);
+          });
+      }
+    }
+  );
+
+  app.delete(
+    "/api/admin/match",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      const { error, value } = matchDeleteValidator.validate(req.body);
+      if (error != undefined) {
+        //TODO figure out if error message leaks server information
+        res
+          .status(400)
+          .json({ status: "error", errorMessage: error.details[0].message });
+      } else {
+        const foundid = parseInt(req.body.foundid);
+        const lostid = parseInt(req.body.lostid);
+        client
+          .query(deleteConfirmedMatch, [lostid, foundid])
+          .then((queryResult) => {
+            if (queryResult.rowCount > 0) {
+              res.json({ status: "success", data: req.body });
+            } else {
+              res.status(404).json({
+                status: "error",
+                errorMessage: "match not found",
+              });
             }
           })
           .catch((e) => {

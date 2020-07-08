@@ -13,3 +13,8 @@ export const matchPostValidator = Joi.object({
   lostid: Joi.number().required(),
   foundid: Joi.number().required(),
 });
+
+export const matchDeleteValidator = Joi.object({
+  lostid: Joi.number().required(),
+  foundid: Joi.number().required(),
+});

@@ -1,33 +1,19 @@
 import React from "react";
-import { Grid } from "@material-ui/core";
 import { categoryData } from "./components/subCategoryData";
 import Box from "@material-ui/core/Box";
 import { Helmet } from "react-helmet";
-import CategoryBtn from "./components/CategoryBtn";
+import Categories from "./components/Categories";
+import Category from "./components/Category";
 
 type Props = {
   onCategorySelect: (category: string) => void;
+  description: string;
   category: string;
-  icon?: object;
-};
-
-type catProps = {
-  name: string;
-  imgUrl: string;
+  icon?: any;
 };
 
 function MainCategory(props: Props) {
   const catData = categoryData;
-
-  function CategoryComponent(subprops: catProps) {
-    return (
-      <CategoryBtn
-        icon={subprops.imgUrl}
-        title={subprops.name}
-        onClick={() => props.onCategorySelect(subprops.name)}
-      />
-    );
-  }
 
   return (
     <div>
@@ -35,17 +21,24 @@ function MainCategory(props: Props) {
         <title>Hovedkategori - AtB</title>
       </Helmet>
       <Box mt={4} mb={4}>
-        <h4>Hvilken kategori passer best?</h4>
-        <p>Er du usikker kan du velge "annet".</p>
+        <h2>Hvilken kategori passer best?</h2>
+        <p>
+          Er du usikker kan du velge <i>annet</i>.
+        </p>
       </Box>
       <Box mt={4}>
-        <Grid container spacing={0}>
-          {catData.map((mainCat) => (
-            <Grid item xs={12} key={mainCat.name}>
-              <CategoryComponent {...mainCat} />
-            </Grid>
-          ))}
-        </Grid>
+        <Categories>
+          {catData.map((mainCat) => {
+            return (
+              <Category
+                title={mainCat.name}
+                description={mainCat.description}
+                onClick={() => props.onCategorySelect(mainCat.name)}
+                icon={mainCat.icon}
+              />
+            );
+          })}
+        </Categories>
       </Box>
     </div>
   );

@@ -321,12 +321,14 @@ export default function Wizard() {
             {status === 1 && (
               <MainCategory
                 category={category}
+                description=""
                 onCategorySelect={onCategorySelect}
               />
             )}
             {status === 2 && (
               <SubCategory
                 getMainCat={category}
+                description=""
                 onSubCategorySelect={onSubCategorySelected}
               />
             )}

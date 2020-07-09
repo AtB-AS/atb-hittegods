@@ -112,52 +112,50 @@ function App() {
   }
 
   return (
-    <MuiThemeProvider theme={theme}>
-      <div>
-        <Header />
-        <Container>
-          <Switch>
-            <Route path="/">
-              <MainCategory
-                category={category}
-                onCategorySelect={onCategorySelect}
-              />
-            </Route>
-            <Route path="/underkategori">
-              <SubCategory
-                getMainCat={category}
-                onSubCategorySelect={onSubCategorySelected}
-              />
-            </Route>
-            <Route path="/kjennetegn">
-              <Characteristics
-                color={characteristics.color}
-                brand={characteristics.brand}
-                description={characteristics.description}
-                onCharacteristicsSelect={onCharacteristicsDone}
-              />
-            </Route>
-            <Route path="/lokasjon">
-              <Location line={line} onLocationSelect={setLocation} />
-            </Route>
-            <Route path="/tidspunkt">
-              <MissingDate date={date} onDateSelect={setDate} />
-            </Route>
-            <Route path="/personopplysninger">
-              <ContactInfo
-                name={contactInfo.name}
-                phoneNumber={contactInfo.phoneNumber}
-                email={contactInfo.email}
-                onContactInfoSelect={setContactInfo}
-              />
-            </Route>
-            <Route path="/bekreftelse">
-              <Confirmation name={contactInfo.name} email={contactInfo.email} />
-            </Route>
-          </Switch>
-        </Container>
-      </div>
-    </MuiThemeProvider>
+    <div>
+      <Header />
+      <Container>
+        <Switch>
+          <Route path="/" exact>
+            <MainCategory
+              category={category}
+              onCategorySelect={onCategorySelect}
+            />
+          </Route>
+          <Route path="/underkategori">
+            <SubCategory
+              getMainCat={category}
+              onSubCategorySelect={onSubCategorySelected}
+            />
+          </Route>
+          <Route path="/kjennetegn">
+            <Characteristics
+              color={characteristics.color}
+              brand={characteristics.brand}
+              description={characteristics.description}
+              onCharacteristicsSelect={onCharacteristicsDone}
+            />
+          </Route>
+          <Route path="/lokasjon">
+            <Location line={line} onLocationSelect={setLocation} />
+          </Route>
+          <Route path="/tidspunkt">
+            <MissingDate date={date} onDateSelect={setDate} />
+          </Route>
+          <Route path="/personopplysninger">
+            <ContactInfo
+              name={contactInfo.name}
+              phoneNumber={contactInfo.phoneNumber}
+              email={contactInfo.email}
+              onContactInfoSelect={setContactInfo}
+            />
+          </Route>
+          <Route path="/bekreftelse">
+            <Confirmation name={contactInfo.name} email={contactInfo.email} />
+          </Route>
+        </Switch>
+      </Container>
+    </div>
   );
 }
 

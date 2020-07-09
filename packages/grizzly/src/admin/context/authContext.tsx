@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+import LoginContainer from "../LoginContainer";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { makeStyles } from "@material-ui/core/styles";
+import { createStyles, Theme } from "@material-ui/core";
 
 interface User {
   given_name: string;
@@ -9,12 +13,21 @@ interface AuthContextInterface {
   user?: User;
 }
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      color: "#fff",
+    },
+  })
+);
+
 const AuthContext = React.createContext<AuthContextInterface | null>(null);
 
 const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState();
   const [isLoading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState(false);
+  const styles = useStyles();
 
   useEffect(() => {
     fetch("/auth/user")
@@ -27,7 +40,6 @@ const AuthProvider: React.FC = ({ children }) => {
         }
       })
       .then((data) => {
-        console.log(`set data`);
         setUser(data);
         setLoading(false);
       })
@@ -37,10 +49,18 @@ const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   if (error) {
-    return <p>Huffda</p>;
+    return (
+      <LoginContainer>
+        <p>Huff da</p>
+      </LoginContainer>
+    );
   }
   if (isLoading) {
-    return <p className="centered">Laster...</p>;
+    return (
+      <LoginContainer>
+        <CircularProgress className={styles.root} />
+      </LoginContainer>
+    );
   }
 
   return (

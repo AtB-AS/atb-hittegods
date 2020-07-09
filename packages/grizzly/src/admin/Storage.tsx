@@ -23,8 +23,17 @@ function Storage() {
   const [error, setError] = useState(false);
   const [isLoading, setLoading] = useState(true);
 
+  const params = {
+    from: 0,
+    to: 25,
+  };
+
+  const queryString = Object.entries(params)
+    .map(([key, val]) => `${key}=${val}`)
+    .join("&");
+
   useEffect(() => {
-    fetch("api/admin/storage")
+    fetch("/api/admin/found" + "?" + queryString)
       .then((response) => {
         if (response.status === 401) {
           // HTTP Unauthorized
@@ -33,7 +42,7 @@ function Storage() {
         }
       })
       .then((jsonData) => {
-        setStorageItems(jsonData);
+        setStorageItems(jsonData.data.items);
         setLoading(false);
       })
       .catch(() => {

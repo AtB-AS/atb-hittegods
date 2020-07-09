@@ -2,13 +2,14 @@ import React from "react";
 import { Grid } from "@material-ui/core";
 import { useHistory } from "react-router";
 import Henvendelser from "./Henvendelser";
-import Lager from "./Lager";
+import Storage from "./Storage";
 import { Link, Route, Switch } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { theme } from "../components/styling";
 import Header from "../components/header";
+import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles({
   root: {
@@ -22,9 +23,16 @@ const useStyles = makeStyles({
   },
   menu: {
     backgroundColor: "#E5E5E5",
+    justifyItems: "center",
+    alignItems: "center",
   },
-  menuLink: {
-    padding: "12px",
+  menuLink: {},
+  paper: {
+    textAlign: "left",
+    paddingTop: "2vw",
+    paddingBottom: "1vw",
+    paddingLeft: "1vw",
+    backgroundColor: "#E5E5E5",
   },
 });
 
@@ -32,16 +40,22 @@ function App() {
   const classes = useStyles();
   return (
     <div>
-      <Grid item md={12}>
-        <h1 className={classes.header}>Henvendelser</h1>
+      <Grid container spacing={1}>
+        <Grid item md={12}>
+          <h1 className={classes.header}>Henvendelser</h1>
+        </Grid>
       </Grid>
-      <Grid container>
+      <Grid container spacing={1}>
         <Grid item md={1} className={classes.menu}>
-          <Grid className={classes.menuLink}>
-            <Link to="/admin/henvendelser">Henvendelser</Link>
+          <Grid item className={classes.menuLink}>
+            <Paper className={classes.paper}>
+              <Link to="/admin/henvendelser">Henvendelser</Link>
+            </Paper>
           </Grid>
-          <Grid className={classes.menuLink}>
-            <Link to="/admin/lager">Lager</Link>
+          <Grid item className={classes.menuLink}>
+            <Paper className={classes.paper}>
+              <Link to="/admin/lager">Lager</Link>
+            </Paper>
           </Grid>
         </Grid>
 
@@ -51,7 +65,7 @@ function App() {
               <Henvendelser />
             </Route>
             <Route path="/admin/lager">
-              <Lager />
+              <Storage />
             </Route>
           </Switch>
         </Grid>

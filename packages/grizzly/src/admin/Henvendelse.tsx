@@ -44,7 +44,6 @@ function Henvendelse(props: Props) {
       .then((jsonData) => {
         setHenvendelse(jsonData.data);
         setLoading(false);
-        console.log(jsonData);
       })
       .catch(() => {
         setError(true);
@@ -62,31 +61,32 @@ function Henvendelse(props: Props) {
   return (
     <div>
       HEI {props.match.params.id}
-      {console.log(henvendelse?.subcategory)}
       <Grid container>
-        <Paper>
-          <Grid item md={12}>
+        <Grid item md={12}>
+          <Paper>
             <p> ID, subcat, merke og dato</p>
-          </Grid>
-          <Grid item md={6}>
+          </Paper>
+        </Grid>
+        <Grid item md={6}>
+          <Paper>
             <h3>Innsender:</h3>
-            <p>Ola Hansen</p>
+            <p></p>
             <p>90807060</p>
             <p>email@email.com</p>
             <h3>{henvendelse?.subcategory}</h3>
-            <p>Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</p>
-          </Grid>
-          <Grid item md={6}>
+            <p>{henvendelse?.description}</p>
+          </Paper>
+        </Grid>
+        <Grid item md={6}>
+          <Paper>
             <h3>BILDE:)</h3>
             <p>Linje: 3</p>
-          </Grid>
-        </Paper>
+          </Paper>
+        </Grid>
 
-        <Paper>
-          <Grid item md={12}>
-            Her kommer mulige funn!
-          </Grid>
-        </Paper>
+        <Grid item md={12}>
+          <Paper>Her kommer mulige funn!</Paper>
+        </Grid>
       </Grid>
     </div>
   );

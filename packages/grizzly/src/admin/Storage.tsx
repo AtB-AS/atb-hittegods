@@ -1,60 +1,39 @@
 import React, { useEffect, useState } from "react";
+import { Grid } from "@material-ui/core";
 import { TableContainer } from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import Grid from "@material-ui/core/Grid";
-import { Route, useHistory } from "react-router";
-import Henvendelse from "./Henvendelse";
+import { Route } from "react-router";
+import StorageItem from "./StorageItem";
 
-type Henvendelse = {
+type StorageItems = {
   id: number;
+  name: string;
   subcategory: string;
   description: string;
   matchCount: number;
   newMatchCount: number;
 };
 
-const useStyles = makeStyles({
-  root: {
-    width: "100%",
-  },
-  container: {
-    maxHeight: "90vh",
-  },
-});
-
-function Henvendelser() {
-  const classes = useStyles();
-  const history = useHistory();
-  const [henvendelser, setHenvendelser] = useState<Henvendelse[]>([]);
-  const [isloading, setLoading] = useState(true);
+function Storage() {
+  const [storageItems, setStorageItems] = useState<StorageItems[]>([]);
   const [error, setError] = useState(false);
-
-  const params = {
-    from: 0,
-    to: 25,
-  };
-
-  const queryString = Object.entries(params)
-    .map(([key, val]) => `${key}=${val}`)
-    .join("&");
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-    fetch("/api/admin/lost" + "?" + queryString)
+    fetch("api/admin/storage")
       .then((response) => {
         if (response.status === 401) {
-          // Unauthorized
+          // HTTP Unauthorized
         } else {
           return response.json();
         }
       })
       .then((jsonData) => {
-        setHenvendelser(jsonData.data.items);
+        setStorageItems(jsonData);
         setLoading(false);
       })
       .catch(() => {
@@ -62,15 +41,11 @@ function Henvendelser() {
       });
   }, []);
 
-  function clickedRowItem(id: number) {
-    history.push("/admin/henvendelser/" + id);
-  }
-
   if (error) {
     return <p>Noe gikk galt</p>;
   }
 
-  if (isloading) {
+  if (isLoading) {
     return <p>Laster...</p>;
   }
 
@@ -78,7 +53,7 @@ function Henvendelser() {
     <div>
       <Grid container>
         <Grid item md={7}>
-          <TableContainer className={classes.container}>
+          <TableContainer>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
@@ -87,22 +62,19 @@ function Henvendelser() {
                   <TableCell>Underkategori</TableCell>
                   <TableCell>Beskrivelse</TableCell>
                   <TableCell>Antall på lager</TableCell>
-                  <TableCell>Nye funn</TableCell>
+                  <TableCell>Ny funn</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {henvendelser.map((item) => {
+                {storageItems.map((item) => {
                   return (
-                    <TableRow
-                      hover
-                      onClick={(event) => clickedRowItem(item.id)}
-                    >
+                    <TableRow hover>
                       <TableCell>{item.id}</TableCell>
-                      <TableCell>Per</TableCell>
+                      <TableCell>{item.name}</TableCell>
                       <TableCell>{item.subcategory}</TableCell>
                       <TableCell>{item.description}</TableCell>
                       <TableCell>{item.matchCount}</TableCell>
-                      <TableCell>{item.newMatchCount}</TableCell>
+                      <TableCell>+ {item.newMatchCount}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -111,11 +83,11 @@ function Henvendelser() {
           </TableContainer>
         </Grid>
         <Grid item md={5}>
-          <Route path="/admin/henvendelser/:id" component={Henvendelse} />
+          <Route path="/admin/lager/:id" component={StorageItem} />
         </Grid>
       </Grid>
     </div>
   );
 }
 
-export default Henvendelser;
+export default Storage;

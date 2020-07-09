@@ -8,6 +8,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import { Route } from "react-router";
 import StorageItem from "./StorageItem";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import { theme } from "../components/styling";
 
 type StorageItems = {
   id: number;
@@ -18,7 +20,23 @@ type StorageItems = {
   newMatchCount: number;
 };
 
+const useStyles = makeStyles({
+  root: {
+    width: "100%",
+  },
+  container: {
+    maxHeight: "90vh",
+  },
+  header: {
+    padding: "36px",
+    backgroundColor: theme.palette.primary.main,
+    color: "white",
+    textAlign: "center",
+  },
+});
+
 function Storage() {
+  const classes = useStyles();
   const [storageItems, setStorageItems] = useState<StorageItems[]>([]);
   const [error, setError] = useState(false);
   const [isLoading, setLoading] = useState(true);
@@ -62,7 +80,7 @@ function Storage() {
     <div>
       <Grid container>
         <Grid item md={7}>
-          <TableContainer>
+          <TableContainer className={classes.container}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>

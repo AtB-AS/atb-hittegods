@@ -9,9 +9,11 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
 import { Route, useHistory } from "react-router";
 import Henvendelse from "./Henvendelse";
+import { theme } from "../components/styling";
 
 type Henvendelse = {
   id: number;
+  name: string;
   subcategory: string;
   description: string;
   matchCount: number;
@@ -24,6 +26,12 @@ const useStyles = makeStyles({
   },
   container: {
     maxHeight: "90vh",
+  },
+  header: {
+    padding: "36px",
+    backgroundColor: theme.palette.primary.main,
+    color: "white",
+    textAlign: "center",
   },
 });
 
@@ -98,7 +106,7 @@ function Henvendelser() {
                       onClick={(event) => clickedRowItem(item.id)}
                     >
                       <TableCell>{item.id}</TableCell>
-                      <TableCell>Per</TableCell>
+                      <TableCell>{item.name}</TableCell>
                       <TableCell>{item.subcategory}</TableCell>
                       <TableCell>{item.description}</TableCell>
                       <TableCell>{item.matchCount}</TableCell>

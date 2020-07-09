@@ -10,6 +10,8 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { theme } from "../components/styling";
 import Header from "../components/header";
 import Paper from "@material-ui/core/Paper";
+import ReadyToPickUp from "./ReadyToPickUp";
+import Transit from "./Transit";
 
 const useStyles = makeStyles({
   root: {
@@ -40,13 +42,13 @@ function App() {
   const classes = useStyles();
   return (
     <div>
-      <Grid container spacing={1}>
+      <Grid container spacing={2}>
         <Grid item md={12}>
           <h1 className={classes.header}>Henvendelser</h1>
         </Grid>
       </Grid>
       <Grid container spacing={1}>
-        <Grid item md={1} className={classes.menu}>
+        <Grid item md={2} className={classes.menu}>
           <Grid item className={classes.menuLink}>
             <Paper className={classes.paper}>
               <Link to="/admin/henvendelser">Henvendelser</Link>
@@ -57,15 +59,31 @@ function App() {
               <Link to="/admin/lager">Lager</Link>
             </Paper>
           </Grid>
+          <Grid item className={classes.menuLink}>
+            <Paper className={classes.paper}>
+              <Link to="/admin/tilUtlevering">Til utlevering</Link>
+            </Paper>
+          </Grid>
+          <Grid item className={classes.menuLink}>
+            <Paper className={classes.paper}>
+              <Link to="/admin/paVei">På vei</Link>
+            </Paper>
+          </Grid>
         </Grid>
 
-        <Grid item md={11}>
+        <Grid item md={10}>
           <Switch>
             <Route path="/admin/henvendelser">
               <Henvendelser />
             </Route>
             <Route path="/admin/lager">
               <Storage />
+            </Route>
+            <Route path="/admin/tilUtlevering">
+              <ReadyToPickUp />
+            </Route>
+            <Route path="/admin/paVei">
+              <Transit />
             </Route>
           </Switch>
         </Grid>

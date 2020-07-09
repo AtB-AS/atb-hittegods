@@ -117,7 +117,7 @@ function App() {
         <Header />
         <Container>
           <Switch>
-            <Route path="/hovedkategori">
+            <Route path="/">
               <MainCategory
                 category={category}
                 onCategorySelect={onCategorySelect}

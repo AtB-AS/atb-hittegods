@@ -7,8 +7,11 @@ import {
 } from "./validators/registerValidator";
 import { registerPutStatusValidator } from "./validators/statusValidator";
 import {
+  foundGetValidator,
   lostDetailsGetValidator,
   lostGetValidator,
+  matchDeleteValidator,
+  matchPostValidator,
 } from "./validators/adminValidator";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -17,6 +20,8 @@ import {
   getSubCategoryId,
   getCategoryId,
   getStatusId,
+  getFoundId,
+  getLostId,
 } from "./db";
 import {
   selectLostByRefnum,
@@ -26,6 +31,9 @@ import {
   selectAllLost,
   selectLostDetails,
   selectFoundDetails,
+  insertConfirmedMatch,
+  deleteConfirmedMatch,
+  selectAllFound,
 } from "./queries";
 import { isAuthenticated } from "./auth/utils";
 
@@ -117,6 +125,7 @@ export default async (
               ])
               .then((queryRes) => {
                 //TODO check that response is compliant with api docs
+                //fetch request to
                 res.json({ status: "success", data: body });
                 //TODO send confirmation email or sms
                 //TODO determine possible errors
@@ -275,13 +284,11 @@ export default async (
                 .query(selectAllLost, [statusid])
                 .then((queryResult) => {
                   const matches: any = getMatches(queryResult.rows);
-                  console.log(matches);
                   const uniqueRows = RemoveDuplicates(
                     queryResult.rows,
                     "lostid"
                   );
                   uniqueRows.sort(compare);
-                  console.log(uniqueRows);
                   const data: any = { items: [] };
                   if (from != undefined && to != undefined) {
                     const fromInt = +from;
@@ -293,6 +300,7 @@ export default async (
                       for (let i = 0; i < toInt; i++) {
                         const item = {
                           id: uniqueRows[i].lostid,
+                          name: uniqueRows[i].name,
                           subcategory: uniqueRows[i].subcategory,
                           description: uniqueRows[i].description,
                           matchCount: matches[uniqueRows[i].lostid][0],
@@ -301,7 +309,6 @@ export default async (
                         data.items.push(item);
                       }
                     }
-                    console.log(data);
                   }
                   res.json({ status: "success", data: data });
                 })
@@ -309,7 +316,7 @@ export default async (
                   dbError(e, res);
                 });
             } else {
-              console.log("Mistet not in status table");
+              console.error("Mistet not in status table");
               res.json({
                 status: "error",
                 errorMessage: "Unknown database error",
@@ -405,6 +412,165 @@ export default async (
               res
                 .status(404)
                 .json({ status: "error", errorMessage: "id not found" });
+            }
+          })
+          .catch((e) => {
+            dbError(e, res);
+          });
+      }
+    }
+  );
+  app.post(
+    "/api/admin/match",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      const { error, value } = matchPostValidator.validate(req.body);
+      if (error != undefined) {
+        //TODO figure out if error message leaks server information
+        res
+          .status(400)
+          .json({ status: "error", errorMessage: error.details[0].message });
+      } else {
+        const foundid = parseInt(req.body.foundid);
+        const lostid = parseInt(req.body.lostid);
+        const foundidPromise = getFoundId(foundid, { client });
+        const lostidPromise = getLostId(lostid, { client });
+        Promise.all([foundidPromise, lostidPromise])
+          .then((data) => {
+            const validFoundid = data[0].rowCount > 0;
+            const validLostid = data[1].rowCount > 0;
+            if (validFoundid && validLostid) {
+              //TODO check for duplicates
+              client
+                .query(insertConfirmedMatch, [lostid, foundid])
+                .then((queryresult) => {
+                  //Check if succesful. if rows returned > 0
+                  res.json({ status: "success", data: req.body });
+                })
+                .catch((e) => {
+                  if (e.message.includes("confirmedmatch_foundid_key")) {
+                    res.status(409).json({
+                      status: "error",
+                      errorMessage: "foundid already has a match",
+                    });
+                  } else if (e.message.includes("confirmedmatch_lostid_key")) {
+                    res.status(409).json({
+                      status: "error",
+                      errorMessage: "lostid already has a match",
+                    });
+                  } else {
+                    dbError(e, res);
+                  }
+                });
+            } else {
+              if (validLostid) {
+                res
+                  .status(404)
+                  .json({ status: "error", errorMessage: "Unknown foundid" });
+              } else {
+                res
+                  .status(404)
+                  .json({ status: "error", errorMessage: "Unknown lostid" });
+              }
+            }
+          })
+          .catch((e) => {
+            dbError(e, res);
+          });
+      }
+    }
+  );
+
+  app.delete(
+    "/api/admin/match",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      const { error, value } = matchDeleteValidator.validate(req.body);
+      if (error != undefined) {
+        //TODO figure out if error message leaks server information
+        res
+          .status(400)
+          .json({ status: "error", errorMessage: error.details[0].message });
+      } else {
+        const foundid = parseInt(req.body.foundid);
+        const lostid = parseInt(req.body.lostid);
+        client
+          .query(deleteConfirmedMatch, [lostid, foundid])
+          .then((queryResult) => {
+            if (queryResult.rowCount > 0) {
+              res.json({ status: "success", data: req.body });
+            } else {
+              res.status(404).json({
+                status: "error",
+                errorMessage: "match not found",
+              });
+            }
+          })
+          .catch((e) => {
+            dbError(e, res);
+          });
+      }
+    }
+  );
+
+  app.get(
+    "/api/admin/found",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      const { error, value } = foundGetValidator.validate(req.query);
+      if (error != undefined) {
+        //TODO figure out if error message leaks server information
+        res
+          .status(400)
+          .json({ status: "error", errorMessage: error.details[0].message });
+      } else {
+        const from = req.query.from;
+        const to = req.query.to;
+        getStatusId("Funnet", { client })
+          .then((queryResult) => {
+            if (queryResult.rowCount != 0) {
+              const statusid = queryResult.rows[0].statusid;
+              client
+                .query(selectAllFound, [statusid])
+                .then((queryResult) => {
+                  const matches: any = getMatches(queryResult.rows);
+                  const uniqueRows = RemoveDuplicates(
+                    queryResult.rows,
+                    "foundid"
+                  );
+                  uniqueRows.sort(compare);
+                  const data: any = { items: [] };
+                  if (from != undefined && to != undefined) {
+                    const fromInt = +from;
+                    let toInt = +to;
+                    if (uniqueRows.length >= fromInt) {
+                      if (toInt > uniqueRows.length) {
+                        toInt = uniqueRows.length;
+                      }
+                      for (let i = 0; i < toInt; i++) {
+                        const item = {
+                          id: uniqueRows[i].lostid,
+                          name: uniqueRows[i].name,
+                          subcategory: uniqueRows[i].subcategory,
+                          description: uniqueRows[i].description,
+                          matchCount: matches[uniqueRows[i].lostid][0],
+                          newMatchCount: matches[uniqueRows[i].lostid][1],
+                        };
+                        data.items.push(item);
+                      }
+                    }
+                  }
+                  res.json({ status: "success", data: data });
+                })
+                .catch((e) => {
+                  dbError(e, res);
+                });
+            } else {
+              console.error("Mistet not in status table");
+              res.json({
+                status: "error",
+                errorMessage: "Unknown database error",
+              });
             }
           })
           .catch((e) => {

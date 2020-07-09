@@ -13,7 +13,8 @@ export const insertNewLost = `
 insert into lost (name, email, phone, description, brand, date, time, "from", "to",
 lineid, colorid, catid, subcatid, statusid, refnr)
 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-$11, $12, $13, $14, $15)`;
+$11, $12, $13, $14, $15)
+returning *`;
 
 export const updateLost = `
 update lost
@@ -55,3 +56,20 @@ join category on found.catid = category.categoryid
 join subcategory on found.subcatid = subcategory.subcategoryid
 join status on found.statusid = status.statusid
 where foundid = $1`;
+
+export const insertConfirmedMatch = `
+insert into confirmedmatch(lostid, foundid)
+values($1, $2)
+returning *`;
+
+export const deleteConfirmedMatch = `
+delete from confirmedmatch
+where lostid=$1 and foundid=$2`;
+
+export const selectAllFound = `
+select found.nameonitem as name, subcategory, found.description, found.foundid, match.matchid, match.new
+from found
+join subcategory on subcatid=subcategoryid
+full outer join match on found.foundid = match.foundid
+full outer join lost on lost.lostid = match.lostid
+where found.statusid = $1`;

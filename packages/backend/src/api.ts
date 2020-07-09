@@ -756,8 +756,8 @@ export default async (
                 statusId,
                 //todo
                 null,
-                //TODO make it req.user.given_name
-                "testname",
+                //TODO fix this
+                (req.user as any).given_name,
               ])
               .then((queryRes) => {
                 //TODO check that response is compliant with api docs

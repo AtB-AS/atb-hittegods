@@ -114,13 +114,10 @@ export default async (
               .then((queryRes) => {
                 //TODO check that response is compliant with api docs
                 res.json({ status: "success", data: body });
-                //console.log(queryRes.rows);
                 const lostid = queryRes.rows[0].lostid;
-                console.log(lostid);
                 const url =
                   "https://hittegods-matchmaker.azurewebsites.net/lost/" +
                   lostid;
-                console.log(url);
                 https.get(url, (res) => {
                   res.setEncoding("utf8");
                   let body = "";

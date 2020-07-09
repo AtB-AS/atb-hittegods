@@ -74,3 +74,10 @@ returning *`;
 export const deleteConfirmedMatch = `
 delete from confirmedmatch
 where lostid=$1 and foundid=$2`;
+
+export const insertNewFound = `
+insert into found (nameonitem, emailonitem, phonenumberonitem, description, brand, date,
+lineid, colorid, catid, subcatid, statusid, orgid, findername)
+values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+$11, $12, $13)
+returning *`;

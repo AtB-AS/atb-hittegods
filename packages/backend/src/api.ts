@@ -9,6 +9,7 @@ import { registerPutStatusValidator } from "./validators/statusValidator";
 import {
   foundDetailsGetValidator,
   foundGetValidator,
+  foundPostValidator,
   lostDetailsGetValidator,
   lostGetValidator,
   matchDeleteValidator,
@@ -35,6 +36,7 @@ import {
   insertConfirmedMatch,
   deleteConfirmedMatch,
   selectAllFound,
+  insertNewFound,
 } from "./queries";
 import { isAuthenticated } from "./auth/utils";
 import https = require("https");
@@ -696,6 +698,83 @@ export default async (
       }
     }
   );
+
+  app.post("/api/admin/found", isAuthenticated, async (req, res) => {
+    const body = req.body;
+    const { error, value } = foundPostValidator.validate(body);
+    if (error != undefined) {
+      //TODO figure out if error message leaks server information
+      res
+        .status(400)
+        .json({ status: "error", errorMessage: error.details[0].message });
+    } else {
+      const categoryIdPromise = getCategoryId(req.body.category, { client });
+      const subCategoryIdPromise = getSubCategoryId(req.body.subCategory, {
+        client,
+      });
+      const lineIdPromise = getLineId(req.body.line, { client });
+      const colorIdPromise = getColorId(req.body.color, { client });
+      const statusIdPromise = getStatusId("Funnet", { client });
+      Promise.all([
+        categoryIdPromise,
+        subCategoryIdPromise,
+        lineIdPromise,
+        colorIdPromise,
+        statusIdPromise,
+      ])
+        .then((data) => {
+          //TODO: validate category, subcat, line, color against database tables. Error if they do not exist in database
+          if (
+            data.every((queryResult) => {
+              return queryResult.rowCount != 0;
+            })
+          ) {
+            const categoryId = data[0].rows[0].categoryid;
+            const subCategoryId = data[1].rows[0].subcategoryid;
+            const lineId = data[2].rows[0].lineid;
+            const colorId = data[3].rows[0].colorid;
+            const statusId = data[4].rows[0].statusid;
+            console.log(req.user);
+            client
+              .query(insertNewFound, [
+                body.name,
+                body.email,
+                body.phone,
+                body.description,
+                body.brand,
+                new Date().toLocaleDateString(),
+                lineId,
+                colorId,
+                categoryId,
+                subCategoryId,
+                statusId,
+                //todo
+                null,
+                //TODO make it req.user.given_name
+                "testname",
+              ])
+              .then((queryRes) => {
+                //TODO check that response is compliant with api docs
+                //fetch request to
+                res.json({ status: "success", data: queryRes.rows[0] });
+              })
+              .catch((e) => {
+                dbError(e, res);
+              });
+          } else {
+            res.status(400).json({
+              //TODO
+              status: "error",
+              errorMessage:
+                "invalid values for category, subcategory, line or color",
+            });
+          }
+        })
+        .catch((e) => {
+          dbError(e, res);
+        });
+    }
+  });
 };
 
 const compare = (a: any, b: any) => {

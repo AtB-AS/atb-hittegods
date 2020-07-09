@@ -18,3 +18,8 @@ export const matchDeleteValidator = Joi.object({
   lostid: Joi.number().required(),
   foundid: Joi.number().required(),
 });
+
+export const foundGetValidator = Joi.object({
+  from: Joi.number().min(0).required(),
+  to: Joi.number().greater(Joi.ref("from")).required(),
+});

@@ -65,3 +65,11 @@ returning *`;
 export const deleteConfirmedMatch = `
 delete from confirmedmatch
 where lostid=$1 and foundid=$2`;
+
+export const selectAllFound = `
+select found.nameonitem as name, subcategory, found.description, found.foundid, match.matchid, match.new
+from found
+join subcategory on subcatid=subcategoryid
+full outer join match on found.foundid = match.foundid
+full outer join lost on lost.lostid = match.lostid
+where found.statusid = $1`;

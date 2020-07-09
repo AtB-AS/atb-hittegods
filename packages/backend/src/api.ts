@@ -7,6 +7,7 @@ import {
 } from "./validators/registerValidator";
 import { registerPutStatusValidator } from "./validators/statusValidator";
 import {
+  foundGetValidator,
   lostDetailsGetValidator,
   lostGetValidator,
   matchDeleteValidator,
@@ -32,6 +33,7 @@ import {
   selectFoundDetails,
   insertConfirmedMatch,
   deleteConfirmedMatch,
+  selectAllFound,
 } from "./queries";
 import { isAuthenticated } from "./auth/utils";
 
@@ -282,13 +284,11 @@ export default async (
                 .query(selectAllLost, [statusid])
                 .then((queryResult) => {
                   const matches: any = getMatches(queryResult.rows);
-                  console.log(matches);
                   const uniqueRows = RemoveDuplicates(
                     queryResult.rows,
                     "lostid"
                   );
                   uniqueRows.sort(compare);
-                  console.log(uniqueRows);
                   const data: any = { items: [] };
                   if (from != undefined && to != undefined) {
                     const fromInt = +from;
@@ -309,7 +309,6 @@ export default async (
                         data.items.push(item);
                       }
                     }
-                    console.log(data);
                   }
                   res.json({ status: "success", data: data });
                 })
@@ -317,7 +316,7 @@ export default async (
                   dbError(e, res);
                 });
             } else {
-              console.log("Mistet not in status table");
+              console.error("Mistet not in status table");
               res.json({
                 status: "error",
                 errorMessage: "Unknown database error",
@@ -504,6 +503,73 @@ export default async (
               res.status(404).json({
                 status: "error",
                 errorMessage: "match not found",
+              });
+            }
+          })
+          .catch((e) => {
+            dbError(e, res);
+          });
+      }
+    }
+  );
+
+  app.get(
+    "/api/admin/found",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      const { error, value } = foundGetValidator.validate(req.query);
+      if (error != undefined) {
+        //TODO figure out if error message leaks server information
+        res
+          .status(400)
+          .json({ status: "error", errorMessage: error.details[0].message });
+      } else {
+        const from = req.query.from;
+        const to = req.query.to;
+        getStatusId("Funnet", { client })
+          .then((queryResult) => {
+            if (queryResult.rowCount != 0) {
+              const statusid = queryResult.rows[0].statusid;
+              client
+                .query(selectAllFound, [statusid])
+                .then((queryResult) => {
+                  const matches: any = getMatches(queryResult.rows);
+                  const uniqueRows = RemoveDuplicates(
+                    queryResult.rows,
+                    "foundid"
+                  );
+                  uniqueRows.sort(compare);
+                  const data: any = { items: [] };
+                  if (from != undefined && to != undefined) {
+                    const fromInt = +from;
+                    let toInt = +to;
+                    if (uniqueRows.length >= fromInt) {
+                      if (toInt > uniqueRows.length) {
+                        toInt = uniqueRows.length;
+                      }
+                      for (let i = 0; i < toInt; i++) {
+                        const item = {
+                          id: uniqueRows[i].lostid,
+                          name: uniqueRows[i].name,
+                          subcategory: uniqueRows[i].subcategory,
+                          description: uniqueRows[i].description,
+                          matchCount: matches[uniqueRows[i].lostid][0],
+                          newMatchCount: matches[uniqueRows[i].lostid][1],
+                        };
+                        data.items.push(item);
+                      }
+                    }
+                  }
+                  res.json({ status: "success", data: data });
+                })
+                .catch((e) => {
+                  dbError(e, res);
+                });
+            } else {
+              console.error("Mistet not in status table");
+              res.json({
+                status: "error",
+                errorMessage: "Unknown database error",
               });
             }
           })

@@ -23,3 +23,20 @@ export const foundGetValidator = Joi.object({
   from: Joi.number().min(0).required(),
   to: Joi.number().greater(Joi.ref("from")).required(),
 });
+
+export const foundPostValidator = Joi.object({
+  name: Joi.string(),
+  email: Joi.string().email(),
+  //TODO better phone number
+  phone: Joi.string(),
+  category: Joi.string().required(),
+  subCategory: Joi.string().required(),
+  line: Joi.string().required().min(1).max(6),
+  description: Joi.string().required(),
+  brand: Joi.string().required(),
+  color: Joi.string().required(),
+});
+
+export const foundDetailsGetValidator = Joi.object({
+  id: Joi.number().required(),
+});

@@ -7,7 +7,9 @@ import {
 } from "./validators/registerValidator";
 import { registerPutStatusValidator } from "./validators/statusValidator";
 import {
+  foundDetailsGetValidator,
   foundGetValidator,
+  foundPostValidator,
   lostDetailsGetValidator,
   lostGetValidator,
   matchDeleteValidator,
@@ -34,8 +36,10 @@ import {
   insertConfirmedMatch,
   deleteConfirmedMatch,
   selectAllFound,
+  insertNewFound,
 } from "./queries";
 import { isAuthenticated } from "./auth/utils";
+import https = require("https");
 
 export default async (
   { app }: { app: express.Application },
@@ -127,6 +131,20 @@ export default async (
                 //TODO check that response is compliant with api docs
                 //fetch request to
                 res.json({ status: "success", data: body });
+                const lostid = queryRes.rows[0].lostid;
+                const url =
+                  "https://hittegods-matchmaker.azurewebsites.net/lost/" +
+                  lostid;
+                https.get(url, (res) => {
+                  res.setEncoding("utf8");
+                  let body = "";
+                  res.on("data", (data) => {
+                    body += data;
+                  });
+                  res.on("end", () => {
+                    console.log(body);
+                  });
+                });
                 //TODO send confirmation email or sms
                 //TODO determine possible errors
               })
@@ -357,19 +375,24 @@ export default async (
               if (foundIDs.length != 0) {
                 let query = selectFoundDetails;
                 for (let i = 1; i < foundIDs.length; i++) {
-                  query += ` or foundid=$${i + 1}`;
+                  query += ` or found.foundid=$${i + 1}`;
                 }
                 client
                   .query(query, foundIDs)
                   .then((foundQueryResult) => {
                     const row = queryResult.rows[0];
+                    foundQueryResult.rows.forEach((row) => {
+                      //TODO: fix
+                      delete row.matchId;
+                      delete row.lostId;
+                    });
                     const responseJson = {
                       status: "success",
                       data: {
                         id: queryResult.rows[0].lostid,
-                        name: row.nameonitem,
-                        email: row.emailonitem,
-                        phoneNumber: row.phonenumberonitem,
+                        name: row.name,
+                        email: row.email,
+                        phone: row.phone,
                         description: row.description,
                         brand: row.brand,
                         date: row.date,
@@ -579,6 +602,179 @@ export default async (
       }
     }
   );
+
+  app.get(
+    "/api/admin/foundDetails",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      const { error, value } = foundDetailsGetValidator.validate(req.query);
+      if (error != undefined) {
+        //TODO figure out if error message leaks server information
+        res
+          .status(400)
+          .json({ status: "error", errorMessage: error.details[0].message });
+      } else {
+        const foundid = req.query.id;
+        client
+          .query(selectFoundDetails, [foundid])
+          .then((queryResult) => {
+            if (queryResult.rowCount != 0) {
+              const lostIDs: Array<number> = [];
+              queryResult.rows.forEach((row) => {
+                if (row.lostid != null) {
+                  if (!lostIDs.includes(row.lostid)) {
+                    lostIDs.push(row.lostid);
+                  }
+                }
+              });
+              if (lostIDs.length != 0) {
+                let query = selectLostDetails;
+                for (let i = 1; i < lostIDs.length; i++) {
+                  query += ` or lost.lostid=$${i + 1}`;
+                }
+                client
+                  .query(query, lostIDs)
+                  .then((lostQueryResult) => {
+                    const row = queryResult.rows[0];
+                    lostQueryResult.rows.forEach((row) => {
+                      //TODO: fix
+                      delete row.matchId;
+                      delete row.lostid;
+                    });
+                    const responseJson = {
+                      status: "success",
+                      data: {
+                        id: queryResult.rows[0].foundid,
+                        name: row.name,
+                        email: row.email,
+                        phone: row.phone,
+                        description: row.description,
+                        brand: row.brand,
+                        date: row.date,
+                        line: row.line,
+                        color: row.color,
+                        category: row.category,
+                        subcategory: row.subcategory,
+                        status: row.status,
+                        matches: lostQueryResult.rows,
+                      },
+                    };
+                    res.json(responseJson);
+                  })
+                  .catch((e) => {
+                    dbError(e, res);
+                  });
+              } else {
+                const row = queryResult.rows[0];
+                const responseJson = {
+                  status: "success",
+                  data: {
+                    id: queryResult.rows[0].foundid,
+                    name: row.nameonitem,
+                    email: row.emailonitem,
+                    phoneNumber: row.phonenumberonitem,
+                    description: row.description,
+                    brand: row.brand,
+                    date: row.date,
+                    line: row.line,
+                    color: row.color,
+                    category: row.category,
+                    subcategory: row.subcategory,
+                    status: row.status,
+                    matches: [],
+                  },
+                };
+                res.json(responseJson);
+              }
+            } else {
+              res
+                .status(404)
+                .json({ status: "error", errorMessage: "id not found" });
+            }
+          })
+          .catch((e) => {
+            dbError(e, res);
+          });
+      }
+    }
+  );
+
+  app.post("/api/admin/found", isAuthenticated, async (req, res) => {
+    const body = req.body;
+    const { error, value } = foundPostValidator.validate(body);
+    if (error != undefined) {
+      //TODO figure out if error message leaks server information
+      res
+        .status(400)
+        .json({ status: "error", errorMessage: error.details[0].message });
+    } else {
+      const categoryIdPromise = getCategoryId(req.body.category, { client });
+      const subCategoryIdPromise = getSubCategoryId(req.body.subCategory, {
+        client,
+      });
+      const lineIdPromise = getLineId(req.body.line, { client });
+      const colorIdPromise = getColorId(req.body.color, { client });
+      const statusIdPromise = getStatusId("Funnet", { client });
+      Promise.all([
+        categoryIdPromise,
+        subCategoryIdPromise,
+        lineIdPromise,
+        colorIdPromise,
+        statusIdPromise,
+      ])
+        .then((data) => {
+          //TODO: validate category, subcat, line, color against database tables. Error if they do not exist in database
+          if (
+            data.every((queryResult) => {
+              return queryResult.rowCount != 0;
+            })
+          ) {
+            const categoryId = data[0].rows[0].categoryid;
+            const subCategoryId = data[1].rows[0].subcategoryid;
+            const lineId = data[2].rows[0].lineid;
+            const colorId = data[3].rows[0].colorid;
+            const statusId = data[4].rows[0].statusid;
+            console.log(req.user);
+            client
+              .query(insertNewFound, [
+                body.name,
+                body.email,
+                body.phone,
+                body.description,
+                body.brand,
+                new Date().toLocaleDateString(),
+                lineId,
+                colorId,
+                categoryId,
+                subCategoryId,
+                statusId,
+                //todo
+                null,
+                //TODO make it req.user.given_name
+                "testname",
+              ])
+              .then((queryRes) => {
+                //TODO check that response is compliant with api docs
+                //fetch request to
+                res.json({ status: "success", data: queryRes.rows[0] });
+              })
+              .catch((e) => {
+                dbError(e, res);
+              });
+          } else {
+            res.status(400).json({
+              //TODO
+              status: "error",
+              errorMessage:
+                "invalid values for category, subcategory, line or color",
+            });
+          }
+        })
+        .catch((e) => {
+          dbError(e, res);
+        });
+    }
+  });
 };
 
 const compare = (a: any, b: any) => {

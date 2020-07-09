@@ -23,6 +23,7 @@ import {
   selectAllLost,
 } from "./queries";
 import { isAuthenticated } from "./auth/utils";
+import https = require("https");
 
 export default async (
   { app }: { app: express.Application },
@@ -113,6 +114,23 @@ export default async (
               .then((queryRes) => {
                 //TODO check that response is compliant with api docs
                 res.json({ status: "success", data: body });
+                //console.log(queryRes.rows);
+                const lostid = queryRes.rows[0].lostid;
+                console.log(lostid);
+                const url =
+                  "https://hittegods-matchmaker.azurewebsites.net/lost/" +
+                  lostid;
+                console.log(url);
+                https.get(url, (res) => {
+                  res.setEncoding("utf8");
+                  let body = "";
+                  res.on("data", (data) => {
+                    body += data;
+                  });
+                  res.on("end", () => {
+                    console.log(body);
+                  });
+                });
                 //TODO send confirmation email or sms
                 //TODO determine possible errors
               })

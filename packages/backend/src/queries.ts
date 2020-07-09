@@ -13,7 +13,8 @@ export const insertNewLost = `
 insert into lost (name, email, phone, description, brand, date, time, "from", "to",
 lineid, colorid, catid, subcatid, statusid, refnr)
 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-$11, $12, $13, $14, $15)`;
+$11, $12, $13, $14, $15)
+returning *`;
 
 export const updateLost = `
 update lost

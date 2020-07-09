@@ -118,16 +118,22 @@ export default async (
                 const url =
                   "https://hittegods-matchmaker.azurewebsites.net/lost/" +
                   lostid;
-                https.get(url, (res) => {
-                  res.setEncoding("utf8");
-                  let body = "";
-                  res.on("data", (data) => {
-                    body += data;
+                console.log("Notify new lost to hittegods-matchmaker : " + url);
+                https
+                  .get(url, (httpsRes) => {
+                    httpsRes.setEncoding("utf8");
+                    let body = "";
+                    httpsRes.on("data", (data) => {
+                      body += data;
+                      console.log("Response from matchmaker : " + data);
+                    });
+                    httpsRes.on("end", () => {
+                      console.log("hittegods-matchmaker : " + body);
+                    });
+                  })
+                  .on("error", (error) => {
+                    console.log("matchmaker error : " + error);
                   });
-                  res.on("end", () => {
-                    console.log(body);
-                  });
-                });
                 //TODO send confirmation email or sms
                 //TODO determine possible errors
               })

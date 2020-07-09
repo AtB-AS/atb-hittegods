@@ -7,6 +7,7 @@ import {
 } from "./validators/registerValidator";
 import { registerPutStatusValidator } from "./validators/statusValidator";
 import {
+  foundDetailsGetValidator,
   foundGetValidator,
   lostDetailsGetValidator,
   lostGetValidator,
@@ -357,19 +358,24 @@ export default async (
               if (foundIDs.length != 0) {
                 let query = selectFoundDetails;
                 for (let i = 1; i < foundIDs.length; i++) {
-                  query += ` or foundid=$${i + 1}`;
+                  query += ` or found.foundid=$${i + 1}`;
                 }
                 client
                   .query(query, foundIDs)
                   .then((foundQueryResult) => {
                     const row = queryResult.rows[0];
+                    foundQueryResult.rows.forEach((row) => {
+                      //TODO: fix
+                      delete row.matchId;
+                      delete row.lostId;
+                    });
                     const responseJson = {
                       status: "success",
                       data: {
                         id: queryResult.rows[0].lostid,
-                        name: row.nameonitem,
-                        email: row.emailonitem,
-                        phoneNumber: row.phonenumberonitem,
+                        name: row.name,
+                        email: row.email,
+                        phone: row.phone,
                         description: row.description,
                         brand: row.brand,
                         date: row.date,
@@ -571,6 +577,102 @@ export default async (
                 status: "error",
                 errorMessage: "Unknown database error",
               });
+            }
+          })
+          .catch((e) => {
+            dbError(e, res);
+          });
+      }
+    }
+  );
+
+  app.get(
+    "/api/admin/foundDetails",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      const { error, value } = foundDetailsGetValidator.validate(req.query);
+      if (error != undefined) {
+        //TODO figure out if error message leaks server information
+        res
+          .status(400)
+          .json({ status: "error", errorMessage: error.details[0].message });
+      } else {
+        const foundid = req.query.id;
+        client
+          .query(selectFoundDetails, [foundid])
+          .then((queryResult) => {
+            if (queryResult.rowCount != 0) {
+              const lostIDs: Array<number> = [];
+              queryResult.rows.forEach((row) => {
+                if (row.lostid != null) {
+                  if (!lostIDs.includes(row.lostid)) {
+                    lostIDs.push(row.lostid);
+                  }
+                }
+              });
+              if (lostIDs.length != 0) {
+                let query = selectLostDetails;
+                for (let i = 1; i < lostIDs.length; i++) {
+                  query += ` or lost.lostid=$${i + 1}`;
+                }
+                client
+                  .query(query, lostIDs)
+                  .then((lostQueryResult) => {
+                    const row = queryResult.rows[0];
+                    lostQueryResult.rows.forEach((row) => {
+                      //TODO: fix
+                      delete row.matchId;
+                      delete row.lostid;
+                    });
+                    const responseJson = {
+                      status: "success",
+                      data: {
+                        id: queryResult.rows[0].foundid,
+                        name: row.name,
+                        email: row.email,
+                        phone: row.phone,
+                        description: row.description,
+                        brand: row.brand,
+                        date: row.date,
+                        line: row.line,
+                        color: row.color,
+                        category: row.category,
+                        subcategory: row.subcategory,
+                        status: row.status,
+                        matches: lostQueryResult.rows,
+                      },
+                    };
+                    res.json(responseJson);
+                  })
+                  .catch((e) => {
+                    dbError(e, res);
+                  });
+              } else {
+                const row = queryResult.rows[0];
+                const responseJson = {
+                  status: "success",
+                  data: {
+                    id: queryResult.rows[0].foundid,
+                    name: row.nameonitem,
+                    email: row.emailonitem,
+                    phoneNumber: row.phonenumberonitem,
+                    description: row.description,
+                    brand: row.brand,
+                    date: row.date,
+                    line: row.line,
+                    color: row.color,
+                    category: row.category,
+                    subcategory: row.subcategory,
+                    status: row.status,
+                    matches: [],
+                  },
+                };
+                res.json(responseJson);
+              }
+            } else {
+              res
+                .status(404)
+                .json({ status: "error", errorMessage: "id not found" });
             }
           })
           .catch((e) => {

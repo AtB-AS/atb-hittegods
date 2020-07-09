@@ -34,6 +34,14 @@ full outer join match on lost.lostid = match.lostid
 full outer join found on found.foundid = match.foundid
 where lost.statusid = $1`;
 
+export const selectAllFound = `
+select found.nameonitem as name, subcategory, found.description, found.foundid, match.matchid, match.new
+from found
+join subcategory on subcatid=subcategoryid
+full outer join match on found.foundid = match.foundid
+full outer join lost on lost.lostid = match.lostid
+where found.statusid = $1`;
+
 export const selectLostDetails = `
 select lost.lostid, name, email, phone, description, brand, "date", "line", color, subcategory, category, status,
 match.matchid, match.foundid
@@ -47,15 +55,16 @@ left outer join match on lost.lostid=match.lostid
 where lost.lostid = $1`;
 
 export const selectFoundDetails = `
-select foundid, nameonitem, phonenumberonitem, emailonitem, description, brand,
-"date", "line", color, category, subcategory, status
+select found.foundid, nameonitem as name, phonenumberonitem as phone, emailonitem as email, description, brand,
+"date", "line", color, category, subcategory, status, match.matchid, match.lostid
 from found
 join "line" on found.lineid = line.lineid
 join color on found.colorid = color.colorid
 join category on found.catid = category.categoryid
 join subcategory on found.subcatid = subcategory.subcategoryid
 join status on found.statusid = status.statusid
-where foundid = $1`;
+left outer join match on found.foundid=match.foundid
+where found.foundid = $1`;
 
 export const insertConfirmedMatch = `
 insert into confirmedmatch(lostid, foundid)
@@ -65,11 +74,3 @@ returning *`;
 export const deleteConfirmedMatch = `
 delete from confirmedmatch
 where lostid=$1 and foundid=$2`;
-
-export const selectAllFound = `
-select found.nameonitem as name, subcategory, found.description, found.foundid, match.matchid, match.new
-from found
-join subcategory on subcatid=subcategoryid
-full outer join match on found.foundid = match.foundid
-full outer join lost on lost.lostid = match.lostid
-where found.statusid = $1`;

@@ -300,6 +300,7 @@ export default async (
                       for (let i = 0; i < toInt; i++) {
                         const item = {
                           id: uniqueRows[i].lostid,
+                          name: uniqueRows[i].name,
                           subcategory: uniqueRows[i].subcategory,
                           description: uniqueRows[i].description,
                           matchCount: matches[uniqueRows[i].lostid][0],

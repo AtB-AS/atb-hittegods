@@ -23,3 +23,7 @@ export const foundGetValidator = Joi.object({
   from: Joi.number().min(0).required(),
   to: Joi.number().greater(Joi.ref("from")).required(),
 });
+
+export const foundDetailsGetValidator = Joi.object({
+  id: Joi.number().required(),
+});

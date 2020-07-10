@@ -11,5 +11,6 @@ export const theme = createMuiTheme({
   },
   typography: {
     fontFamily: ["UnitOT", "Roboto", "sans-serif"].join(","),
+    fontSize: 16,
   },
 });

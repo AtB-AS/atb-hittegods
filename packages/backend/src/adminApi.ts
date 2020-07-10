@@ -528,19 +528,4 @@ export default async (
         });
     }
   });
-
-  app.get("/api/admin/line", isAuthenticated, (req, res) => {
-    client
-      .query("select line from line")
-      .then((queryResult) => {
-        const lines: Array<string> = [];
-        queryResult.rows.forEach((row) => {
-          lines.push(row.line);
-        });
-        res.json({ status: "success", data: { lines: lines } });
-      })
-      .catch((e) => {
-        dbError(e, res);
-      });
-  });
 };

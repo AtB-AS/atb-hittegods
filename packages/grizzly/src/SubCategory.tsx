@@ -7,6 +7,7 @@ import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import AccessAlarmIcon from "@material-ui/icons/AccessAlarm";
+import Container from "@material-ui/core/Container";
 
 type Props = {
   onSubCategorySelect: (category: string) => void;
@@ -33,10 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {},
     paper: {
       textAlign: "center",
-    },
-    headingh2: {
-      fontWeight: 350,
-      fontSize: "36px",
     },
   })
 );
@@ -69,13 +66,13 @@ function SubCategory(props: Props) {
 
   return (
     <div>
-      <Box mt={6}>
-        <h2 className={styles.headingh2}>Velg underkategori </h2>
+      <Box mt={4} mb={4}>
+        <h2>Velg underkategori </h2>
       </Box>
       <Box mt={4}>
         <Grid container spacing={3} key={"subcategory"}>
           {subCatData.map((data) => (
-            <Grid item className={styles.paper} xs={6} sm={6} md={3}>
+            <Grid item className={styles.paper} xs={6}>
               <div key={data.name}>
                 <SubCategoryComponent {...data} />
               </div>

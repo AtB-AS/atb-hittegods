@@ -1,28 +1,12 @@
 import React, { useState } from "react";
-import { mainCategory } from "./components/constants";
-import categoryClothing from "./components/img/categoryClothing.png";
-import categoryBags from "./components/img/categoryBags.png";
-import categoryPersonalEffects from "./components/img/PersonalEffects.png";
-import categoryElectronics from "./components/img/categoryElectronics.png";
-import {
-  Box,
-  createStyles,
-  Grid,
-  RadioProps,
-  styled,
-  Theme,
-} from "@material-ui/core";
-import { Paper } from "@material-ui/core";
+import { Box, Container, createStyles, Grid, Theme } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
-import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
-import { red, green, yellow, blue, brown } from "@material-ui/core/colors";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import FormControl from "@material-ui/core/FormControl";
-import withStyles from "@material-ui/core/styles/withStyles";
 
 type Props = {
   onCharacteristicsSelect: (characteristics: Characteristics) => void;
@@ -65,10 +49,6 @@ const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 300,
       fontSize: "24px",
     },
-    headingh2: {
-      fontWeight: 350,
-      fontSize: "36px",
-    },
   })
 );
 
@@ -84,10 +64,8 @@ function Characteristics(props: Props, characteristics: Characteristics) {
 
   return (
     <div>
-      <Box mt={6}>
-        <h2 className={styles.headingh2}>
-          Har gjenstanden din noen kjennetegn?
-        </h2>
+      <Box mt={4} mb={4}>
+        <h2>Har gjenstanden din noen kjennetegn?</h2>
         <p>
           Fyll ut så godt du kan. Vi vil uansett gjøre det vi kan for å finne
           gjenstanden din.
@@ -116,38 +94,38 @@ function Characteristics(props: Props, characteristics: Characteristics) {
               </RadioGroup>
             </FormControl>
           </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          <h3 className={styles.heading}>Merke</h3>
-          <TextField
-            className={styles.textfield}
-            type="text"
-            value={brand}
-            label="Merke"
-            onChange={(event) => setBrand(event.target.value)}
-            variant="outlined"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <h3 className={styles.heading}>Beskrivelse</h3>
-          <TextField
-            className={styles.textfield}
-            type="text"
-            value={description}
-            label="Beskrivelse"
-            onChange={(event) => setDescription(event.target.value)}
-            variant="outlined"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Button
-            color="primary"
-            variant="contained"
-            type="submit"
-            onClick={onSubmit}
-          >
-            Neste
-          </Button>
+          <Grid item xs={12}>
+            <h3 className={styles.heading}>Merke</h3>
+            <TextField
+              className={styles.textfield}
+              type="text"
+              value={brand}
+              label="Merke"
+              onChange={(event) => setBrand(event.target.value)}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <h3 className={styles.heading}>Beskrivelse</h3>
+            <TextField
+              className={styles.textfield}
+              type="text"
+              value={description}
+              label="Beskrivelse"
+              onChange={(event) => setDescription(event.target.value)}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              color="primary"
+              variant="contained"
+              type="submit"
+              onClick={onSubmit}
+            >
+              Neste
+            </Button>
+          </Grid>
         </Grid>
       </Box>
     </div>

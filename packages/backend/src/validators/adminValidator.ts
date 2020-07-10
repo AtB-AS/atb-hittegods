@@ -31,7 +31,7 @@ export const foundPostValidator = Joi.object({
   phone: Joi.string(),
   category: Joi.string().required(),
   subCategory: Joi.string().required(),
-  line: Joi.string().required().min(1).max(6),
+  line: Joi.string().required().allow(""),
   description: Joi.string().required(),
   brand: Joi.string().required(),
   color: Joi.string().required(),

@@ -3,6 +3,7 @@ import dotenv = require("dotenv");
 import bodyParser = require("body-parser");
 import cors = require("cors");
 import apiRoutes from "./api";
+import adminApi from "./adminApi";
 import pg = require("pg");
 import path from "path";
 import passportSetup from "./auth/init";
@@ -58,6 +59,7 @@ async function startServer() {
   await passportSetup({ app });
   app.use("/auth", authRoutes);
   await apiRoutes({ app }, { client });
+  await adminApi({ app }, { client });
 
   // static resources, like images and js from both grizzly and admin builds
   app.use(express.static("grizzly"));

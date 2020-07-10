@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import "./App.css";
+import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import MainCategory from "./MainCategory";
 import SubCategory from "./SubCategory";
@@ -8,9 +7,6 @@ import MissingDate from "./MissingDate";
 import ContactInfo from "./ContactInfo";
 import Confirmation from "./Confirmation";
 import Header from "./components/header";
-import { theme } from "./components/styling";
-import { MuiThemeProvider } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 
 import {

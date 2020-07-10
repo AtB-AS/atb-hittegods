@@ -10,15 +10,6 @@ export const theme = createMuiTheme({
     },
   },
   typography: {
-    fontFamily: ["Unit pro regular", "Calibri", "sans-serif"].join(","),
-  },
-  overrides: {
-    MuiCssBaseline: {
-      "@global": {
-        body: {
-          height: "100vh",
-        },
-      },
-    },
+    fontFamily: ["UnitOT", "Roboto", "sans-serif"].join(","),
   },
 });

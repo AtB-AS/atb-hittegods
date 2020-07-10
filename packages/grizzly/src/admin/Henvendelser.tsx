@@ -10,6 +10,7 @@ import Grid from "@material-ui/core/Grid";
 import { Route, useHistory } from "react-router";
 import Henvendelse from "./Henvendelse";
 import { theme } from "../components/styling";
+import Button from "@material-ui/core/Button";
 
 type Henvendelse = {
   id: number;
@@ -41,6 +42,7 @@ function Henvendelser() {
   const [henvendelser, setHenvendelser] = useState<Henvendelse[]>([]);
   const [isloading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [newInqueryClick, setNewInquery] = useState(false);
 
   const params = {
     from: 0,
@@ -72,6 +74,10 @@ function Henvendelser() {
 
   function clickedRowItem(id: number) {
     history.push("/admin/henvendelser/" + id);
+  }
+
+  function clickedNewInquery() {
+    return setNewInquery(true);
   }
 
   if (error) {
@@ -118,7 +124,9 @@ function Henvendelser() {
             </Table>
           </TableContainer>
         </Grid>
+
         <Grid item md={5}>
+          <Button>Ny henvendelse</Button>
           <Route path="/admin/henvendelser/:id" component={Henvendelse} />
         </Grid>
       </Grid>

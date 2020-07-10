@@ -12,6 +12,7 @@ import Header from "../components/header";
 import Paper from "@material-ui/core/Paper";
 import ReadyToPickUp from "./ReadyToPickUp";
 import Transit from "./Transit";
+import RegisterFound from "./RegisterFound";
 
 const useStyles = makeStyles({
   root: {
@@ -69,6 +70,11 @@ function App() {
               <Link to="/admin/paVei">På vei</Link>
             </Paper>
           </Grid>
+          <Grid item className={classes.menuLink}>
+            <Paper className={classes.paper}>
+              <Link to="/admin/registrereFunn">Registrere funn</Link>
+            </Paper>
+          </Grid>
         </Grid>
 
         <Grid item md={10}>
@@ -84,6 +90,9 @@ function App() {
             </Route>
             <Route path="/admin/paVei">
               <Transit />
+            </Route>
+            <Route path="/admin/registrereFunn">
+              <RegisterFound name={""} phoneNumber={""} email={""} />
             </Route>
           </Switch>
         </Grid>

@@ -114,7 +114,7 @@ function App() {
   return (
     <div>
       <Header />
-      <Container>
+      <Container maxWidth="sm">
         <Switch>
           <Route path="/" exact>
             <MainCategory

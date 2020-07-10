@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { createStyles, Grid, styled, Theme } from "@material-ui/core";
-import { Paper } from "@material-ui/core";
-import categoryClothing from "./components/img/categoryClothing.png";
-import categoryBags from "./components/img/categoryBags.png";
-import categoryPersonalEffects from "./components/img/PersonalEffects.png";
-import categoryElectronics from "./components/img/categoryElectronics.png";
-import { mainCategory } from "./components/constants";
 import { useHistory } from "react-router-dom";
 import { categoryData } from "./components/subCategoryData";
 import Container from "@material-ui/core/Container";
@@ -40,10 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       textAlign: "center",
     },
-    headingh2: {
-      fontWeight: 350,
-      fontSize: "36px",
-    },
   })
 );
 
@@ -74,20 +64,13 @@ function MainCategory(props: Props) {
 
   return (
     <div>
-      <Box mt={6}>
-        <h2 className={styles.headingh2}>Velg kategori</h2>
+      <Box mt={4} mb={4}>
+        <h2>Velg kategori</h2>
       </Box>
       <Box mt={4}>
         <Grid container spacing={3}>
           {catData.map((mainCat) => (
-            <Grid
-              className={styles.paper}
-              item
-              sm={6}
-              md={3}
-              xs={6}
-              key={mainCat.name}
-            >
+            <Grid className={styles.paper} item xs={6} key={mainCat.name}>
               <CategoryComponent {...mainCat} />
             </Grid>
           ))}

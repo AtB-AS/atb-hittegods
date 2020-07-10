@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -16,6 +16,10 @@ type Props = {
   line: string;
 };
 
+type Line = {
+  id: string;
+};
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     textfield: {
@@ -31,10 +35,37 @@ const useStyles = makeStyles((theme: Theme) =>
 function Location(props: Props) {
   const styles = useStyles();
   const { register, handleSubmit, watch, errors } = useForm<Props>();
+  const [lines, setLines] = useState<Line[]>([]);
+  const [error, setError] = useState(false);
+  const [isloading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch("api/line")
+      .then((response) => {
+        return response.json();
+      })
+      .then((jsonData) => {
+        setLines(jsonData);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError(true);
+      });
+  }, []);
 
   const onSubmit: SubmitHandler<Props> = (data) => {
+    console.log(data.line + "OKKKK");
     props.onLocationSelect(data.line);
   };
+
+  if (error) {
+    return <p>Kunne ikke laste inn linjer.</p>;
+  }
+
+  if (isloading) {
+    return <p>Laster...</p>;
+  }
 
   return (
     <div>
@@ -46,6 +77,13 @@ function Location(props: Props) {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <h3 className={styles.heading}>Linje</h3>
+
+              <select name="line">
+                {lines.map((item) => {
+                  return <option>{item.id}</option>;
+                })}
+              </select>
+
               <TextField
                 className={styles.textfield}
                 type="text"
@@ -56,7 +94,7 @@ function Location(props: Props) {
                 helperText={errors.line?.message}
                 variant="outlined"
                 inputRef={register({
-                  required: "Dette feltet må du fylle inn",
+                  //required: "Dette feltet må du fylle inn",
                   maxLength: {
                     value: 3,
                     message: "Linjen kan ikke bestå av mer enn tre siffer",
@@ -64,6 +102,9 @@ function Location(props: Props) {
                 })}
               />
             </Grid>
+            <Button name="line" variant="contained">
+              Usikker
+            </Button>
             <Grid item xs={12}>
               <Button color="primary" type="submit" variant="contained">
                 Neste

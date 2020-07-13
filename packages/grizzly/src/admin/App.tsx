@@ -92,7 +92,7 @@ function App() {
               <Transit />
             </Route>
             <Route path="/admin/registrereFunn">
-              <RegisterFound name={""} phoneNumber={""} email={""} />
+              <RegisterFound />
             </Route>
           </Switch>
         </Grid>

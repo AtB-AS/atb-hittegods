@@ -8,17 +8,22 @@ import Select from "@material-ui/core/Select";
 import { Box, Grid } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import ContactInfo from "../ContactInfo";
 import { categoryData, subCatStrings } from "../components/subCategoryData";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { log } from "util";
 import { colorData } from "../components/colorConstant";
 import { lineData } from "../components/lineConstants";
+import ContactInfo from "../ContactInfo";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
-type Props = {
-  name: string;
-  phoneNumber: string;
-  email: string;
+type reg = {
+  [key: string]: string;
 };
 
 type OptionProps = {
@@ -29,6 +34,13 @@ type DropdownProps = {
   name: string;
   Options: OptionProps[];
   onChanged: (value: string) => void;
+};
+
+type FormValues = {
+  mainCat: string;
+  subCat: string;
+  color: string;
+  line: string;
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -79,29 +91,40 @@ function RegDropdown(props: DropdownProps) {
   );
 }
 
-type FormValues = {
-  mainCat: string;
-  subCat: string;
-  color: string;
-  line: string;
-};
-
-function RegisterFound(
-  props: Props,
-  contactInfo: ContactInfo,
-  formValues: FormValues
-) {
+function RegisterFound() {
   const classes = useStyles();
-  const { register, handleSubmit, watch, errors } = useForm<Props>();
+  const { register, errors } = useForm<FormValues>();
+  const [state, setState] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    category: "",
+    subcategory: "",
+    color: "",
+    line: "",
+    date: "",
+    brand: "",
+    description: "",
+  });
+
   const catData = categoryData;
   const [mainCat, setMainCat] = useState("");
   const [subCat, setSubCat] = useState("");
   const [color, setColor] = useState("");
   const [line, setLine] = useState("");
+  const [date, setDate] = useState("");
+  const [brand, setBrand] = useState("");
+  const [desc, setDesc] = useState("");
+  const [name, setName] = useState("");
+  const [tlf, setTlf] = useState("");
+  const [email, setEmail] = useState("");
 
-  const handleChange = (event: any) => {
-    const name = event.target.name;
-    setMainCat(event.target.value);
+  const [open, setOpen] = React.useState(false);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   function getSubCatData(mainCat: string) {
@@ -112,9 +135,34 @@ function RegisterFound(
       return [{ name: "velg hovedkategori", imgUrl: "yes" }];
     }
   }
+  const sleep = (milliseconds: number) => {
+    console.log(state);
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
+  };
 
   function sendForm() {
-    console.log(mainCat);
+    setOpen(true);
+    setState({
+      name: name,
+      phone: tlf,
+      email: email,
+      category: mainCat,
+      subcategory: subCat,
+      color: color,
+      line: line,
+      date: date,
+      brand: brand,
+      description: desc,
+    });
+
+    return fetch("/api/admin/found", {
+      method: "post",
+      body: JSON.stringify(state),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
   }
 
   return (
@@ -146,7 +194,7 @@ function RegisterFound(
           Options={lineData.map((lineName: { line: string }) => ({
             name: lineName.line,
           }))}
-          onChanged={setColor}
+          onChanged={setLine}
         />
 
         <Box mt={3}>
@@ -166,7 +214,7 @@ function RegisterFound(
                   .split("T")[0],
                 max: new Date().toJSON().split("T")[0],
               }}
-              //onChange={(event) => setDate(event.target.value)}
+              onChange={(event) => setDate(event.target.value)}
             />
           </form>
         </Box>
@@ -178,9 +226,7 @@ function RegisterFound(
             name="Brand"
             //value={email}
             label="Merke"
-            defaultValue={props.email}
-            helperText={errors.email?.message}
-            error={!!errors.email}
+            defaultValue={email}
             variant="outlined"
             inputRef={register({
               required: "Dette feltet må du fylle inn",
@@ -197,9 +243,7 @@ function RegisterFound(
             name="description"
             //value={email}
             label="Beskrivelse"
-            defaultValue={props.email}
-            helperText={errors.email?.message}
-            error={!!errors.email}
+            defaultValue={desc}
             variant="outlined"
             inputRef={register({
               required: "Dette feltet må du fylle inn",
@@ -219,10 +263,8 @@ function RegisterFound(
               className={classes.textfield}
               type="text"
               name="name"
-              defaultValue={props.name}
-              helperText={errors.name?.message}
+              defaultValue={name}
               label="Navn"
-              error={!!errors.name}
               variant="outlined"
               inputProps={{ minLength: 2, maxLength: 40 }}
               inputRef={register({
@@ -245,10 +287,8 @@ function RegisterFound(
               className={classes.textfield}
               type="text"
               name="phoneNumber"
-              defaultValue={props.phoneNumber}
+              defaultValue={tlf}
               label="Telefonummer"
-              helperText={errors.phoneNumber?.message}
-              error={!!errors.phoneNumber}
               variant="outlined"
               inputRef={register({
                 required: "Husk å legge til ditt telefonnummer",
@@ -271,9 +311,7 @@ function RegisterFound(
               name="email"
               //value={email}
               label="E-post"
-              defaultValue={props.email}
-              helperText={errors.email?.message}
-              error={!!errors.email}
+              defaultValue={email}
               variant="outlined"
               inputRef={register({
                 required: "Dette feltet må du fylle inn",
@@ -287,6 +325,27 @@ function RegisterFound(
             <Button color="primary" variant="contained" type="submit">
               Ferdig da
             </Button>
+            <Dialog
+              fullScreen={fullScreen}
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="responsive-dialog-title"
+            >
+              <DialogTitle id="responsive-dialog-title">
+                {"Use Google's location service?"}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText>Funker</DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button autoFocus onClick={handleClose} color="primary">
+                  Disagree
+                </Button>
+                <Button onClick={handleClose} color="primary" autoFocus>
+                  Agree
+                </Button>
+              </DialogActions>
+            </Dialog>
           </Grid>
         </Grid>
       </form>

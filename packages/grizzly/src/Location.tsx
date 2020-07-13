@@ -16,10 +16,6 @@ type Props = {
   line: string;
 };
 
-type Line = {
-  id: string;
-};
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     textfield: {
@@ -35,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
 function Location(props: Props) {
   const styles = useStyles();
   const { register, handleSubmit, watch, errors } = useForm<Props>();
-  const [lines, setLines] = useState<Line[]>([]);
+  const [lines, setLines] = useState([]);
   const [error, setError] = useState(false);
   const [isloading, setLoading] = useState(true);
 
@@ -46,7 +42,7 @@ function Location(props: Props) {
         return response.json();
       })
       .then((jsonData) => {
-        setLines(jsonData);
+        setLines(jsonData.data.lines);
         setLoading(false);
       })
       .catch(() => {
@@ -77,10 +73,10 @@ function Location(props: Props) {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <h3 className={styles.heading}>Linje</h3>
-
-              <select name="line">
+              {console.log(lines)}
+              <select>
                 {lines.map((item) => {
-                  return <option>{item.id}</option>;
+                  return <option>{item}</option>;
                 })}
               </select>
 

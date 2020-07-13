@@ -6,11 +6,11 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import Grid from "@material-ui/core/Grid";
-import { Route, useHistory } from "react-router";
+import { useHistory } from "react-router";
 import Henvendelse from "./Henvendelse";
-import { theme } from "../components/styling";
-import Button from "@material-ui/core/Button";
+import { Route } from "react-router-dom";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { useTableStyles } from "./styles";
 
 type Henvendelse = {
   id: number;
@@ -21,23 +21,16 @@ type Henvendelse = {
   newMatchCount: number;
 };
 
-const useStyles = makeStyles({
-  root: {
-    width: "100%",
-  },
-  container: {
-    maxHeight: "90vh",
-  },
-  header: {
-    padding: "36px",
-    backgroundColor: theme.palette.primary.main,
-    color: "white",
-    textAlign: "center",
-  },
-});
+type Props = {
+  match: {
+    params: {
+      id?: string;
+    };
+  };
+};
 
-function Henvendelser() {
-  const classes = useStyles();
+function Henvendelser(props: Props) {
+  const classes = useTableStyles();
   const history = useHistory();
   const [henvendelser, setHenvendelser] = useState<Henvendelse[]>([]);
   const [isloading, setLoading] = useState(true);
@@ -55,13 +48,7 @@ function Henvendelser() {
   useEffect(() => {
     setLoading(true);
     fetch("/api/admin/lost" + "?" + queryString)
-      .then((response) => {
-        if (response.status === 401) {
-          // Unauthorized
-        } else {
-          return response.json();
-        }
-      })
+      .then((response) => response.json())
       .then((jsonData) => {
         setHenvendelser(jsonData.data.items);
         setLoading(false);
@@ -70,7 +57,6 @@ function Henvendelser() {
         setError(true);
       });
   }, []);
-
   function clickedRowItem(id: number) {
     history.push("/admin/henvendelser/" + id);
   }
@@ -84,51 +70,60 @@ function Henvendelser() {
   }
 
   if (isloading) {
-    return <p>Laster...</p>;
+    return (
+      <div className={classes.loading}>
+        <CircularProgress />
+      </div>
+    );
   }
 
   return (
-    <div>
-      <Grid container>
-        <Grid item md={7}>
-          <TableContainer className={classes.container}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Id</TableCell>
-                  <TableCell>Navn</TableCell>
-                  <TableCell>Underkategori</TableCell>
-                  <TableCell>Beskrivelse</TableCell>
-                  <TableCell>Antall på lager</TableCell>
-                  <TableCell>Nye funn</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {henvendelser.map((item) => {
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => clickedRowItem(item.id)}
-                    >
-                      <TableCell>{item.id}</TableCell>
-                      <TableCell>{item.name}</TableCell>
-                      <TableCell>{item.subcategory}</TableCell>
-                      <TableCell>{item.description}</TableCell>
-                      <TableCell>{item.matchCount}</TableCell>
-                      <TableCell>{item.newMatchCount}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Grid>
-
-        <Grid item md={5}>
-          <Button>Ny henvendelse</Button>
-          <Route path="/admin/henvendelser/:id" component={Henvendelse} />
-        </Grid>
-      </Grid>
+    <div className={classes.root}>
+      <div className={classes.leftCol}>
+        <TableContainer className={classes.container}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow className={classes.thRow}>
+                <TableCell className={classes.th}>Id</TableCell>
+                <TableCell className={classes.th}>Navn</TableCell>
+                <TableCell className={classes.th}>Underkategori</TableCell>
+                <TableCell className={classes.th}>Beskrivelse</TableCell>
+                <TableCell className={`${classes.th} ${classes.inStock}`}>
+                  På lager
+                </TableCell>
+                <TableCell className={`${classes.th} ${classes.inStock}`}>
+                  Nye funn
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {henvendelser.map((item, index) => {
+                return (
+                  <TableRow
+                    hover
+                    onClick={(event) => clickedRowItem(item.id)}
+                    className={
+                      `${item.id}` === props.match.params?.id
+                        ? classes.activeRow
+                        : classes.row
+                    }
+                  >
+                    <TableCell>{item.id}</TableCell>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.subcategory}</TableCell>
+                    <TableCell>{item.description}</TableCell>
+                    <TableCell align="center">{item.matchCount}</TableCell>
+                    <TableCell align="center">{item.newMatchCount}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+      <div className={classes.rightCol}>
+        <Route path="/admin/henvendelser/:id" component={Henvendelse} />
+      </div>
     </div>
   );
 }

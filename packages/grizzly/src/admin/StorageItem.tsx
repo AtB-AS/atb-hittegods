@@ -40,6 +40,9 @@ function StorageItem(props: Props) {
       });
   }, [props.match.params.id]);
 
+  return <p>Ikke implementert</p>;
+
+  /*
   if (error) {
     return <p>Noe gikk galt</p>;
   }
@@ -49,6 +52,8 @@ function StorageItem(props: Props) {
   }
 
   return <div>{storageItem?.id}</div>;
+
+   */
 }
 
 export default StorageItem;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Grid } from "@material-ui/core";
+import { Box, Grid } from "@material-ui/core";
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -63,31 +63,35 @@ function Matches(props: Props) {
   }
 
   return (
-    <Grid item md={12}>
-      <TableContainer>
-        <h3>Mulige funn:</h3>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Navn?</TableCell>
-              <TableCell>Underkategori</TableCell>
-              <TableCell>Linje</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {matches.map((item) => {
-              return (
+    <>
+      <h2>Mulige funn</h2>
+      <Grid container>
+        <Grid item md={12}>
+          <TableContainer>
+            <Table>
+              <TableHead>
                 <TableRow>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.subcategory}</TableCell>
-                  <TableCell>{item.line}</TableCell>
+                  <TableCell>Navn</TableCell>
+                  <TableCell>Underkategori</TableCell>
+                  <TableCell>Linje</TableCell>
                 </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Grid>
+              </TableHead>
+              <TableBody>
+                {matches.map((item) => {
+                  return (
+                    <TableRow>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.subcategory}</TableCell>
+                      <TableCell>{item.line}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+      </Grid>
+    </>
   );
 }
 

@@ -34,6 +34,8 @@ function Location(props: Props) {
   const [lines, setLines] = useState([]);
   const [error, setError] = useState(false);
   const [isloading, setLoading] = useState(true);
+  // status = 0 (no show), status = 1 (show yes), status = 2 (show no)
+  const [status, setStatus] = useState(0);
 
   useEffect(() => {
     setLoading(true);
@@ -55,6 +57,41 @@ function Location(props: Props) {
     props.onLocationSelect(data.line);
   };
 
+  function radioHandler(status: number) {
+    return setStatus(status);
+  }
+
+  function displayNoContent() {
+    props.onLocationSelect("");
+  }
+
+  function displayYesContent() {
+    return (
+      <div>
+        <Box>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <h3 className={styles.heading}>Linje</h3>
+                {console.log(lines)}
+                <select name="line">
+                  {lines.map((item) => {
+                    return <option key={item}>{item}</option>;
+                  })}
+                </select>
+              </Grid>
+              <Grid item xs={12}>
+                <Button color="primary" type="submit" variant="contained">
+                  Neste
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        </Box>
+      </div>
+    );
+  }
+
   if (error) {
     return <p>Kunne ikke laste inn linjer.</p>;
   }
@@ -68,47 +105,22 @@ function Location(props: Props) {
       <Box mt={4} mb={4}>
         <h2>Husker du hvor du mistet gjenstanden din?</h2>
       </Box>
-      <Box>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <h3 className={styles.heading}>Linje</h3>
-              {console.log(lines)}
-              <select>
-                {lines.map((item) => {
-                  return <option>{item}</option>;
-                })}
-              </select>
-
-              <TextField
-                className={styles.textfield}
-                type="text"
-                name="line"
-                defaultValue={props.line}
-                label="Linje"
-                error={!!errors.line}
-                helperText={errors.line?.message}
-                variant="outlined"
-                inputRef={register({
-                  //required: "Dette feltet må du fylle inn",
-                  maxLength: {
-                    value: 3,
-                    message: "Linjen kan ikke bestå av mer enn tre siffer",
-                  },
-                })}
-              />
-            </Grid>
-            <Button name="line" variant="contained">
-              Usikker
-            </Button>
-            <Grid item xs={12}>
-              <Button color="primary" type="submit" variant="contained">
-                Neste
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
-      </Box>
+      <div>
+        <input
+          type="radio"
+          name="yesNo"
+          checked={status === 1}
+          onChange={(event) => radioHandler(1)}
+        />
+        <input
+          type="radio"
+          name="yesNo"
+          checked={status === 2}
+          onChange={(event) => radioHandler(2)}
+        />
+        {status === 1 && displayYesContent()}
+        {status === 2 && displayNoContent()}
+      </div>
     </div>
   );
 }

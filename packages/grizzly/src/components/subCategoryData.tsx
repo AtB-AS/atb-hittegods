@@ -12,7 +12,7 @@ export const mainCategory = {
   OTHER: "other",
 };
 //Name of subcategories
-const subCatStrings = {
+export const subCatStrings = {
   JACKETS: "Overdeler",
   HATS: "Hodeplagg",
   GLOVES: "Hansker",

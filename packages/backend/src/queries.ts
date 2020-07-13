@@ -99,3 +99,9 @@ lineid, colorid, catid, subcatid, statusid, orgid, findername)
 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
 $11, $12, $13)
 returning foundid`;
+
+export const updateFound = `
+update found set nameonitem=$1, emailonitem=$2,
+phonenumberonitem=$3, description=$4, brand=$5,
+lineid=$6, colorid=$7, catid=$8, subcatid=$9
+where foundid=$10`;

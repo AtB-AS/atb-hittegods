@@ -27,57 +27,75 @@ export const updateStatusUserDelete = `
 update lost set statusid = $1 where refnr = $2`;
 
 export const selectAllLost = `
-select lost.name, subcategory, lost.description, lost.lostid, match.matchid, match.new
+select lost.name, lost.email, lost.phone, lost.description, lost.brand, lost."date",
+line, color, category, subcategory,
+status, lost.refnr, lost.lostid, match.matchid, match.new, match.foundid
 from lost
 join subcategory on subcatid=subcategoryid
+join category on catid=categoryid
+join color on lost.colorid = color.colorid
+join line on lost.lineid = line.lineid
+join status on lost.statusid = status.statusid
 full outer join match on lost.lostid = match.lostid
 full outer join found on found.foundid = match.foundid
 where lost.statusid = $1`;
 
-export const selectAllFound = `
-select found.nameonitem as name, subcategory, found.description, found.foundid, match.matchid, match.new
-from found
-join subcategory on subcatid=subcategoryid
-full outer join match on found.foundid = match.foundid
-full outer join lost on lost.lostid = match.lostid
-where found.statusid = $1`;
-
-export const selectLostDetails = `
-select lost.lostid, name, email, phone, description, brand, "date", "line", color, subcategory, category, status,
-match.matchid, match.foundid
+export const selectLostById = `
+select lost.name, lost.email, lost.phone, lost.description, lost.brand, lost."date",
+line, color, category, subcategory,
+status, lost.refnr, lost.lostid, match.matchid, match.new, match.foundid
 from lost
-join "line" on lost.lineid = line.lineid
+join subcategory on subcatid=subcategoryid
+join category on catid=categoryid
 join color on lost.colorid = color.colorid
-join category on lost.catid = category.categoryid
-join subcategory on lost.subcatid = subcategory.subcategoryid
+join line on lost.lineid = line.lineid
 join status on lost.statusid = status.statusid
-left outer join match on lost.lostid=match.lostid
+full outer join match on lost.lostid = match.lostid
+full outer join found on found.foundid = match.foundid
 where lost.lostid = $1`;
 
-export const selectFoundDetails = `
-select found.foundid, nameonitem as name, phonenumberonitem as phone, emailonitem as email, description, brand,
-"date", "line", color, category, subcategory, status, match.matchid, match.lostid
+export const selectAllFound = `
+select found.nameonitem as name, found.emailonitem as email, found.phonenumberonitem as phone,
+found.description, found.brand, found."date",
+line, color, category, subcategory,
+status, found.foundid
 from found
-join "line" on found.lineid = line.lineid
+join subcategory on subcatid=subcategoryid
+join category on catid=categoryid
 join color on found.colorid = color.colorid
-join category on found.catid = category.categoryid
-join subcategory on found.subcatid = subcategory.subcategoryid
+join line on found.lineid = line.lineid
 join status on found.statusid = status.statusid
-left outer join match on found.foundid=match.foundid
+where found.statusid = $1`;
+
+export const selectFoundById = `
+select found.nameonitem as name, found.emailonitem as email, found.phonenumberonitem as phone,
+found.description, found.brand, found."date",
+line, color, category, subcategory,
+status, found.foundid
+from found
+join subcategory on subcatid=subcategoryid
+join category on catid=categoryid
+join color on found.colorid = color.colorid
+join line on found.lineid = line.lineid
+join status on found.statusid = status.statusid
 where found.foundid = $1`;
 
 export const insertConfirmedMatch = `
 insert into confirmedmatch(lostid, foundid)
 values($1, $2)
-returning *`;
+returning confirmedmatchid as id, lostid, foundid`;
 
 export const deleteConfirmedMatch = `
 delete from confirmedmatch
-where lostid=$1 and foundid=$2`;
+where confirmedmatchid = $1
+returning confirmedmatchid as id, lostid, foundid`;
+
+export const selectConfirmedMatches = `
+select confirmedmatchid as id, lostid, foundid from confirmedmatch`;
 
 export const insertNewFound = `
 insert into found (nameonitem, emailonitem, phonenumberonitem, description, brand, date,
 lineid, colorid, catid, subcatid, statusid, orgid, findername)
 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
 $11, $12, $13)
-returning *`;
+returning foundid`;

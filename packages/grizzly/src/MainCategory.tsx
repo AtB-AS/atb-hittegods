@@ -7,6 +7,7 @@ import AccessAlarmIcon from "@material-ui/icons/AccessAlarm";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
+import { Helmet } from "react-helmet";
 
 type Props = {
   onCategorySelect: (category: string) => void;
@@ -64,6 +65,9 @@ function MainCategory(props: Props) {
 
   return (
     <div>
+      <Helmet>
+        <title>Hovedkategori - AtB</title>
+      </Helmet>
       <Box mt={4} mb={4}>
         <h2>Velg kategori</h2>
       </Box>

@@ -8,6 +8,7 @@ import ContactInfo from "./ContactInfo";
 import Confirmation from "./Confirmation";
 import Header from "./components/header";
 import Container from "@material-ui/core/Container";
+import { Helmet } from "react-helmet";
 
 import {
   BrowserRouter as Router,
@@ -109,6 +110,10 @@ function App() {
 
   return (
     <div>
+      <Helmet>
+        <title>Hittegods - AtB</title>
+      </Helmet>
+
       <Header />
       <Container maxWidth="sm">
         <Switch>

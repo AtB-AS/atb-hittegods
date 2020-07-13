@@ -23,8 +23,11 @@ export const matchDeleteValidator = Joi.object({
 });
 
 export const foundGetValidator = Joi.object({
-  from: Joi.number().min(0).required(),
-  to: Joi.number().greater(Joi.ref("from")).required(),
+  status: Joi.string().required(),
+});
+
+export const foundIdGetValidator = Joi.object({
+  id: Joi.number().required(),
 });
 
 export const foundPostValidator = Joi.object({

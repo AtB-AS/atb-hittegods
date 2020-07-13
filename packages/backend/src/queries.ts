@@ -55,12 +55,30 @@ full outer join found on found.foundid = match.foundid
 where lost.lostid = $1`;
 
 export const selectAllFound = `
-select found.nameonitem as name, subcategory, found.description, found.foundid, match.matchid, match.new
+select found.nameonitem as name, found.emailonitem as email, found.phonenumberonitem as phone,
+found.description, found.brand, found."date",
+line, color, category, subcategory,
+status, found.foundid
 from found
 join subcategory on subcatid=subcategoryid
-full outer join match on found.foundid = match.foundid
-full outer join lost on lost.lostid = match.lostid
+join category on catid=categoryid
+join color on found.colorid = color.colorid
+join line on found.lineid = line.lineid
+join status on found.statusid = status.statusid
 where found.statusid = $1`;
+
+export const selectFoundById = `
+select found.nameonitem as name, found.emailonitem as email, found.phonenumberonitem as phone,
+found.description, found.brand, found."date",
+line, color, category, subcategory,
+status, found.foundid
+from found
+join subcategory on subcatid=subcategoryid
+join category on catid=categoryid
+join color on found.colorid = color.colorid
+join line on found.lineid = line.lineid
+join status on found.statusid = status.statusid
+where found.foundid = $1`;
 
 export const selectLostDetails = `
 select lost.lostid, name, email, phone, description, brand, "date", "line", color, subcategory, category, status,

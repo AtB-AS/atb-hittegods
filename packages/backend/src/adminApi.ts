@@ -85,6 +85,7 @@ export default async (
                       date: uniqueRows[i].date,
                       brand: uniqueRows[i].brand,
                       refnr: uniqueRows[i].refnr,
+                      line: uniqueRows[i].line,
                       description: uniqueRows[i].description,
                       matchCount: matches[uniqueRows[i].lostid][0],
                       newMatchCount: matches[uniqueRows[i].lostid][1],
@@ -152,6 +153,7 @@ export default async (
                 status: row.status,
                 date: row.date,
                 brand: row.brand,
+                line: row.line,
                 refnr: row.refnr,
                 description: row.description,
                 matchCount: matches[row.lostid][0],
@@ -210,6 +212,7 @@ export default async (
                         date: row.date,
                         brand: row.brand,
                         description: row.description,
+                        line: row.line,
                       };
                       data.items.push(item);
                     });
@@ -264,6 +267,7 @@ export default async (
                 date: row.date,
                 brand: row.brand,
                 description: row.description,
+                line: row.line,
               };
               res.json({ status: "success", data: data });
             } else {
@@ -387,6 +391,7 @@ export default async (
 
   app.post("/api/admin/found", isAuthenticated, async (req, res) => {
     const body = req.body;
+    console.log(req.body);
     const { error, value } = foundPostValidator.validate(body);
     if (error != undefined) {
       //TODO figure out if error message leaks server information

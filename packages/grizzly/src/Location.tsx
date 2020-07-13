@@ -10,6 +10,7 @@ import {
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import { SubmitHandler, useForm } from "react-hook-form";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 type Props = {
   onLocationSelect: (location: string) => void;
@@ -55,7 +56,13 @@ function Location(props: Props) {
 
   const onSubmit: SubmitHandler<Props> = (data) => {
     props.onLocationSelect(line);
+    console.log(line);
   };
+
+  function unknownLineButtonHandler() {
+    setLine("");
+    props.onLocationSelect(line);
+  }
 
   function radioHandler(status: number) {
     return setStatus(status);
@@ -106,6 +113,42 @@ function Location(props: Props) {
         <h2>Husker du hvor du mistet gjenstanden din?</h2>
       </Box>
       <div>
+        <Box>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <h3 className={styles.heading}>Linje</h3>
+                <Autocomplete
+                  options={lines}
+                  getOptionLabel={(item) => item}
+                  style={{ width: 300 }}
+                  onInputChange={(event, value) => setLine(value)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Skriv inn linjenummer"
+                      variant="outlined"
+                      name="line"
+                    />
+                  )}
+                />
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={unknownLineButtonHandler}
+                >
+                  Husker ikke
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                <Button color="primary" type="submit" variant="contained">
+                  Neste
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        </Box>
+
         <label>Ja</label>
         <input
           type="radio"

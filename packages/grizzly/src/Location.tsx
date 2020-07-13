@@ -36,6 +36,7 @@ function Location(props: Props) {
   const [isloading, setLoading] = useState(true);
   // status = 0 (no show), status = 1 (show yes), status = 2 (show no)
   const [status, setStatus] = useState(0);
+  const [line, setLine] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -53,8 +54,7 @@ function Location(props: Props) {
   }, []);
 
   const onSubmit: SubmitHandler<Props> = (data) => {
-    console.log(data.line + "OKKKK");
-    props.onLocationSelect(data.line);
+    props.onLocationSelect(line);
   };
 
   function radioHandler(status: number) {
@@ -74,7 +74,7 @@ function Location(props: Props) {
               <Grid item xs={12}>
                 <h3 className={styles.heading}>Linje</h3>
                 {console.log(lines)}
-                <select name="line">
+                <select name="line" onChange={(e) => setLine(e.target.value)}>
                   {lines.map((item) => {
                     return <option key={item}>{item}</option>;
                   })}
@@ -106,12 +106,14 @@ function Location(props: Props) {
         <h2>Husker du hvor du mistet gjenstanden din?</h2>
       </Box>
       <div>
+        <label>Ja</label>
         <input
           type="radio"
           name="yesNo"
           checked={status === 1}
           onChange={(event) => radioHandler(1)}
         />
+        <label>Nei</label>
         <input
           type="radio"
           name="yesNo"

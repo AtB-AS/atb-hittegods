@@ -2,11 +2,9 @@ import express, { query, Request, Response } from "express";
 import pg = require("pg");
 import { isAuthenticated } from "./auth/utils";
 import {
-  foundDetailsGetValidator,
   foundGetValidator,
   foundIdGetValidator,
   foundPostValidator,
-  lostDetailsGetValidator,
   lostGetValidator,
   lostIdGetValidator,
   matchDeleteValidator,
@@ -27,10 +25,9 @@ import {
   insertNewFound,
   selectAllFound,
   selectAllLost,
+  selectConfirmedMatches,
   selectFoundById,
-  selectFoundDetails,
   selectLostById,
-  selectLostDetails,
 } from "./queries";
 import { dbError, getMatches, RemoveDuplicates, compare } from "./util";
 
@@ -132,8 +129,8 @@ export default async (
           .query(selectLostById, [id])
           .then((queryResult) => {
             if (queryResult.rowCount > 0) {
+              const row = queryResult.rows[0];
               const matches: any = getMatches(queryResult.rows);
-              const uniqueRows = RemoveDuplicates(queryResult.rows, "lostid");
               const foundids: any = {};
               queryResult.rows.forEach((row) => {
                 if (foundids[row.lostid] == undefined) {
@@ -143,29 +140,25 @@ export default async (
                   foundids[row.lostid].push(row.foundid);
                 }
               });
-              uniqueRows.sort(compare);
-              const data: any = { items: [] };
-              for (let i = 0; i < uniqueRows.length; i++) {
-                const item = {
-                  id: uniqueRows[i].lostid,
-                  name: uniqueRows[i].name,
-                  phone: uniqueRows[i].phone,
-                  email: uniqueRows[i].email,
-                  category: uniqueRows[i].category,
-                  subcategory: uniqueRows[i].subcategory,
-                  color: uniqueRows[i].color,
-                  status: uniqueRows[i].status,
-                  date: uniqueRows[i].date,
-                  brand: uniqueRows[i].brand,
-                  refnr: uniqueRows[i].refnr,
-                  description: uniqueRows[i].description,
-                  matchCount: matches[uniqueRows[i].lostid][0],
-                  newMatchCount: matches[uniqueRows[i].lostid][1],
-                  foundids: foundids[uniqueRows[i].lostid],
-                };
-                data.items.push(item);
-              }
-              res.json({ status: "success", data: data });
+
+              const item = {
+                id: row.lostid,
+                name: row.name,
+                phone: row.phone,
+                email: row.email,
+                category: row.category,
+                subcategory: row.subcategory,
+                color: row.color,
+                status: row.status,
+                date: row.date,
+                brand: row.brand,
+                refnr: row.refnr,
+                description: row.description,
+                matchCount: matches[row.lostid][0],
+                newMatchCount: matches[row.lostid][1],
+                foundids: foundids[row.lostid],
+              };
+              res.json({ status: "success", data: item });
             } else {
               res
                 .status(404)
@@ -310,8 +303,7 @@ export default async (
               client
                 .query(insertConfirmedMatch, [lostid, foundid])
                 .then((queryresult) => {
-                  //Check if succesful. if rows returned > 0
-                  res.json({ status: "success", data: req.body });
+                  res.json({ status: "success", data: queryresult.rows[0] });
                 })
                 .catch((e) => {
                   if (e.message.includes("confirmedmatch_foundid_key")) {
@@ -347,24 +339,38 @@ export default async (
     }
   );
 
-  app.delete(
+  app.get(
     "/api/admin/match",
     isAuthenticated,
     async (req: Request, res: Response) => {
-      const { error, value } = matchDeleteValidator.validate(req.body);
+      client
+        .query(selectConfirmedMatches)
+        .then((queryResult) => {
+          res.json({ status: "success", data: { matches: queryResult.rows } });
+        })
+        .catch((e) => {
+          dbError(e, res);
+        });
+    }
+  );
+
+  app.delete(
+    "/api/admin/match/:id",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      const { error, value } = matchDeleteValidator.validate(req.params);
       if (error != undefined) {
         //TODO figure out if error message leaks server information
         res
           .status(400)
           .json({ status: "error", errorMessage: error.details[0].message });
       } else {
-        const foundid = parseInt(req.body.foundid);
-        const lostid = parseInt(req.body.lostid);
+        const id = req.params.id;
         client
-          .query(deleteConfirmedMatch, [lostid, foundid])
+          .query(deleteConfirmedMatch, [id])
           .then((queryResult) => {
             if (queryResult.rowCount > 0) {
-              res.json({ status: "success", data: req.body });
+              res.json({ status: "success", data: queryResult.rows[0] });
             } else {
               res.status(404).json({
                 status: "error",

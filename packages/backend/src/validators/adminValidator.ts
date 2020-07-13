@@ -8,18 +8,13 @@ export const lostIdGetValidator = Joi.object({
   id: Joi.number().required(),
 });
 
-export const lostDetailsGetValidator = Joi.object({
-  id: Joi.number().required(),
-});
-
 export const matchPostValidator = Joi.object({
   lostid: Joi.number().required(),
   foundid: Joi.number().required(),
 });
 
 export const matchDeleteValidator = Joi.object({
-  lostid: Joi.number().required(),
-  foundid: Joi.number().required(),
+  id: Joi.number().required(),
 });
 
 export const foundGetValidator = Joi.object({
@@ -41,8 +36,4 @@ export const foundPostValidator = Joi.object({
   description: Joi.string().required(),
   brand: Joi.string().required(),
   color: Joi.string().required(),
-});
-
-export const foundDetailsGetValidator = Joi.object({
-  id: Joi.number().required(),
 });

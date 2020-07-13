@@ -6,15 +6,6 @@ import {
   registerPutValidator,
 } from "./validators/registerValidator";
 import { registerPutStatusValidator } from "./validators/statusValidator";
-import {
-  foundDetailsGetValidator,
-  foundGetValidator,
-  foundPostValidator,
-  lostDetailsGetValidator,
-  lostGetValidator,
-  matchDeleteValidator,
-  matchPostValidator,
-} from "./validators/adminValidator";
 import { v4 as uuidv4 } from "uuid";
 import {
   getColorId,
@@ -22,23 +13,13 @@ import {
   getSubCategoryId,
   getCategoryId,
   getStatusId,
-  getFoundId,
-  getLostId,
 } from "./db";
 import {
   selectLostByRefnum,
   insertNewLost,
   updateStatusUserDelete,
   updateLost,
-  selectAllLost,
-  selectLostDetails,
-  selectFoundDetails,
-  insertConfirmedMatch,
-  deleteConfirmedMatch,
-  selectAllFound,
-  insertNewFound,
 } from "./queries";
-import { isAuthenticated } from "./auth/utils";
 import https = require("https");
 import { dbError } from "./util";
 

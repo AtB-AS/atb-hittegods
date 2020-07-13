@@ -80,38 +80,18 @@ join line on found.lineid = line.lineid
 join status on found.statusid = status.statusid
 where found.foundid = $1`;
 
-export const selectLostDetails = `
-select lost.lostid, name, email, phone, description, brand, "date", "line", color, subcategory, category, status,
-match.matchid, match.foundid
-from lost
-join "line" on lost.lineid = line.lineid
-join color on lost.colorid = color.colorid
-join category on lost.catid = category.categoryid
-join subcategory on lost.subcatid = subcategory.subcategoryid
-join status on lost.statusid = status.statusid
-left outer join match on lost.lostid=match.lostid
-where lost.lostid = $1`;
-
-export const selectFoundDetails = `
-select found.foundid, nameonitem as name, phonenumberonitem as phone, emailonitem as email, description, brand,
-"date", "line", color, category, subcategory, status, match.matchid, match.lostid
-from found
-join "line" on found.lineid = line.lineid
-join color on found.colorid = color.colorid
-join category on found.catid = category.categoryid
-join subcategory on found.subcatid = subcategory.subcategoryid
-join status on found.statusid = status.statusid
-left outer join match on found.foundid=match.foundid
-where found.foundid = $1`;
-
 export const insertConfirmedMatch = `
 insert into confirmedmatch(lostid, foundid)
 values($1, $2)
-returning *`;
+returning confirmedmatchid as id, lostid, foundid`;
 
 export const deleteConfirmedMatch = `
 delete from confirmedmatch
-where lostid=$1 and foundid=$2`;
+where confirmedmatchid = $1
+returning confirmedmatchid as id, lostid, foundid`;
+
+export const selectConfirmedMatches = `
+select confirmedmatchid as id, lostid, foundid from confirmedmatch`;
 
 export const insertNewFound = `
 insert into found (nameonitem, emailonitem, phonenumberonitem, description, brand, date,

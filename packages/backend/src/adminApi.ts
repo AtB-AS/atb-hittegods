@@ -454,12 +454,33 @@ export default async (
                 dbError(e, res);
               });
           } else {
-            res.status(400).json({
-              //TODO
-              status: "error",
-              errorMessage:
-                "invalid values for category, subcategory, line or color",
-            });
+            if (data[0].rowCount === 0) {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid category",
+              });
+            } else if (data[1].rowCount === 0) {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid subcategory",
+              });
+            } else if (data[2].rowCount === 0) {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid line",
+              });
+            } else if (data[3].rowCount === 0) {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid color",
+              });
+            } else {
+              console.error("Invalid status");
+              res.status(500).json({
+                status: "error",
+                errorMessage: "internal server error",
+              });
+            }
           }
         })
         .catch((e) => {
@@ -533,12 +554,33 @@ export default async (
                 dbError(e, res);
               });
           } else {
-            res.status(400).json({
-              //TODO
-              status: "error",
-              errorMessage:
-                "invalid values for category, subcategory, line or color",
-            });
+            if (data[0].rowCount === 0) {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid category",
+              });
+            } else if (data[1].rowCount === 0) {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid subcategory",
+              });
+            } else if (data[2].rowCount === 0) {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid line",
+              });
+            } else if (data[3].rowCount === 0) {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid color",
+              });
+            } else {
+              console.error("Invalid status");
+              res.status(500).json({
+                status: "error",
+                errorMessage: "internal server error",
+              });
+            }
           }
         })
         .catch((e) => {

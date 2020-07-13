@@ -39,10 +39,10 @@ export const foundPostValidator = Joi.object({
 });
 
 export const foundPutBodyValidator = Joi.object({
-  name: Joi.string(),
-  email: Joi.string().email(),
+  name: Joi.string().allow(""),
+  email: Joi.string().email().allow(""),
   //TODO better phone number
-  phone: Joi.string(),
+  phone: Joi.string().allow(""),
   category: Joi.string().required(),
   subCategory: Joi.string().required(),
   line: Joi.string().required().allow(""),

@@ -287,7 +287,7 @@ export default async (
     }
   });
 
-  app.get("/api/line", (req, res) => {
+  app.get("/api/line", (req: Request, res: Response) => {
     client
       .query("select line from line")
       .then((queryResult) => {

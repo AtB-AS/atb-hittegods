@@ -7,6 +7,7 @@ import {
   foundPostValidator,
   lostDetailsGetValidator,
   lostGetValidator,
+  lostIdGetValidator,
   matchDeleteValidator,
   matchPostValidator,
 } from "./validators/adminValidator";
@@ -26,6 +27,7 @@ import {
   selectAllFound,
   selectAllLost,
   selectFoundDetails,
+  selectLostById,
   selectLostDetails,
 } from "./queries";
 import { dbError, getMatches, RemoveDuplicates, compare } from "./util";
@@ -34,6 +36,147 @@ export default async (
   { app }: { app: express.Application },
   { client }: { client: pg.Client }
 ) => {
+  app.get("/api/admin/lost", isAuthenticated, (req: Request, res: Response) => {
+    const { error, value } = lostGetValidator.validate(req.query);
+    //TODO
+    if (error != undefined) {
+      //TODO figure out if error message leaks server information
+      res
+        .status(400)
+        .json({ status: "error", errorMessage: error.details[0].message });
+    } else {
+      if (
+        req.query.status != undefined &&
+        typeof req.query.status == "string"
+      ) {
+        const status: string = req.query.status;
+        getStatusId(status, { client })
+          .then((statusRes) => {
+            if (statusRes.rowCount > 0) {
+              const statusid = statusRes.rows[0].statusid;
+              client
+                .query(selectAllLost, [statusid])
+                .then((queryResult) => {
+                  const matches: any = getMatches(queryResult.rows);
+                  const uniqueRows = RemoveDuplicates(
+                    queryResult.rows,
+                    "lostid"
+                  );
+                  const foundids: any = {};
+                  queryResult.rows.forEach((row) => {
+                    if (foundids[row.lostid] == undefined) {
+                      foundids[row.lostid] = [];
+                    }
+                    if (row.foundid != null) {
+                      foundids[row.lostid].push(row.foundid);
+                    }
+                  });
+                  uniqueRows.sort(compare);
+                  const data: any = { items: [] };
+                  for (let i = 0; i < uniqueRows.length; i++) {
+                    const item = {
+                      id: uniqueRows[i].lostid,
+                      name: uniqueRows[i].name,
+                      phone: uniqueRows[i].phone,
+                      email: uniqueRows[i].email,
+                      category: uniqueRows[i].category,
+                      subcategory: uniqueRows[i].subcategory,
+                      color: uniqueRows[i].color,
+                      status: uniqueRows[i].status,
+                      date: uniqueRows[i].date,
+                      brand: uniqueRows[i].brand,
+                      refnr: uniqueRows[i].refnr,
+                      description: uniqueRows[i].description,
+                      matchCount: matches[uniqueRows[i].lostid][0],
+                      newMatchCount: matches[uniqueRows[i].lostid][1],
+                      foundids: foundids[uniqueRows[i].lostid],
+                    };
+                    data.items.push(item);
+                  }
+                  res.json({ status: "success", data: data });
+                })
+                .catch((e) => {
+                  dbError(e, res);
+                });
+            } else {
+              res
+                .status(404)
+                .json({ status: "error", errorMessage: "unknown status" });
+            }
+          })
+          .catch((e) => {
+            dbError(e, res);
+          });
+      } else {
+        res.json({ status: "error", errorMessage: "invalid status" });
+      }
+    }
+  });
+
+  app.get(
+    "/api/admin/lost/:id",
+    isAuthenticated,
+    (req: Request, res: Response) => {
+      const { error, value } = lostIdGetValidator.validate(req.params);
+      if (error != undefined) {
+        //TODO figure out if error message leaks server information
+        res
+          .status(400)
+          .json({ status: "error", errorMessage: error.details[0].message });
+      } else {
+        const id = req.params.id;
+
+        client
+          .query(selectLostById, [id])
+          .then((queryResult) => {
+            if (queryResult.rowCount > 0) {
+              const matches: any = getMatches(queryResult.rows);
+              const uniqueRows = RemoveDuplicates(queryResult.rows, "lostid");
+              const foundids: any = {};
+              queryResult.rows.forEach((row) => {
+                if (foundids[row.lostid] == undefined) {
+                  foundids[row.lostid] = [];
+                }
+                if (row.foundid != null) {
+                  foundids[row.lostid].push(row.foundid);
+                }
+              });
+              uniqueRows.sort(compare);
+              const data: any = { items: [] };
+              for (let i = 0; i < uniqueRows.length; i++) {
+                const item = {
+                  id: uniqueRows[i].lostid,
+                  name: uniqueRows[i].name,
+                  phone: uniqueRows[i].phone,
+                  email: uniqueRows[i].email,
+                  category: uniqueRows[i].category,
+                  subcategory: uniqueRows[i].subcategory,
+                  color: uniqueRows[i].color,
+                  status: uniqueRows[i].status,
+                  date: uniqueRows[i].date,
+                  brand: uniqueRows[i].brand,
+                  refnr: uniqueRows[i].refnr,
+                  description: uniqueRows[i].description,
+                  matchCount: matches[uniqueRows[i].lostid][0],
+                  newMatchCount: matches[uniqueRows[i].lostid][1],
+                  foundids: foundids[uniqueRows[i].lostid],
+                };
+                data.items.push(item);
+              }
+              res.json({ status: "success", data: data });
+            } else {
+              res
+                .status(404)
+                .json({ status: "error", errorMessage: "Unknown id" });
+            }
+          })
+          .catch((e) => {
+            dbError(e, res);
+          });
+      }
+    }
+  );
+
   //TODO refactor this!
   app.get(
     "/api/admin/lost",

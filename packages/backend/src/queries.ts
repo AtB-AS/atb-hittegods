@@ -27,12 +27,32 @@ export const updateStatusUserDelete = `
 update lost set statusid = $1 where refnr = $2`;
 
 export const selectAllLost = `
-select lost.name, subcategory, lost.description, lost.lostid, match.matchid, match.new
+select lost.name, lost.email, lost.phone, lost.description, lost.brand, lost."date",
+line, color, category, subcategory,
+status, lost.refnr, lost.lostid, match.matchid, match.new, match.foundid
 from lost
 join subcategory on subcatid=subcategoryid
+join category on catid=categoryid
+join color on lost.colorid = color.colorid
+join line on lost.lineid = line.lineid
+join status on lost.statusid = status.statusid
 full outer join match on lost.lostid = match.lostid
 full outer join found on found.foundid = match.foundid
 where lost.statusid = $1`;
+
+export const selectLostById = `
+select lost.name, lost.email, lost.phone, lost.description, lost.brand, lost."date",
+line, color, category, subcategory,
+status, lost.refnr, lost.lostid, match.matchid, match.new, match.foundid
+from lost
+join subcategory on subcatid=subcategoryid
+join category on catid=categoryid
+join color on lost.colorid = color.colorid
+join line on lost.lineid = line.lineid
+join status on lost.statusid = status.statusid
+full outer join match on lost.lostid = match.lostid
+full outer join found on found.foundid = match.foundid
+where lost.lostid = $1`;
 
 export const selectAllFound = `
 select found.nameonitem as name, subcategory, found.description, found.foundid, match.matchid, match.new

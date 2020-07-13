@@ -5,6 +5,7 @@ import {
   foundGetValidator,
   foundIdGetValidator,
   foundPostValidator,
+  foundPutValidator,
   lostGetValidator,
   lostIdGetValidator,
   matchDeleteValidator,
@@ -28,6 +29,7 @@ import {
   selectConfirmedMatches,
   selectFoundById,
   selectLostById,
+  updateFound,
 } from "./queries";
 import { dbError, getMatches, RemoveDuplicates, compare } from "./util";
 
@@ -391,7 +393,6 @@ export default async (
 
   app.post("/api/admin/found", isAuthenticated, async (req, res) => {
     const body = req.body;
-    console.log(req.body);
     const { error, value } = foundPostValidator.validate(body);
     if (error != undefined) {
       //TODO figure out if error message leaks server information
@@ -447,6 +448,78 @@ export default async (
                 //TODO check that response is compliant with api docs
                 //fetch request to
                 res.json({ status: "success", data: queryRes.rows[0] });
+              })
+              .catch((e) => {
+                dbError(e, res);
+              });
+          } else {
+            res.status(400).json({
+              //TODO
+              status: "error",
+              errorMessage:
+                "invalid values for category, subcategory, line or color",
+            });
+          }
+        })
+        .catch((e) => {
+          dbError(e, res);
+        });
+    }
+  });
+
+  app.put("/api/admin/found", isAuthenticated, async (req, res) => {
+    const body = req.body;
+    const { error, value } = foundPutValidator.validate(body);
+    if (error != undefined) {
+      //TODO figure out if error message leaks server information
+      res
+        .status(400)
+        .json({ status: "error", errorMessage: error.details[0].message });
+    } else {
+      const categoryIdPromise = getCategoryId(req.body.category, { client });
+      const subCategoryIdPromise = getSubCategoryId(req.body.subCategory, {
+        client,
+      });
+      const lineIdPromise = getLineId(req.body.line, { client });
+      const colorIdPromise = getColorId(req.body.color, { client });
+      Promise.all([
+        categoryIdPromise,
+        subCategoryIdPromise,
+        lineIdPromise,
+        colorIdPromise,
+      ])
+        .then((data) => {
+          //TODO: validate category, subcat, line, color against database tables. Error if they do not exist in database
+          if (
+            data.every((queryResult) => {
+              return queryResult.rowCount != 0;
+            })
+          ) {
+            const categoryId = data[0].rows[0].categoryid;
+            const subCategoryId = data[1].rows[0].subcategoryid;
+            const lineId = data[2].rows[0].lineid;
+            const colorId = data[3].rows[0].colorid;
+            client
+              .query(updateFound, [
+                body.name,
+                body.email,
+                body.phone,
+                body.description,
+                body.brand,
+                lineId,
+                colorId,
+                categoryId,
+                subCategoryId,
+                body.foundid,
+              ])
+              .then((queryRes) => {
+                if (queryRes.rowCount > 0) {
+                  res.json({ status: "success", data: req.body });
+                } else {
+                  res
+                    .status(404)
+                    .json({ status: "error", errorMessage: "unknown foundid" });
+                }
               })
               .catch((e) => {
                 dbError(e, res);

@@ -38,8 +38,7 @@ export const foundPostValidator = Joi.object({
   color: Joi.string().required(),
 });
 
-export const foundPutValidator = Joi.object({
-  foundid: Joi.number().required(),
+export const foundPutBodyValidator = Joi.object({
   name: Joi.string(),
   email: Joi.string().email(),
   //TODO better phone number
@@ -50,4 +49,8 @@ export const foundPutValidator = Joi.object({
   description: Joi.string().required(),
   brand: Joi.string().required(),
   color: Joi.string().required(),
+});
+
+export const foundPutParamValidator = Joi.object({
+  id: Joi.number().required(),
 });

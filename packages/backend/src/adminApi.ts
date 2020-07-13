@@ -5,7 +5,8 @@ import {
   foundGetValidator,
   foundIdGetValidator,
   foundPostValidator,
-  foundPutValidator,
+  foundPutBodyValidator,
+  foundPutParamValidator,
   lostGetValidator,
   lostIdGetValidator,
   matchDeleteValidator,
@@ -467,14 +468,20 @@ export default async (
     }
   });
 
-  app.put("/api/admin/found", isAuthenticated, async (req, res) => {
+  app.put("/api/admin/found/:id", isAuthenticated, async (req, res) => {
     const body = req.body;
-    const { error, value } = foundPutValidator.validate(body);
-    if (error != undefined) {
+    const id = req.params.id;
+    const bodyError = foundPutBodyValidator.validate(body).error;
+    const paramError = foundPutParamValidator.validate(req.params).error;
+    if (bodyError != undefined) {
       //TODO figure out if error message leaks server information
       res
         .status(400)
-        .json({ status: "error", errorMessage: error.details[0].message });
+        .json({ status: "error", errorMessage: bodyError.details[0].message });
+    } else if (paramError != undefined) {
+      res
+        .status(400)
+        .json({ status: "error", errorMessage: paramError.details[0].message });
     } else {
       const categoryIdPromise = getCategoryId(req.body.category, { client });
       const subCategoryIdPromise = getSubCategoryId(req.body.subCategory, {
@@ -510,15 +517,16 @@ export default async (
                 colorId,
                 categoryId,
                 subCategoryId,
-                body.foundid,
+                id,
               ])
               .then((queryRes) => {
                 if (queryRes.rowCount > 0) {
+                  req.body.foundid = id;
                   res.json({ status: "success", data: req.body });
                 } else {
                   res
                     .status(404)
-                    .json({ status: "error", errorMessage: "unknown foundid" });
+                    .json({ status: "error", errorMessage: "unknown id" });
                 }
               })
               .catch((e) => {

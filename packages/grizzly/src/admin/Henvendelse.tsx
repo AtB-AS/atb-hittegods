@@ -8,6 +8,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
+import Matches from "./Matches";
 
 type Props = {
   match: {
@@ -23,31 +24,18 @@ type Henvendelsen = {
   description: string;
   matchCount: number;
   newMatchCount: number;
-};
-
-type Match = {
-  id: number;
-  nameonitem: string;
-  subcategory: string;
-  line: string;
+  foundids: number[];
 };
 
 function Henvendelse(props: Props) {
   const [henvendelse, setHenvendelse] = useState<Henvendelsen | null>(null);
   const [isLoading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState(false);
-  const [match, setMatch] = useState<Match[]>([]);
-  const parameters = {
-    id: props.match.params.id,
-  };
-
-  const queryString = Object.entries(parameters)
-    .map(([key, val]) => `${key}=${val}`)
-    .join("&");
+  const [match, setMatch] = useState<number[]>([]);
 
   useEffect(() => {
     setLoading(true);
-    fetch("/api/admin/lostDetails/" + "?" + queryString)
+    fetch("/api/admin/lost/" + props.match.params.id)
       .then((response) => {
         if (response.status === 401) {
         } else {
@@ -56,7 +44,8 @@ function Henvendelse(props: Props) {
       })
       .then((jsonData) => {
         setHenvendelse(jsonData.data);
-        setMatch(jsonData.data.matches);
+
+        setMatch(jsonData.data.foundids);
         setLoading(false);
       })
       .catch(() => {
@@ -97,33 +86,8 @@ function Henvendelse(props: Props) {
             <p>Linje: 3</p>
           </Paper>
         </Grid>
-
-        <Grid item md={12}>
-          <TableContainer>
-            <h3>Mulige funn:</h3>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Navn?</TableCell>
-                  <TableCell>Underkategori</TableCell>
-                  <TableCell>Linje</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {match.map((item) => {
-                  return (
-                    <TableRow>
-                      <TableCell>{item.nameonitem}</TableCell>
-                      <TableCell>{item.subcategory}</TableCell>
-                      <TableCell>{item.line}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Grid>
       </Grid>
+      <Matches ids={match} />
     </div>
   );
 }

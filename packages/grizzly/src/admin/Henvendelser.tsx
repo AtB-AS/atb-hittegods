@@ -45,8 +45,7 @@ function Henvendelser() {
   const [newInqueryClick, setNewInquery] = useState(false);
 
   const params = {
-    from: 0,
-    to: 25,
+    status: "Mistet",
   };
 
   const queryString = Object.entries(params)

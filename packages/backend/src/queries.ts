@@ -103,5 +103,5 @@ returning foundid`;
 export const updateFound = `
 update found set nameonitem=$1, emailonitem=$2,
 phonenumberonitem=$3, description=$4, brand=$5,
-lineid=$6, colorid=$7, catid=$8, subcatid=$9
-where foundid=$10`;
+lineid=$6, colorid=$7, catid=$8, subcatid=$9, statusid=$10
+where foundid=$11`;

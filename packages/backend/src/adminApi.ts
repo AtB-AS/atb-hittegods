@@ -407,7 +407,7 @@ export default async (
       });
       const lineIdPromise = getLineId(req.body.line, { client });
       const colorIdPromise = getColorId(req.body.color, { client });
-      const statusIdPromise = getStatusId("Funnet", { client });
+      const statusIdPromise = getStatusId(req.body.status, { client });
       Promise.all([
         categoryIdPromise,
         subCategoryIdPromise,
@@ -475,10 +475,9 @@ export default async (
                 errorMessage: "invalid color",
               });
             } else {
-              console.error("Invalid status");
-              res.status(500).json({
+              res.status(400).json({
                 status: "error",
-                errorMessage: "internal server error",
+                errorMessage: "invalid status",
               });
             }
           }
@@ -510,11 +509,13 @@ export default async (
       });
       const lineIdPromise = getLineId(req.body.line, { client });
       const colorIdPromise = getColorId(req.body.color, { client });
+      const statusIdPromise = getStatusId(req.body.status, { client });
       Promise.all([
         categoryIdPromise,
         subCategoryIdPromise,
         lineIdPromise,
         colorIdPromise,
+        statusIdPromise,
       ])
         .then((data) => {
           //TODO: validate category, subcat, line, color against database tables. Error if they do not exist in database
@@ -527,6 +528,7 @@ export default async (
             const subCategoryId = data[1].rows[0].subcategoryid;
             const lineId = data[2].rows[0].lineid;
             const colorId = data[3].rows[0].colorid;
+            const statusId = data[4].rows[0].statusid;
             client
               .query(updateFound, [
                 body.name,
@@ -538,6 +540,7 @@ export default async (
                 colorId,
                 categoryId,
                 subCategoryId,
+                statusId,
                 id,
               ])
               .then((queryRes) => {
@@ -575,10 +578,9 @@ export default async (
                 errorMessage: "invalid color",
               });
             } else {
-              console.error("Invalid status");
-              res.status(500).json({
+              res.status(400).json({
                 status: "error",
-                errorMessage: "internal server error",
+                errorMessage: "invalid status",
               });
             }
           }

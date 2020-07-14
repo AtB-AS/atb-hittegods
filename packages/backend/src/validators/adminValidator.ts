@@ -36,6 +36,7 @@ export const foundPostValidator = Joi.object({
   description: Joi.string().required(),
   brand: Joi.string().required(),
   color: Joi.string().required(),
+  status: Joi.string().required(),
 });
 
 export const foundPutBodyValidator = Joi.object({
@@ -49,6 +50,7 @@ export const foundPutBodyValidator = Joi.object({
   description: Joi.string().required(),
   brand: Joi.string().required(),
   color: Joi.string().required(),
+  status: Joi.string().required(),
 });
 
 export const foundPutParamValidator = Joi.object({

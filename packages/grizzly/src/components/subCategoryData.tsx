@@ -8,8 +8,8 @@ export const mainCategory = {
   CLOTHING: "Klær",
   ELECTRONICS: "Elektronikk",
   PERSONAL_EFFECTS: "Personlige effekter",
-  BAGS: "Bagasje",
-  OTHER: "other",
+  BAGS: "Bagg, vesker og sekk",
+  OTHER: "Annet",
 };
 //Name of subcategories
 export const subCatStrings = {

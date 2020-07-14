@@ -2,11 +2,11 @@ import express, { query, Request, Response } from "express";
 import pg = require("pg");
 import { isAuthenticated } from "./auth/utils";
 import {
-  foundDetailsGetValidator,
   foundGetValidator,
+  foundIdGetValidator,
   foundPostValidator,
-  lostDetailsGetValidator,
   lostGetValidator,
+  lostIdGetValidator,
   matchDeleteValidator,
   matchPostValidator,
 } from "./validators/adminValidator";
@@ -25,8 +25,9 @@ import {
   insertNewFound,
   selectAllFound,
   selectAllLost,
-  selectFoundDetails,
-  selectLostDetails,
+  selectConfirmedMatches,
+  selectFoundById,
+  selectLostById,
 } from "./queries";
 import { dbError, getMatches, RemoveDuplicates, compare } from "./util";
 
@@ -34,24 +35,24 @@ export default async (
   { app }: { app: express.Application },
   { client }: { client: pg.Client }
 ) => {
-  //TODO refactor this!
-  app.get(
-    "/api/admin/lost",
-    isAuthenticated,
-    async (req: Request, res: Response) => {
-      const { error, value } = lostGetValidator.validate(req.query);
-      if (error != undefined) {
-        //TODO figure out if error message leaks server information
-        res
-          .status(400)
-          .json({ status: "error", errorMessage: error.details[0].message });
-      } else {
-        const from = req.query.from;
-        const to = req.query.to;
-        getStatusId("Mistet", { client })
-          .then((queryResult) => {
-            if (queryResult.rowCount != 0) {
-              const statusid = queryResult.rows[0].statusid;
+  app.get("/api/admin/lost", isAuthenticated, (req: Request, res: Response) => {
+    const { error, value } = lostGetValidator.validate(req.query);
+    //TODO
+    if (error != undefined) {
+      //TODO figure out if error message leaks server information
+      res
+        .status(400)
+        .json({ status: "error", errorMessage: error.details[0].message });
+    } else {
+      if (
+        req.query.status != undefined &&
+        typeof req.query.status == "string"
+      ) {
+        const status: string = req.query.status;
+        getStatusId(status, { client })
+          .then((statusRes) => {
+            if (statusRes.rowCount > 0) {
+              const statusid = statusRes.rows[0].statusid;
               client
                 .query(selectAllLost, [statusid])
                 .then((queryResult) => {
@@ -60,27 +61,37 @@ export default async (
                     queryResult.rows,
                     "lostid"
                   );
+                  const foundids: any = {};
+                  queryResult.rows.forEach((row) => {
+                    if (foundids[row.lostid] == undefined) {
+                      foundids[row.lostid] = [];
+                    }
+                    if (row.foundid != null) {
+                      foundids[row.lostid].push(row.foundid);
+                    }
+                  });
                   uniqueRows.sort(compare);
                   const data: any = { items: [] };
-                  if (from != undefined && to != undefined) {
-                    const fromInt = +from;
-                    let toInt = +to;
-                    if (uniqueRows.length >= fromInt) {
-                      if (toInt > uniqueRows.length) {
-                        toInt = uniqueRows.length;
-                      }
-                      for (let i = 0; i < toInt; i++) {
-                        const item = {
-                          id: uniqueRows[i].lostid,
-                          name: uniqueRows[i].name,
-                          subcategory: uniqueRows[i].subcategory,
-                          description: uniqueRows[i].description,
-                          matchCount: matches[uniqueRows[i].lostid][0],
-                          newMatchCount: matches[uniqueRows[i].lostid][1],
-                        };
-                        data.items.push(item);
-                      }
-                    }
+                  for (let i = 0; i < uniqueRows.length; i++) {
+                    const item = {
+                      id: uniqueRows[i].lostid,
+                      name: uniqueRows[i].name,
+                      phone: uniqueRows[i].phone,
+                      email: uniqueRows[i].email,
+                      category: uniqueRows[i].category,
+                      subcategory: uniqueRows[i].subcategory,
+                      color: uniqueRows[i].color,
+                      status: uniqueRows[i].status,
+                      date: uniqueRows[i].date,
+                      brand: uniqueRows[i].brand,
+                      refnr: uniqueRows[i].refnr,
+                      line: uniqueRows[i].line,
+                      description: uniqueRows[i].description,
+                      matchCount: matches[uniqueRows[i].lostid][0],
+                      newMatchCount: matches[uniqueRows[i].lostid][1],
+                      foundids: foundids[uniqueRows[i].lostid],
+                    };
+                    data.items.push(item);
                   }
                   res.json({ status: "success", data: data });
                 })
@@ -88,11 +99,72 @@ export default async (
                   dbError(e, res);
                 });
             } else {
-              console.error("Mistet not in status table");
-              res.json({
-                status: "error",
-                errorMessage: "Unknown database error",
+              res
+                .status(404)
+                .json({ status: "error", errorMessage: "unknown status" });
+            }
+          })
+          .catch((e) => {
+            dbError(e, res);
+          });
+      } else {
+        res.json({ status: "error", errorMessage: "invalid status" });
+      }
+    }
+  });
+
+  app.get(
+    "/api/admin/lost/:id",
+    isAuthenticated,
+    (req: Request, res: Response) => {
+      const { error, value } = lostIdGetValidator.validate(req.params);
+      if (error != undefined) {
+        //TODO figure out if error message leaks server information
+        res
+          .status(400)
+          .json({ status: "error", errorMessage: error.details[0].message });
+      } else {
+        const id = req.params.id;
+
+        client
+          .query(selectLostById, [id])
+          .then((queryResult) => {
+            if (queryResult.rowCount > 0) {
+              const row = queryResult.rows[0];
+              const matches: any = getMatches(queryResult.rows);
+              const foundids: any = {};
+              queryResult.rows.forEach((row) => {
+                if (foundids[row.lostid] == undefined) {
+                  foundids[row.lostid] = [];
+                }
+                if (row.foundid != null) {
+                  foundids[row.lostid].push(row.foundid);
+                }
               });
+
+              const item = {
+                id: row.lostid,
+                name: row.name,
+                phone: row.phone,
+                email: row.email,
+                category: row.category,
+                subcategory: row.subcategory,
+                color: row.color,
+                status: row.status,
+                date: row.date,
+                brand: row.brand,
+                line: row.line,
+                refnr: row.refnr,
+                description: row.description,
+                matchCount: matches[row.lostid][0],
+                newMatchCount: matches[row.lostid][1],
+                foundids: foundids[row.lostid],
+              };
+              res.json({ status: "success", data: item });
+            } else {
+              res
+                .status(404)
+                .json({ status: "error", errorMessage: "Unknown id" });
             }
           })
           .catch((e) => {
@@ -103,92 +175,105 @@ export default async (
   );
 
   app.get(
-    "/api/admin/lostDetails",
+    "/api/admin/found",
     isAuthenticated,
-    async (req: Request, res: Response) => {
-      const { error, value } = lostDetailsGetValidator.validate(req.query);
+    (req: Request, res: Response) => {
+      const { error, value } = foundGetValidator.validate(req.query);
+      //TODO
       if (error != undefined) {
         //TODO figure out if error message leaks server information
         res
           .status(400)
           .json({ status: "error", errorMessage: error.details[0].message });
       } else {
-        const lostid = req.query.id;
-        client
-          .query(selectLostDetails, [lostid])
-          .then((queryResult) => {
-            if (queryResult.rowCount != 0) {
-              const foundIDs: Array<number> = [];
-              queryResult.rows.forEach((row) => {
-                if (row.foundid != null) {
-                  if (!foundIDs.includes(row.foundid)) {
-                    foundIDs.push(row.foundid);
-                  }
-                }
-              });
-              if (foundIDs.length != 0) {
-                let query = selectFoundDetails;
-                for (let i = 1; i < foundIDs.length; i++) {
-                  query += ` or found.foundid=$${i + 1}`;
-                }
+        if (
+          req.query.status != undefined &&
+          typeof req.query.status == "string"
+        ) {
+          const status: string = req.query.status;
+          getStatusId(status, { client })
+            .then((statusRes) => {
+              if (statusRes.rowCount > 0) {
+                const statusid = statusRes.rows[0].statusid;
                 client
-                  .query(query, foundIDs)
-                  .then((foundQueryResult) => {
-                    const row = queryResult.rows[0];
-                    foundQueryResult.rows.forEach((row) => {
-                      //TODO: fix
-                      delete row.matchId;
-                      delete row.lostId;
-                    });
-                    const responseJson = {
-                      status: "success",
-                      data: {
-                        id: queryResult.rows[0].lostid,
+                  .query(selectAllFound, [statusid])
+                  .then((queryResult) => {
+                    const data: any = { items: [] };
+                    queryResult.rows.forEach((row) => {
+                      const item = {
+                        id: row.foundid,
                         name: row.name,
-                        email: row.email,
                         phone: row.phone,
-                        description: row.description,
-                        brand: row.brand,
-                        date: row.date,
-                        line: row.line,
-                        color: row.color,
+                        email: row.email,
                         category: row.category,
                         subcategory: row.subcategory,
+                        color: row.color,
                         status: row.status,
-                        matches: foundQueryResult.rows,
-                      },
-                    };
-                    res.json(responseJson);
+                        date: row.date,
+                        brand: row.brand,
+                        description: row.description,
+                        line: row.line,
+                      };
+                      data.items.push(item);
+                    });
+                    res.json({ status: "success", data: data });
                   })
                   .catch((e) => {
                     dbError(e, res);
                   });
               } else {
-                const row = queryResult.rows[0];
-                const responseJson = {
-                  status: "success",
-                  data: {
-                    id: queryResult.rows[0].lostid,
-                    name: row.nameonitem,
-                    email: row.emailonitem,
-                    phoneNumber: row.phonenumberonitem,
-                    description: row.description,
-                    brand: row.brand,
-                    date: row.date,
-                    line: row.line,
-                    color: row.color,
-                    category: row.category,
-                    subcategory: row.subcategory,
-                    status: row.status,
-                    matches: [],
-                  },
-                };
-                res.json(responseJson);
+                res
+                  .status(404)
+                  .json({ status: "error", errorMessage: "unknown status" });
               }
+            })
+            .catch((e) => {
+              dbError(e, res);
+            });
+        } else {
+          res.json({ status: "error", errorMessage: "invalid status" });
+        }
+      }
+    }
+  );
+
+  app.get(
+    "/api/admin/found/:id",
+    isAuthenticated,
+    (req: Request, res: Response) => {
+      const { error, value } = foundIdGetValidator.validate(req.params);
+      if (error != undefined) {
+        //TODO figure out if error message leaks server information
+        res
+          .status(400)
+          .json({ status: "error", errorMessage: error.details[0].message });
+      } else {
+        const id = req.params.id;
+
+        client
+          .query(selectFoundById, [id])
+          .then((queryResult) => {
+            if (queryResult.rowCount > 0) {
+              const row = queryResult.rows[0];
+              const data = {
+                id: row.foundid,
+                name: row.name,
+                phone: row.phone,
+                email: row.email,
+                category: row.category,
+                subcategory: row.subcategory,
+                color: row.color,
+                status: row.status,
+                date: row.date,
+                brand: row.brand,
+                description: row.description,
+                line: row.line,
+              };
+              res.json({ status: "success", data: data });
             } else {
               res
                 .status(404)
-                .json({ status: "error", errorMessage: "id not found" });
+                .json({ status: "error", errorMessage: "Unknown id" });
             }
           })
           .catch((e) => {
@@ -197,6 +282,7 @@ export default async (
       }
     }
   );
+
   app.post(
     "/api/admin/match",
     isAuthenticated,
@@ -221,8 +307,7 @@ export default async (
               client
                 .query(insertConfirmedMatch, [lostid, foundid])
                 .then((queryresult) => {
-                  //Check if succesful. if rows returned > 0
-                  res.json({ status: "success", data: req.body });
+                  res.json({ status: "success", data: queryresult.rows[0] });
                 })
                 .catch((e) => {
                   if (e.message.includes("confirmedmatch_foundid_key")) {
@@ -258,24 +343,38 @@ export default async (
     }
   );
 
-  app.delete(
+  app.get(
     "/api/admin/match",
     isAuthenticated,
     async (req: Request, res: Response) => {
-      const { error, value } = matchDeleteValidator.validate(req.body);
+      client
+        .query(selectConfirmedMatches)
+        .then((queryResult) => {
+          res.json({ status: "success", data: { matches: queryResult.rows } });
+        })
+        .catch((e) => {
+          dbError(e, res);
+        });
+    }
+  );
+
+  app.delete(
+    "/api/admin/match/:id",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      const { error, value } = matchDeleteValidator.validate(req.params);
       if (error != undefined) {
         //TODO figure out if error message leaks server information
         res
           .status(400)
           .json({ status: "error", errorMessage: error.details[0].message });
       } else {
-        const foundid = parseInt(req.body.foundid);
-        const lostid = parseInt(req.body.lostid);
+        const id = req.params.id;
         client
-          .query(deleteConfirmedMatch, [lostid, foundid])
+          .query(deleteConfirmedMatch, [id])
           .then((queryResult) => {
             if (queryResult.rowCount > 0) {
-              res.json({ status: "success", data: req.body });
+              res.json({ status: "success", data: queryResult.rows[0] });
             } else {
               res.status(404).json({
                 status: "error",
@@ -290,171 +389,9 @@ export default async (
     }
   );
 
-  app.get(
-    "/api/admin/found",
-    isAuthenticated,
-    async (req: Request, res: Response) => {
-      const { error, value } = foundGetValidator.validate(req.query);
-      if (error != undefined) {
-        //TODO figure out if error message leaks server information
-        res
-          .status(400)
-          .json({ status: "error", errorMessage: error.details[0].message });
-      } else {
-        const from = req.query.from;
-        const to = req.query.to;
-        getStatusId("Funnet", { client })
-          .then((queryResult) => {
-            if (queryResult.rowCount != 0) {
-              const statusid = queryResult.rows[0].statusid;
-              client
-                .query(selectAllFound, [statusid])
-                .then((queryResult) => {
-                  const matches: any = getMatches(queryResult.rows);
-                  const uniqueRows = RemoveDuplicates(
-                    queryResult.rows,
-                    "foundid"
-                  );
-                  uniqueRows.sort(compare);
-                  const data: any = { items: [] };
-                  if (from != undefined && to != undefined) {
-                    const fromInt = +from;
-                    let toInt = +to;
-                    if (uniqueRows.length >= fromInt) {
-                      if (toInt > uniqueRows.length) {
-                        toInt = uniqueRows.length;
-                      }
-                      for (let i = 0; i < toInt; i++) {
-                        const item = {
-                          id: uniqueRows[i].foundid,
-                          name: uniqueRows[i].name,
-                          subcategory: uniqueRows[i].subcategory,
-                          description: uniqueRows[i].description,
-                          matchCount: matches[uniqueRows[i].lostid][0],
-                          newMatchCount: matches[uniqueRows[i].lostid][1],
-                        };
-                        data.items.push(item);
-                      }
-                    }
-                  }
-                  res.json({ status: "success", data: data });
-                })
-                .catch((e) => {
-                  dbError(e, res);
-                });
-            } else {
-              console.error("Mistet not in status table");
-              res.json({
-                status: "error",
-                errorMessage: "Unknown database error",
-              });
-            }
-          })
-          .catch((e) => {
-            dbError(e, res);
-          });
-      }
-    }
-  );
-
-  app.get(
-    "/api/admin/foundDetails",
-    isAuthenticated,
-    async (req: Request, res: Response) => {
-      const { error, value } = foundDetailsGetValidator.validate(req.query);
-      if (error != undefined) {
-        //TODO figure out if error message leaks server information
-        res
-          .status(400)
-          .json({ status: "error", errorMessage: error.details[0].message });
-      } else {
-        const foundid = req.query.id;
-        client
-          .query(selectFoundDetails, [foundid])
-          .then((queryResult) => {
-            if (queryResult.rowCount != 0) {
-              const lostIDs: Array<number> = [];
-              queryResult.rows.forEach((row) => {
-                if (row.lostid != null) {
-                  if (!lostIDs.includes(row.lostid)) {
-                    lostIDs.push(row.lostid);
-                  }
-                }
-              });
-              if (lostIDs.length != 0) {
-                let query = selectLostDetails;
-                for (let i = 1; i < lostIDs.length; i++) {
-                  query += ` or lost.lostid=$${i + 1}`;
-                }
-                client
-                  .query(query, lostIDs)
-                  .then((lostQueryResult) => {
-                    const row = queryResult.rows[0];
-                    lostQueryResult.rows.forEach((row) => {
-                      //TODO: fix
-                      delete row.matchId;
-                      delete row.lostid;
-                    });
-                    const responseJson = {
-                      status: "success",
-                      data: {
-                        id: queryResult.rows[0].foundid,
-                        name: row.name,
-                        email: row.email,
-                        phone: row.phone,
-                        description: row.description,
-                        brand: row.brand,
-                        date: row.date,
-                        line: row.line,
-                        color: row.color,
-                        category: row.category,
-                        subcategory: row.subcategory,
-                        status: row.status,
-                        matches: lostQueryResult.rows,
-                      },
-                    };
-                    res.json(responseJson);
-                  })
-                  .catch((e) => {
-                    dbError(e, res);
-                  });
-              } else {
-                const row = queryResult.rows[0];
-                const responseJson = {
-                  status: "success",
-                  data: {
-                    id: row.foundid,
-                    name: row.nameonitem,
-                    email: row.emailonitem,
-                    phoneNumber: row.phonenumberonitem,
-                    description: row.description,
-                    brand: row.brand,
-                    date: row.date,
-                    line: row.line,
-                    color: row.color,
-                    category: row.category,
-                    subcategory: row.subcategory,
-                    status: row.status,
-                    matches: [],
-                  },
-                };
-                res.json(responseJson);
-              }
-            } else {
-              res
-                .status(404)
-                .json({ status: "error", errorMessage: "id not found" });
-            }
-          })
-          .catch((e) => {
-            dbError(e, res);
-          });
-      }
-    }
-  );
-
   app.post("/api/admin/found", isAuthenticated, async (req, res) => {
     const body = req.body;
+    console.log(req.body);
     const { error, value } = foundPostValidator.validate(body);
     if (error != undefined) {
       //TODO figure out if error message leaks server information

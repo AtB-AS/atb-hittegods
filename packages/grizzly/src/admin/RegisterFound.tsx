@@ -21,7 +21,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
-
+import Autocomplete from "@material-ui/lab/Autocomplete";
 type reg = {
   [key: string]: string;
 };
@@ -127,6 +127,10 @@ function RegisterFound() {
     setOpen(false);
   };
 
+  const namedf = () => {
+    console.log("funker");
+  };
+
   function getSubCatData(mainCat: string) {
     if (mainCat) {
       return categoryData.find((mainCatName) => mainCatName.name === mainCat)!
@@ -140,8 +144,8 @@ function RegisterFound() {
     return new Promise((resolve) => setTimeout(resolve, milliseconds));
   };
 
-  function sendForm() {
-    setOpen(true);
+  const sendForm = (event: React.FormEvent) => {
+    //setOpen(true);
     setState({
       name: name,
       phone: tlf,
@@ -155,15 +159,30 @@ function RegisterFound() {
       description: desc,
     });
 
+    event.preventDefault();
+    console.log(mainCat);
+
+    console.log(state);
     return fetch("/api/admin/found", {
       method: "post",
-      body: JSON.stringify(state),
+      body: JSON.stringify({
+        name: name,
+        phone: tlf,
+        email: email,
+        category: mainCat,
+        subCategory: subCat,
+        color: color,
+        line: line,
+        brand: brand,
+        status: "Funnet",
+        description: desc,
+      }),
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
     });
-  }
+  };
 
   return (
     <div>
@@ -175,49 +194,57 @@ function RegisterFound() {
           Options={catData.map((catName) => ({ name: catName.name }))}
           onChanged={setMainCat}
         />
-        <RegDropdown
-          name={"Underkategori"}
-          Options={getSubCatData(mainCat).map((subCatName) => ({
+
+        <Autocomplete
+          id="combo-box-demo"
+          options={getSubCatData(mainCat).map((subCatName) => ({
             name: subCatName.name,
           }))}
-          onChanged={setSubCat}
-        />
-        <RegDropdown
-          name={"Farge"}
-          Options={colorData.map((colorName: { name: string }) => ({
-            name: colorName.name,
-          }))}
-          onChanged={setColor}
-        />
-        <RegDropdown
-          name={"Linje"}
-          Options={lineData.map((lineName: { line: string }) => ({
-            name: lineName.line,
-          }))}
-          onChanged={setLine}
+          getOptionLabel={(option) => option.name}
+          style={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Underkategori" variant="outlined" />
+          )}
+          onChange={(event, newValue) => {
+            if (newValue != null) {
+              setSubCat(newValue.name);
+            }
+          }}
         />
 
-        <Box mt={3}>
-          <form noValidate>
-            <TextField
-              label="Dato"
-              type="date"
-              defaultValue={new Date()}
-              className={classes.TextField}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              //value={date}
-              inputProps={{
-                min: ((d) => new Date(d.setDate(d.getDate() - 90)))(new Date())
-                  .toJSON()
-                  .split("T")[0],
-                max: new Date().toJSON().split("T")[0],
-              }}
-              onChange={(event) => setDate(event.target.value)}
-            />
-          </form>
-        </Box>
+        <Autocomplete
+          id="combo-box-demo"
+          options={colorData.map((colorName: { name: string }) => ({
+            name: colorName.name,
+          }))}
+          getOptionLabel={(option) => option.name}
+          style={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Farge" variant="outlined" />
+          )}
+          onChange={(event, newValue) => {
+            if (newValue != null) {
+              setColor(newValue.name);
+            }
+          }}
+        />
+
+        <Autocomplete
+          id="combo-box-demo"
+          options={lineData.map((lineName: { line: string }) => ({
+            name: lineName.line,
+          }))}
+          getOptionLabel={(option) => option.name}
+          style={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Linje" variant="outlined" />
+          )}
+          onChange={(event, newValue) => {
+            if (newValue != null) {
+              setLine(newValue.name);
+            }
+          }}
+        />
         <Grid item xs={12}>
           <h3 className={classes.heading}>Merke</h3>
           <TextField
@@ -232,6 +259,7 @@ function RegisterFound() {
               required: "Dette feltet må du fylle inn",
             })}
             inputProps={{}}
+            onChange={(event) => setBrand(event.target.value)}
             //TODO InputProps not working -> https://material-ui.com/components/text-fields/ or https://codesandbox.io/s/6v444wnvp3?file=/src/FormattedInput.js
           />
         </Grid>
@@ -249,6 +277,8 @@ function RegisterFound() {
               required: "Dette feltet må du fylle inn",
             })}
             inputProps={{}}
+            onChange={(event) => setDesc(event.target.value)}
+
             //TODO InputProps not working -> https://material-ui.com/components/text-fields/ or https://codesandbox.io/s/6v444wnvp3?file=/src/FormattedInput.js
           />
         </Grid>
@@ -278,6 +308,7 @@ function RegisterFound() {
                   message: "Navn kan ikke være over 40 bokstaver. ",
                 },
               })}
+              onChange={(event) => setName(event.target.value)}
             />
           </Grid>
           <Grid item xs={12}>
@@ -301,6 +332,7 @@ function RegisterFound() {
                   message: "Telefonnummeret er for langt",
                 },
               })}
+              onChange={(event) => setTlf(event.target.value)}
             />
           </Grid>
           <Grid item xs={12}>
@@ -317,6 +349,8 @@ function RegisterFound() {
                 required: "Dette feltet må du fylle inn",
               })}
               inputProps={{}}
+              onChange={(event) => setEmail(event.target.value)}
+
               //TODO InputProps not working -> https://material-ui.com/components/text-fields/ or https://codesandbox.io/s/6v444wnvp3?file=/src/FormattedInput.js
             />
           </Grid>

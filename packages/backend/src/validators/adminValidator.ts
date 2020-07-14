@@ -36,4 +36,23 @@ export const foundPostValidator = Joi.object({
   description: Joi.string().required(),
   brand: Joi.string().required(),
   color: Joi.string().required(),
+  status: Joi.string().required(),
+});
+
+export const foundPutBodyValidator = Joi.object({
+  name: Joi.string().allow(""),
+  email: Joi.string().email().allow(""),
+  //TODO better phone number
+  phone: Joi.string().allow(""),
+  category: Joi.string().required(),
+  subCategory: Joi.string().required(),
+  line: Joi.string().required().allow(""),
+  description: Joi.string().required(),
+  brand: Joi.string().required(),
+  color: Joi.string().required(),
+  status: Joi.string().required(),
+});
+
+export const foundPutParamValidator = Joi.object({
+  id: Joi.number().required(),
 });

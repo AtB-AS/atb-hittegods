@@ -5,6 +5,8 @@ import {
   foundGetValidator,
   foundIdGetValidator,
   foundPostValidator,
+  foundPutBodyValidator,
+  foundPutParamValidator,
   lostGetValidator,
   lostIdGetValidator,
   matchDeleteValidator,
@@ -28,6 +30,7 @@ import {
   selectConfirmedMatches,
   selectFoundById,
   selectLostById,
+  updateFound,
 } from "./queries";
 import { dbError, getMatches, RemoveDuplicates, compare } from "./util";
 
@@ -391,7 +394,6 @@ export default async (
 
   app.post("/api/admin/found", isAuthenticated, async (req, res) => {
     const body = req.body;
-    console.log(req.body);
     const { error, value } = foundPostValidator.validate(body);
     if (error != undefined) {
       //TODO figure out if error message leaks server information
@@ -405,7 +407,7 @@ export default async (
       });
       const lineIdPromise = getLineId(req.body.line, { client });
       const colorIdPromise = getColorId(req.body.color, { client });
-      const statusIdPromise = getStatusId("Funnet", { client });
+      const statusIdPromise = getStatusId(req.body.status, { client });
       Promise.all([
         categoryIdPromise,
         subCategoryIdPromise,
@@ -452,12 +454,135 @@ export default async (
                 dbError(e, res);
               });
           } else {
-            res.status(400).json({
-              //TODO
-              status: "error",
-              errorMessage:
-                "invalid values for category, subcategory, line or color",
-            });
+            if (data[0].rowCount === 0) {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid category",
+              });
+            } else if (data[1].rowCount === 0) {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid subcategory",
+              });
+            } else if (data[2].rowCount === 0) {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid line",
+              });
+            } else if (data[3].rowCount === 0) {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid color",
+              });
+            } else {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid status",
+              });
+            }
+          }
+        })
+        .catch((e) => {
+          dbError(e, res);
+        });
+    }
+  });
+
+  app.put("/api/admin/found/:id", isAuthenticated, async (req, res) => {
+    const body = req.body;
+    const id = req.params.id;
+    const bodyError = foundPutBodyValidator.validate(body).error;
+    const paramError = foundPutParamValidator.validate(req.params).error;
+    if (bodyError != undefined) {
+      //TODO figure out if error message leaks server information
+      res
+        .status(400)
+        .json({ status: "error", errorMessage: bodyError.details[0].message });
+    } else if (paramError != undefined) {
+      res
+        .status(400)
+        .json({ status: "error", errorMessage: paramError.details[0].message });
+    } else {
+      const categoryIdPromise = getCategoryId(req.body.category, { client });
+      const subCategoryIdPromise = getSubCategoryId(req.body.subCategory, {
+        client,
+      });
+      const lineIdPromise = getLineId(req.body.line, { client });
+      const colorIdPromise = getColorId(req.body.color, { client });
+      const statusIdPromise = getStatusId(req.body.status, { client });
+      Promise.all([
+        categoryIdPromise,
+        subCategoryIdPromise,
+        lineIdPromise,
+        colorIdPromise,
+        statusIdPromise,
+      ])
+        .then((data) => {
+          //TODO: validate category, subcat, line, color against database tables. Error if they do not exist in database
+          if (
+            data.every((queryResult) => {
+              return queryResult.rowCount != 0;
+            })
+          ) {
+            const categoryId = data[0].rows[0].categoryid;
+            const subCategoryId = data[1].rows[0].subcategoryid;
+            const lineId = data[2].rows[0].lineid;
+            const colorId = data[3].rows[0].colorid;
+            const statusId = data[4].rows[0].statusid;
+            client
+              .query(updateFound, [
+                body.name,
+                body.email,
+                body.phone,
+                body.description,
+                body.brand,
+                lineId,
+                colorId,
+                categoryId,
+                subCategoryId,
+                statusId,
+                id,
+              ])
+              .then((queryRes) => {
+                if (queryRes.rowCount > 0) {
+                  req.body.foundid = id;
+                  res.json({ status: "success", data: req.body });
+                } else {
+                  res
+                    .status(404)
+                    .json({ status: "error", errorMessage: "unknown id" });
+                }
+              })
+              .catch((e) => {
+                dbError(e, res);
+              });
+          } else {
+            if (data[0].rowCount === 0) {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid category",
+              });
+            } else if (data[1].rowCount === 0) {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid subcategory",
+              });
+            } else if (data[2].rowCount === 0) {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid line",
+              });
+            } else if (data[3].rowCount === 0) {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid color",
+              });
+            } else {
+              res.status(400).json({
+                status: "error",
+                errorMessage: "invalid status",
+              });
+            }
           }
         })
         .catch((e) => {

@@ -35,7 +35,7 @@ function Location(props: Props) {
   const [lines, setLines] = useState([]);
   const [error, setError] = useState(false);
   const [isloading, setLoading] = useState(true);
-  const [line, setLine] = useState("");
+  const [line, setLine] = useState(props.line);
 
   useEffect(() => {
     setLoading(true);
@@ -85,6 +85,7 @@ function Location(props: Props) {
                   options={lines}
                   getOptionLabel={(item) => item}
                   style={{ width: 300 }}
+                  defaultValue={line}
                   onInputChange={(event, value) => {
                     console.log("Sett veri", value);
                     //setLine(value);

@@ -63,6 +63,8 @@ export default function Wizard() {
     phoneNumber: "",
     email: "",
   });
+  // status 1: maincategory, status 2: subcategory, status 3: characteristics
+  const [status, setStatus] = useState(0);
 
   const history = useHistory();
 
@@ -109,6 +111,15 @@ export default function Wizard() {
 
   const handleStep = (step: number) => () => {
     setActiveStep(step);
+    if (step === 0) {
+      nextPage("/");
+    }
+    if (step === 1) {
+      nextPage("/tidspunkt");
+    }
+    if (step === 2) {
+      nextPage("/hva");
+    }
   };
 
   const handleComplete = () => {
@@ -125,20 +136,23 @@ export default function Wizard() {
 
   function onCategorySelect(cat: string) {
     setCategory(cat);
-    nextPage("/underkategori");
+    //nextPage("/underkategori");
     console.log("Kategori: ", cat);
+    setStatus(2);
   }
 
   function onSubCategorySelected(subCat: string) {
     setSubCategory(subCat);
-    nextPage("/kjennetegn");
+    //nextPage("/kjennetegn");
     console.log("underkategori: ", subCat);
+    setStatus(3);
   }
 
   function onCharacteristicsDone(characteristics: Characteristics) {
     setCharacteristics(characteristics);
     console.log("kjennetegn ", characteristics);
-    nextPage("lokasjon");
+    nextPage("/personopplysninger");
+    setActiveStep(activeStep + 1);
   }
 
   function setLocation(location: string) {
@@ -151,8 +165,9 @@ export default function Wizard() {
   function setDate(date: string) {
     setNewDate(date);
     console.log("Dato: ", date);
-    nextPage("/hovedkategori");
+    nextPage("/hva");
     setActiveStep(activeStep + 1);
+    setStatus(1);
   }
 
   function setContactInfo(contInfo: ContactInfo) {
@@ -218,25 +233,27 @@ export default function Wizard() {
           <Route path="/tidspunkt">
             <MissingDate date={date} onDateSelect={setDate} />
           </Route>
-          <Route path="/hovedkategori">
-            <MainCategory
-              category={category}
-              onCategorySelect={onCategorySelect}
-            />
-          </Route>
-          <Route path="/underkategori">
-            <SubCategory
-              getMainCat={category}
-              onSubCategorySelect={onSubCategorySelected}
-            />
-          </Route>
-          <Route path="/kjennetegn">
-            <Characteristics
-              color={characteristics.color}
-              brand={characteristics.brand}
-              description={characteristics.description}
-              onCharacteristicsSelect={onCharacteristicsDone}
-            />
+          <Route path="/hva">
+            {status === 1 && (
+              <MainCategory
+                category={category}
+                onCategorySelect={onCategorySelect}
+              />
+            )}
+            {status === 2 && (
+              <SubCategory
+                getMainCat={category}
+                onSubCategorySelect={onSubCategorySelected}
+              />
+            )}
+            {status === 3 && (
+              <Characteristics
+                color={characteristics.color}
+                brand={characteristics.brand}
+                description={characteristics.description}
+                onCharacteristicsSelect={onCharacteristicsDone}
+              />
+            )}
           </Route>
 
           <Route path="/personopplysninger">

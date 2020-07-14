@@ -20,16 +20,6 @@
     "build": "yarn lerna run build",
     "prettier": "prettier --write 'packages/**/src/**/*.{js,ts,tsx}'"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "./packages/**/src/**/*.{js,jsx,ts,tsx}": [
-      "npm run prettier"
-    ]
-  },
   "devDependencies": {
     "husky": "^4.2.5",
     "lerna": "^3.22.1",

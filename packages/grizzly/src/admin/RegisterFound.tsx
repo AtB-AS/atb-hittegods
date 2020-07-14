@@ -21,7 +21,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
-
+import Autocomplete from "@material-ui/lab/Autocomplete";
 type reg = {
   [key: string]: string;
 };
@@ -127,6 +127,10 @@ function RegisterFound() {
     setOpen(false);
   };
 
+  const namedf = () => {
+    console.log("funker");
+  };
+
   function getSubCatData(mainCat: string) {
     if (mainCat) {
       return categoryData.find((mainCatName) => mainCatName.name === mainCat)!
@@ -170,6 +174,7 @@ function RegisterFound() {
         color: color,
         line: line,
         brand: brand,
+        status: "Funnet",
         description: desc,
       }),
       headers: {
@@ -189,26 +194,56 @@ function RegisterFound() {
           Options={catData.map((catName) => ({ name: catName.name }))}
           onChanged={setMainCat}
         />
-        <RegDropdown
-          name={"Underkategori"}
-          Options={getSubCatData(mainCat).map((subCatName) => ({
+
+        <Autocomplete
+          id="combo-box-demo"
+          options={getSubCatData(mainCat).map((subCatName) => ({
             name: subCatName.name,
           }))}
-          onChanged={setSubCat}
+          getOptionLabel={(option) => option.name}
+          style={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Underkategori" variant="outlined" />
+          )}
+          onChange={(event, newValue) => {
+            if (newValue != null) {
+              setSubCat(newValue.name);
+            }
+          }}
         />
-        <RegDropdown
-          name={"Farge"}
-          Options={colorData.map((colorName: { name: string }) => ({
+
+        <Autocomplete
+          id="combo-box-demo"
+          options={colorData.map((colorName: { name: string }) => ({
             name: colorName.name,
           }))}
-          onChanged={setColor}
+          getOptionLabel={(option) => option.name}
+          style={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Farge" variant="outlined" />
+          )}
+          onChange={(event, newValue) => {
+            if (newValue != null) {
+              setColor(newValue.name);
+            }
+          }}
         />
-        <RegDropdown
-          name={"Linje"}
-          Options={lineData.map((lineName: { line: string }) => ({
+
+        <Autocomplete
+          id="combo-box-demo"
+          options={lineData.map((lineName: { line: string }) => ({
             name: lineName.line,
           }))}
-          onChanged={setLine}
+          getOptionLabel={(option) => option.name}
+          style={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Linje" variant="outlined" />
+          )}
+          onChange={(event, newValue) => {
+            if (newValue != null) {
+              setLine(newValue.name);
+            }
+          }}
         />
         <Grid item xs={12}>
           <h3 className={classes.heading}>Merke</h3>

@@ -37,6 +37,7 @@
     "prettier": "^2.0.5"
   },
   "dependencies": {
-    "cross-env": "^7.0.2"
+    "cross-env": "^7.0.2",
+    "yarn": "^1.22.4"
   }
 }

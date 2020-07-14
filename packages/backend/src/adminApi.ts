@@ -32,6 +32,7 @@ import {
   selectLostById,
   updateFound,
 } from "./queries";
+import https = require("https");
 import { dbError, getMatches, RemoveDuplicates, compare } from "./util";
 
 export default async (
@@ -449,6 +450,29 @@ export default async (
                 //TODO check that response is compliant with api docs
                 //fetch request to
                 res.json({ status: "success", data: queryRes.rows[0] });
+                const foundid = queryRes.rows[0].foundid;
+                const url =
+                    "https://hittegods-matchmaker.azurewebsites.net/found/" +
+                    foundid;
+                console.log("Notify new found to hittegods-matchmaker : " + url);
+                https
+                    .get(url, (httpsRes) => {
+                      httpsRes.setEncoding("utf8");
+                      let body = "";
+                      httpsRes.on("data", (data) => {
+                        body += data;
+                        console.log("Response from matchmaker : " + data);
+                      });
+                      httpsRes.on("end", () => {
+                        console.log("hittegods-matchmaker : " + body);
+                      });
+                    })
+                    .on("error", (error) => {
+                      console.log("matchmaker error : " + error);
+                    });
+                //TODO send confirmation email or sms
+                //TODO determine possible errors
+
               })
               .catch((e) => {
                 dbError(e, res);

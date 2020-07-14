@@ -79,12 +79,7 @@ function App() {
 
         <Grid item md={10}>
           <Switch>
-            <Route path="/admin/henvendelser">
-              <Henvendelser />
-            </Route>
-            <Route path="/admin/lager">
-              <Storage />
-            </Route>
+            <Route path="/admin/henvendelser" component={Henvendelser} />
             <Route path="/admin/tilUtlevering">
               <ReadyToPickUp />
             </Route>

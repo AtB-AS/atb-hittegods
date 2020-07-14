@@ -5,6 +5,7 @@ import LoginContainer from "./LoginContainer";
 import Button from "@material-ui/core/Button";
 import { Box, createStyles, Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import Layout from "./Layout";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,7 +43,7 @@ function AdminApp() {
       </LoginContainer>
     );
   } else {
-    return <App />;
+    return <Layout />;
   }
 }
 

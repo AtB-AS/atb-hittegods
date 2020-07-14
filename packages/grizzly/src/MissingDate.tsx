@@ -39,10 +39,6 @@ function MissingDate(props: Props) {
   );
   const classes = useStyles();
 
-  function onSubmit() {
-    props.onDateSelect(date);
-  }
-
   function onSubmitToday() {
     let date: string;
     // @ts-ignore
@@ -111,21 +107,12 @@ function MissingDate(props: Props) {
                     .split("T")[0],
                   max: new Date().toJSON().split("T")[0],
                 }}
-                onChange={(event) => setDate(event.target.value)}
+                onChange={(event) => {
+                  setDate(event.target.value);
+                  props.onDateSelect(event.target.value);
+                }}
               />
             </form>
-          </Box>
-        </Grid>
-        <Grid item xs={12}>
-          <Box mt={3}>
-            <Button
-              color="primary"
-              variant="contained"
-              type="submit"
-              onClick={onSubmit}
-            >
-              Neste
-            </Button>
           </Box>
         </Grid>
       </Grid>

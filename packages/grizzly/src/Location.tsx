@@ -85,7 +85,17 @@ function Location(props: Props) {
                   options={lines}
                   getOptionLabel={(item) => item}
                   style={{ width: 300 }}
-                  onInputChange={(event, value) => setLine(value)}
+                  onInputChange={(event, value) => {
+                    console.log("Sett veri", value);
+                    //setLine(value);
+                  }}
+                  onChange={(event, value) => {
+                    console.log("Sett veri onchange", value);
+                    if (value) {
+                      // @ts-ignore
+                      props.onLocationSelect(value);
+                    }
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -101,11 +111,6 @@ function Location(props: Props) {
                   onClick={unknownLineButtonHandler}
                 >
                   Husker ikke
-                </Button>
-              </Grid>
-              <Grid item xs={12}>
-                <Button color="primary" type="submit" variant="contained">
-                  Neste
                 </Button>
               </Grid>
             </Grid>

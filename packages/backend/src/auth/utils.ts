@@ -8,6 +8,8 @@ export const isAuthenticated = (
   res: Response,
   next: NextFunction
 ) => {
+
+  console.log("AOSNFOEUBNFAF")
   if (!req.isAuthenticated()) {
     return res.sendStatus(401);
   }

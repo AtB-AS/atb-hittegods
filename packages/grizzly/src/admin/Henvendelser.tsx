@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TableContainer } from "@material-ui/core";
+import { TableContainer, TableSortLabel } from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -29,17 +29,35 @@ type Props = {
   };
 };
 
+type ColumnProps = {
+  columnName: string;
+  labelName: string;
+};
+
 function Henvendelser(props: Props) {
   const classes = useTableStyles();
   const history = useHistory();
   const [henvendelser, setHenvendelser] = useState<Henvendelse[]>([]);
   const [isloading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [newInqueryClick, setNewInquery] = useState(false);
-
+  const [orderBy, setOrderBy] = useState<string>("desc");
+  const [collumnName, setCollumnName] = useState("id");
   const params = {
     status: "Mistet",
   };
+
+  useEffect(() => {
+    if (orderBy === "desc") {
+      setHenvendelser(
+        henvendelser
+          .map((h) => h)
+          .sort(compare)
+          .reverse()
+      );
+    } else {
+      setHenvendelser(henvendelser.map((h) => h).sort(compare));
+    }
+  }, [orderBy, collumnName]);
 
   const queryString = Object.entries(params)
     .map(([key, val]) => `${key}=${val}`)
@@ -50,19 +68,50 @@ function Henvendelser(props: Props) {
     fetch("/api/admin/lost" + "?" + queryString)
       .then((response) => response.json())
       .then((jsonData) => {
-        setHenvendelser(jsonData.data.items);
+        const lostData = jsonData.data.items;
+        if (orderBy === "desc") {
+          setHenvendelser(lostData.sort(compare).reverse());
+        } else {
+          setHenvendelser(lostData.sort(compare));
+        }
         setLoading(false);
       })
       .catch(() => {
         setError(true);
       });
   }, []);
+
   function clickedRowItem(id: number) {
     history.push("/admin/henvendelser/" + id);
   }
 
-  function clickedNewInquery() {
-    return setNewInquery(true);
+  function clickedColumnName(col: string) {
+    if (col === collumnName) {
+      setOrderBy(orderBy === "asc" ? "desc" : "asc");
+    }
+    setCollumnName(col);
+  }
+
+  function compare(a: Henvendelse, b: Henvendelse) {
+    // @ts-ignore
+    return `${a[collumnName]}`.localeCompare(`${b[collumnName]}`, "en", {
+      numeric: true,
+      sensitivity: "base",
+    });
+  }
+
+  function HenvendelseColumn(props: ColumnProps) {
+    return (
+      <TableCell className={classes.th}>
+        <TableSortLabel
+          active={collumnName === props.columnName}
+          direction={orderBy === "asc" ? "desc" : "asc"}
+          onClick={(event) => clickedColumnName(props.columnName)}
+        >
+          {props.labelName}
+        </TableSortLabel>
+      </TableCell>
+    );
   }
 
   if (error) {
@@ -77,6 +126,10 @@ function Henvendelser(props: Props) {
     );
   }
 
+  if (henvendelser.length === 0) {
+    return <p>Ingen henvendelser registrert</p>;
+  }
+
   return (
     <div className={classes.root}>
       <div className={classes.leftCol}>
@@ -84,16 +137,24 @@ function Henvendelser(props: Props) {
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow className={classes.thRow}>
-                <TableCell className={classes.th}>Id</TableCell>
-                <TableCell className={classes.th}>Navn</TableCell>
-                <TableCell className={classes.th}>Underkategori</TableCell>
-                <TableCell className={classes.th}>Beskrivelse</TableCell>
-                <TableCell className={`${classes.th} ${classes.inStock}`}>
-                  På lager
-                </TableCell>
-                <TableCell className={`${classes.th} ${classes.inStock}`}>
-                  Nye funn
-                </TableCell>
+                <HenvendelseColumn columnName={"id"} labelName={"Id"} />
+                <HenvendelseColumn columnName={"name"} labelName={"Navn"} />
+                <HenvendelseColumn
+                  columnName={"subcategory"}
+                  labelName={"Underkategori"}
+                />
+                <HenvendelseColumn
+                  columnName={"description"}
+                  labelName={"Beskrivelse"}
+                />
+                <HenvendelseColumn
+                  columnName={"matchCount"}
+                  labelName={"På lager"}
+                />
+                <HenvendelseColumn
+                  columnName={"newMatchCount"}
+                  labelName={"Nye funn"}
+                />
               </TableRow>
             </TableHead>
             <TableBody>

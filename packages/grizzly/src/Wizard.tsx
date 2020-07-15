@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import {
+  makeStyles,
+  Theme,
+  createStyles,
+  withStyles,
+} from "@material-ui/core/styles";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepButton from "@material-ui/core/StepButton";
@@ -12,30 +17,18 @@ import MissingDate from "./MissingDate";
 import ContactInfo from "./ContactInfo";
 import Confirmation from "./Confirmation";
 import Container from "@material-ui/core/Container";
-import { Box } from "@material-ui/core";
+import { Box, StepConnector, StepLabel } from "@material-ui/core";
+import moment from "moment";
+import { Room, CalendarToday, Help, PersonOutline } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
     },
-    button: {
-      marginRight: theme.spacing(1),
-    },
-    stepButton: {
-      "& > .MuiStepLabel-root": {
-        display: "block",
-      },
-      "& > .MuiStepLabel-iconContainer": {
-        padding: "0 !important",
-      },
-    },
-    completed: {
-      display: "inline-block",
-    },
-    instructions: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
+    stepper: {
+      backgroundColor: "transparent",
+      padding: "10px 0",
     },
   })
 );
@@ -69,12 +62,25 @@ export default function Wizard() {
   const history = useHistory();
 
   function getSteps() {
-    const step1 = activeStep === 0 ? "Hvor" : `Linje ${line}`;
-    const step2 = activeStep <= 1 ? "Når" : `Dato ${date}`;
-    const step3 = activeStep <= 2 ? "Hva" : subCategory;
-    const step4 = "Kontakt";
-
-    return [step1, step2, step3, step4];
+    return [
+      {
+        label: activeStep === 0 ? "Hvor" : `Linje ${line}`,
+        icon: Room,
+      },
+      {
+        label:
+          activeStep <= 1 ? "Når" : moment(date, "YYYY-MM-DD").format("DD.MM"),
+        icon: CalendarToday,
+      },
+      {
+        label: activeStep <= 2 ? "Hva" : subCategory,
+        icon: Help,
+      },
+      {
+        label: "Kontakt",
+        icon: PersonOutline,
+      },
+    ];
   }
 
   const steps = getSteps();
@@ -112,12 +118,20 @@ export default function Wizard() {
   const handleStep = (step: number) => () => {
     setActiveStep(step);
     if (step === 0) {
+      setCompleted({});
       nextPage("/");
     }
     if (step === 1) {
+      setCompleted({
+        0: true,
+      });
       nextPage("/tidspunkt");
     }
     if (step === 2) {
+      setCompleted({
+        0: true,
+        1: true,
+      });
       nextPage("/hva");
     }
   };
@@ -137,36 +151,43 @@ export default function Wizard() {
   function onCategorySelect(cat: string) {
     setCategory(cat);
     //nextPage("/underkategori");
-    console.log("Kategori: ", cat);
     setStatus(2);
   }
 
   function onSubCategorySelected(subCat: string) {
     setSubCategory(subCat);
     //nextPage("/kjennetegn");
-    console.log("underkategori: ", subCat);
     setStatus(3);
   }
 
   function onCharacteristicsDone(characteristics: Characteristics) {
     setCharacteristics(characteristics);
-    console.log("kjennetegn ", characteristics);
     nextPage("/personopplysninger");
     setActiveStep(activeStep + 1);
+    setCompleted({
+      0: true,
+      1: true,
+      2: true,
+    });
   }
 
   function setLocation(location: string) {
     setLine(location);
-    console.log("linje: ", location);
     nextPage("/tidspunkt");
     setActiveStep(activeStep + 1);
+    setCompleted({
+      0: true,
+    });
   }
 
   function setDate(date: string) {
     setNewDate(date);
-    console.log("Dato: ", date);
     nextPage("/hva");
     setActiveStep(activeStep + 1);
+    setCompleted({
+      0: true,
+      1: true,
+    });
     setStatus(1);
   }
 
@@ -208,18 +229,99 @@ export default function Wizard() {
     });
   }
 
+  const ColorlibConnector = withStyles({
+    alternativeLabel: {
+      top: 25,
+    },
+    active: {
+      "& $line": {
+        backgroundColor: "#00758D",
+      },
+    },
+    completed: {
+      "& $line": {
+        backgroundColor: "#00758D",
+      },
+    },
+    line: {
+      height: 3,
+      border: 0,
+      backgroundColor: "#eaeaf0",
+      borderRadius: 1,
+    },
+  })(StepConnector);
+
+  const useColorlibStepIconStyles = makeStyles({
+    root: {
+      backgroundColor: "#FAFAFA",
+      zIndex: 1,
+      color: "#E0E0E0",
+      width: 44,
+      height: 44,
+      display: "flex",
+      borderRadius: "50%",
+      border: "2px solid #E0E0E0",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    active: {
+      color: "#00758D",
+      border: "2px solid #00758D",
+    },
+    completed: {
+      backgroundColor: "#323A48",
+      border: "2px solid #323A48",
+      color: "#fff",
+    },
+  });
+
+  type ColorlibStepIconProps = {
+    active: boolean;
+    completed: boolean;
+    icon: React.ReactNode;
+  };
+
+  function ColorlibStepIcon(props: ColorlibStepIconProps) {
+    const classes = useColorlibStepIconStyles();
+    const { active, completed } = props;
+    console.log(`icon`, props.icon, String(props.icon));
+
+    const icons: { [k: string]: any } = {
+      "1": <Room />,
+      "2": <CalendarToday />,
+      "3": <Help />,
+      "4": <PersonOutline />,
+    };
+
+    return (
+      <div
+        className={`${classes.root} terje ${active ? classes.active : ""} ${
+          completed ? classes.completed : ""
+        }`}
+      >
+        {icons[String(props.icon)]}
+      </div>
+    );
+  }
+
   return (
     <div className={classes.root}>
       <Box mt={2}>
-        <Stepper activeStep={activeStep}>
-          {steps.map((label, index) => (
-            <Step key={label}>
+        <Stepper
+          activeStep={activeStep}
+          alternativeLabel
+          className={classes.stepper}
+          connector={<ColorlibConnector />}
+        >
+          {steps.map((step, index) => (
+            <Step key={step.label}>
               <StepButton
-                className={classes.stepButton}
                 onClick={handleStep(index)}
                 completed={completed[index]}
               >
-                {label}
+                <StepLabel StepIconComponent={ColorlibStepIcon}>
+                  {step.label}
+                </StepLabel>
               </StepButton>
             </Step>
           ))}

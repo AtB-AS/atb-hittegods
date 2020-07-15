@@ -12,28 +12,16 @@ export const theme = createMuiTheme({
         padding: 0,
       },
     },
-
-    /*
-    MuiStepLabel: {
-      iconContainer: {
-        border: "2px solid red",
-        borderRadius: "50%",
-        color: "red",
-        "& > svg": {
-          margin: "4px",
-        },
+    MuiFormControl: {
+      root: {
+        background: "#ffffff",
       },
     },
-    /*
-    MuiStepIcon: {
-      active: {
-        color: "transparent !important",
-        border: "2px solid #00758D",
-        borderRadius: "50%",
+    MuiFormLabel: {
+      root: {
+        color: "#323A48",
       },
-
     },
-     */
   },
   palette: {
     primary: {

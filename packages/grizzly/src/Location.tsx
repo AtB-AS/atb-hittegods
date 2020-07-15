@@ -11,6 +11,7 @@ import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import CategoryBtn from "./components/CategoryBtn";
 
 type Props = {
   onLocationSelect: (location: string) => void;
@@ -75,6 +76,7 @@ function Location(props: Props) {
       <Box mt={4} mb={4}>
         <h2>Husker du hvor du mistet gjenstanden din?</h2>
       </Box>
+      <CategoryBtn />
       <div>
         <Box>
           <form onSubmit={handleSubmit(onSubmit)}>

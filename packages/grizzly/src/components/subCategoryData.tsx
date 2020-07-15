@@ -2,6 +2,11 @@ import categoryClothing from "./img/categoryClothing.png";
 import categoryBags from "./img/categoryBags.png";
 import categoryPersonalEffects from "./img/PersonalEffects.png";
 import categoryElectronics from "./img/categoryElectronics.png";
+import LueIcon from "../components/icons/Lue.svg";
+import ClothingIcon from "../components/icons/sweater.svg";
+import PhoneIcon from "../components/icons/Mobil.svg";
+import LuggageIcon from "../components/icons/Hovedbagasje.svg";
+import WalletIcon from "../components/icons/lommebok.svg";
 
 //Name of main categories
 export const mainCategory = {
@@ -37,7 +42,7 @@ type subCatProps = {
 export const categoryData = [
   {
     name: mainCategory.CLOTHING,
-    imgUrl: categoryClothing,
+    imgUrl: ClothingIcon,
     subCategories: [
       {
         name: subCatStrings.GLOVES,
@@ -50,7 +55,7 @@ export const categoryData = [
   },
   {
     name: mainCategory.BAGS,
-    imgUrl: categoryBags,
+    imgUrl: LuggageIcon,
     subCategories: [
       { name: subCatStrings.BAGS, imgUrl: categoryBags },
       { name: subCatStrings.HANDBAGS, imgUrl: categoryElectronics },
@@ -60,7 +65,7 @@ export const categoryData = [
   },
   {
     name: mainCategory.ELECTRONICS,
-    imgUrl: categoryElectronics,
+    imgUrl: PhoneIcon,
     subCategories: [
       { name: subCatStrings.PHONES, imgUrl: categoryBags },
       { name: subCatStrings.PC_TABLETS, imgUrl: categoryElectronics },
@@ -70,7 +75,7 @@ export const categoryData = [
   },
   {
     name: mainCategory.PERSONAL_EFFECTS,
-    imgUrl: categoryPersonalEffects,
+    imgUrl: WalletIcon,
     subCategories: [
       { name: subCatStrings.ID_CARDS, imgUrl: categoryBags },
       { name: subCatStrings.KEYS, imgUrl: categoryElectronics },

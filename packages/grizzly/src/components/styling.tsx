@@ -1,6 +1,18 @@
 import { createMuiTheme } from "@material-ui/core/styles";
 
 export const theme = createMuiTheme({
+  overrides: {
+    MuiButton: {
+      root: {
+        borderRadius: 0,
+      },
+    },
+    MuiGrid: {
+      root: {
+        padding: 0,
+      },
+    },
+  },
   palette: {
     primary: {
       // Dark grey
@@ -17,6 +29,7 @@ export const theme = createMuiTheme({
     background: {
       // Light grey
       default: "#F1F1F1",
+      paper: "#ffffff",
     },
     text: {
       //text on background

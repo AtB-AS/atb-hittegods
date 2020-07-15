@@ -8,6 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import AccessAlarmIcon from "@material-ui/icons/AccessAlarm";
 import Container from "@material-ui/core/Container";
+import LueIcon from "./components/icons/Lue.svg";
 
 type Props = {
   onSubCategorySelect: (category: string) => void;

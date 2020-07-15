@@ -9,6 +9,7 @@ import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import { Helmet } from "react-helmet";
 import CategoryBtn from "./components/CategoryBtn";
+import LueIcon from "./components/icons/Lue.svg";
 
 type Props = {
   onCategorySelect: (category: string) => void;
@@ -20,15 +21,6 @@ type catProps = {
   name: string;
   imgUrl: string;
 };
-
-const CategoryButton = styled(Button)({
-  border: 0,
-  borderRadius: 3,
-  boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .3)",
-  height: "160px",
-  padding: "0 30px",
-  width: "160px",
-});
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,7 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
 function MainCategory(props: Props) {
   const [cat, setCat] = useState(props.category);
   const h = useHistory();
-  const styles = useStyles();
   console.log(props);
 
   useEffect(() => {
@@ -53,14 +44,13 @@ function MainCategory(props: Props) {
 
   function CategoryComponent(subprops: catProps) {
     console.log(subprops);
+
     return (
-      <CategoryButton onClick={() => props.onCategorySelect(subprops.name)}>
-        <div>
-          <img src="/components/img/Mobileelectronics.svg" />
-        </div>
-        <div>{subprops.name}</div>
-        {/*<img src={subprops.imgUrl} />*/}
-      </CategoryButton>
+      <CategoryBtn
+        icon={subprops.imgUrl}
+        title={subprops.name}
+        onClick={() => props.onCategorySelect(subprops.name)}
+      />
     );
   }
 
@@ -73,9 +63,9 @@ function MainCategory(props: Props) {
         <h2>Velg kategori</h2>
       </Box>
       <Box mt={4}>
-        <Grid container spacing={3}>
+        <Grid container spacing={0}>
           {catData.map((mainCat) => (
-            <Grid className={styles.paper} item xs={6} key={mainCat.name}>
+            <Grid item xs={12} key={mainCat.name}>
               <CategoryComponent {...mainCat} />
             </Grid>
           ))}

@@ -71,7 +71,6 @@ function Henvendelse(props: Props) {
       })
       .then((jsonData) => {
         setHenvendelse(jsonData.data);
-
         setMatch(jsonData.data.foundids);
         setLoading(false);
       })

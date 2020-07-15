@@ -20,6 +20,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { useTableStyles } from "./styles";
 import SearchIcon from "@material-ui/icons/Search";
 import { log } from "util";
+import TransitItem from "./TransitItem";
 type Henvendelse = {
   id: number;
   name: string;
@@ -176,6 +177,18 @@ function Henvendelser(props: Props) {
     return <p>Ingen henvendelser registrert</p>;
   }
 
+  const removeItem = (id: number) => {
+    if(henvendelser){
+      const keepItems: Array<Henvendelse> = [];
+      henvendelser.forEach((item) => {
+        if (item.id != id) {
+          keepItems.push(item);
+        }
+      });
+      setHenvendelser(keepItems);
+    }};
+
+
   return (
     <div className={classes.root}>
       <div className={classes.leftCol}>
@@ -248,7 +261,12 @@ function Henvendelser(props: Props) {
         </TableContainer>
       </div>
       <div className={classes.rightCol}>
-        <Route path="/admin/henvendelser/:id" component={Henvendelse} />
+        <Route
+            path="/admin/henvendelser/:id"
+            render={(routeProps) => (
+                <Henvendelse {...routeProps} removeItem={removeItem} />
+            )}
+        />
       </div>
     </div>
   );

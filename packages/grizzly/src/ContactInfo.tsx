@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, createStyles, Grid, Theme, Container } from "@material-ui/core";
+import { Box, createStyles, Grid, Theme } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function ContactInfo(props: Props, contactInfo: ContactInfo) {
   const styles = useStyles();
-  const { register, handleSubmit, watch, errors } = useForm<Props>();
+  const { register, handleSubmit, errors } = useForm<Props>();
 
   const onSubmit: SubmitHandler<Props> = (data) => {
     props.onContactInfoSelect({

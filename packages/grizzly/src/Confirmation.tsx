@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, createStyles, Theme } from "@material-ui/core";
-import StepperWrapper from "./components/StepperWrapper";
 
 type Props = {
   name: string;

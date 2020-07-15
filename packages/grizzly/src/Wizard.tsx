@@ -101,20 +101,6 @@ export default function Wizard() {
     return completedSteps() === totalSteps();
   };
 
-  const handleNext = () => {
-    const newActiveStep =
-      isLastStep() && !allStepsCompleted()
-        ? // It's the last step, but not all steps have been completed,
-          // find the first step that has been completed
-          steps.findIndex((step, i) => !(i in completed))
-        : activeStep + 1;
-    setActiveStep(newActiveStep);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
   const handleStep = (step: number) => () => {
     setActiveStep(step);
     if (step === 0) {
@@ -134,18 +120,6 @@ export default function Wizard() {
       });
       nextPage("/hva");
     }
-  };
-
-  const handleComplete = () => {
-    const newCompleted = completed;
-    newCompleted[activeStep] = true;
-    setCompleted(newCompleted);
-    handleNext();
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-    setCompleted({});
   };
 
   function onCategorySelect(cat: string) {
@@ -210,11 +184,9 @@ export default function Wizard() {
       .catch(() => {
         console.log("oh no, it broke");
       });
-    console.log(contInfo);
   }
 
   function nextPage(path: string) {
-    console.log("push", history);
     history.push(path);
   }
 
@@ -253,7 +225,7 @@ export default function Wizard() {
 
   const useColorlibStepIconStyles = makeStyles({
     root: {
-      backgroundColor: "#FAFAFA",
+      backgroundColor: "#F1F1F1",
       zIndex: 1,
       color: "#E0E0E0",
       width: 44,
@@ -284,7 +256,6 @@ export default function Wizard() {
   function ColorlibStepIcon(props: ColorlibStepIconProps) {
     const classes = useColorlibStepIconStyles();
     const { active, completed } = props;
-    console.log(`icon`, props.icon, String(props.icon));
 
     const icons: { [k: string]: any } = {
       "1": <Room />,
@@ -295,7 +266,7 @@ export default function Wizard() {
 
     return (
       <div
-        className={`${classes.root} terje ${active ? classes.active : ""} ${
+        className={`${classes.root} ${active ? classes.active : ""} ${
           completed ? classes.completed : ""
         }`}
       >

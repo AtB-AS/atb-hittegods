@@ -41,12 +41,6 @@ export const theme = createMuiTheme({
       default: "#F1F1F1",
       paper: "#ffffff",
     },
-    text: {
-      //text on background
-      primary: "#323A48",
-      // text on primary, secondary and error
-      secondary: "#ffffff",
-    },
   },
   typography: {
     fontFamily: ["UnitOT", "Roboto", "sans-serif"].join(","),

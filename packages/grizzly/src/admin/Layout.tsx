@@ -1,14 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { createStyles, Grid, Theme } from "@material-ui/core";
-import {
-  Link,
-  NavLink,
-  Route,
-  Switch,
-  useLocation,
-  useRouteMatch,
-} from "react-router-dom";
+import { createStyles, Theme } from "@material-ui/core";
+import { NavLink, Route, Switch, useLocation } from "react-router-dom";
 import Henvendelser from "./Henvendelser";
 import Storage from "./Storage";
 import ReadyToPickUp from "./ReadyToPickUp";

@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { TableContainer } from "@material-ui/core";
+import {
+  createStyles,
+  IconButton,
+  InputBase,
+  TableContainer,
+  TableSortLabel,
+  Theme,
+} from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -11,15 +18,9 @@ import Henvendelse from "./Henvendelse";
 import { Route } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useTableStyles } from "./styles";
-
-type Henvendelse = {
-  id: number;
-  name: string;
-  subcategory: string;
-  description: string;
-  matchCount: number;
-  newMatchCount: number;
-};
+import { searchHenvendelse, HenvendelseType } from "./utils";
+import SearchIcon from "@material-ui/icons/Search";
+import { log } from "util";
 
 type Props = {
   match: {
@@ -29,17 +30,50 @@ type Props = {
   };
 };
 
+type ColumnProps = {
+  columnName: string;
+  labelName: string;
+};
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    input: {
+      marginLeft: theme.spacing(1),
+      flex: 1,
+      width: "90%",
+    },
+    iconButton: {
+      padding: 10,
+    },
+  })
+);
+
 function Henvendelser(props: Props) {
   const classes = useTableStyles();
+  const searchClasses = useStyles();
   const history = useHistory();
-  const [henvendelser, setHenvendelser] = useState<Henvendelse[]>([]);
+  const [henvendelser, setHenvendelser] = useState<HenvendelseType[]>([]);
   const [isloading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [newInqueryClick, setNewInquery] = useState(false);
-
+  const [orderBy, setOrderBy] = useState<string>("desc");
+  const [collumnName, setCollumnName] = useState("id");
+  const [searchValue, setSearchValue] = useState("");
   const params = {
     status: "Mistet",
   };
+
+  useEffect(() => {
+    if (orderBy === "desc") {
+      setHenvendelser(
+        henvendelser
+          .map((h) => h)
+          .sort(compare)
+          .reverse()
+      );
+    } else {
+      setHenvendelser(henvendelser.map((h) => h).sort(compare));
+    }
+  }, [orderBy, collumnName]);
 
   const queryString = Object.entries(params)
     .map(([key, val]) => `${key}=${val}`)
@@ -47,22 +81,55 @@ function Henvendelser(props: Props) {
 
   useEffect(() => {
     setLoading(true);
-    fetch("/api/admin/lost" + "?" + queryString)
+    fetch("/api/admin/lost?" + queryString)
       .then((response) => response.json())
       .then((jsonData) => {
-        setHenvendelser(jsonData.data.items);
+        console.log(jsonData);
+        const lostData = jsonData.data.items;
+        if (orderBy === "desc") {
+          setHenvendelser(lostData.sort(compare).reverse());
+        } else {
+          setHenvendelser(lostData.sort(compare));
+        }
+
         setLoading(false);
       })
       .catch(() => {
         setError(true);
       });
   }, []);
+
   function clickedRowItem(id: number) {
     history.push("/admin/henvendelser/" + id);
   }
 
-  function clickedNewInquery() {
-    return setNewInquery(true);
+  function clickedColumnName(col: string) {
+    if (col === collumnName) {
+      setOrderBy(orderBy === "asc" ? "desc" : "asc");
+    }
+    setCollumnName(col);
+  }
+
+  function compare(a: HenvendelseType, b: HenvendelseType) {
+    // @ts-ignore
+    return `${a[collumnName]}`.localeCompare(`${b[collumnName]}`, "en", {
+      numeric: true,
+      sensitivity: "base",
+    });
+  }
+
+  function HenvendelseColumn(props: ColumnProps) {
+    return (
+      <TableCell className={classes.th}>
+        <TableSortLabel
+          active={collumnName === props.columnName}
+          direction={orderBy === "asc" ? "desc" : "asc"}
+          onClick={(event) => clickedColumnName(props.columnName)}
+        >
+          {props.labelName}
+        </TableSortLabel>
+      </TableCell>
+    );
   }
 
   if (error) {
@@ -77,46 +144,77 @@ function Henvendelser(props: Props) {
     );
   }
 
+  if (henvendelser.length === 0) {
+    return <p>Ingen henvendelser registrert</p>;
+  }
+
   return (
     <div className={classes.root}>
       <div className={classes.leftCol}>
+        <InputBase
+          className={searchClasses.input}
+          placeholder="Søk på henvendelser"
+          onChange={(event) => {
+            setSearchValue(event.target.value);
+          }}
+          inputProps={{ "aria-label": "Søk på henvendelser" }}
+        />
+        <IconButton
+          type="submit"
+          className={searchClasses.iconButton}
+          aria-label="search"
+        >
+          <SearchIcon />
+        </IconButton>
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow className={classes.thRow}>
-                <TableCell className={classes.th}>Id</TableCell>
-                <TableCell className={classes.th}>Navn</TableCell>
-                <TableCell className={classes.th}>Underkategori</TableCell>
-                <TableCell className={classes.th}>Beskrivelse</TableCell>
-                <TableCell className={`${classes.th} ${classes.inStock}`}>
-                  På lager
-                </TableCell>
-                <TableCell className={`${classes.th} ${classes.inStock}`}>
-                  Nye funn
-                </TableCell>
+                <HenvendelseColumn columnName={"id"} labelName={"Id"} />
+                <HenvendelseColumn columnName={"name"} labelName={"Navn"} />
+                <HenvendelseColumn columnName={"phone"} labelName={"Telefon"} />
+                <HenvendelseColumn
+                  columnName={"subcategory"}
+                  labelName={"Underkategori"}
+                />
+                <HenvendelseColumn
+                  columnName={"description"}
+                  labelName={"Beskrivelse"}
+                />
+                <HenvendelseColumn
+                  columnName={"matchCount"}
+                  labelName={"På lager"}
+                />
+                <HenvendelseColumn
+                  columnName={"newMatchCount"}
+                  labelName={"Nye funn"}
+                />
               </TableRow>
             </TableHead>
             <TableBody>
-              {henvendelser.map((item, index) => {
-                return (
-                  <TableRow
-                    hover
-                    onClick={(event) => clickedRowItem(item.id)}
-                    className={
-                      `${item.id}` === props.match.params?.id
-                        ? classes.activeRow
-                        : classes.row
-                    }
-                  >
-                    <TableCell>{item.id}</TableCell>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.subcategory}</TableCell>
-                    <TableCell>{item.description}</TableCell>
-                    <TableCell align="center">{item.matchCount}</TableCell>
-                    <TableCell align="center">{item.newMatchCount}</TableCell>
-                  </TableRow>
-                );
-              })}
+              {searchHenvendelse(henvendelser, searchValue).map(
+                (item, index) => {
+                  return (
+                    <TableRow
+                      hover
+                      onClick={(event) => clickedRowItem(item.id)}
+                      className={
+                        `${item.id}` === props.match.params?.id
+                          ? classes.activeRow
+                          : classes.row
+                      }
+                    >
+                      <TableCell>{item.id}</TableCell>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.phone}</TableCell>
+                      <TableCell>{item.subcategory}</TableCell>
+                      <TableCell>{item.description}</TableCell>
+                      <TableCell align="center">{item.matchCount}</TableCell>
+                      <TableCell align="center">{item.newMatchCount}</TableCell>
+                    </TableRow>
+                  );
+                }
+              )}
             </TableBody>
           </Table>
         </TableContainer>

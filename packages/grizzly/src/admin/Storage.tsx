@@ -5,8 +5,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import { theme } from "../components/styling";
 import { Route } from "react-router-dom";
 import StorageItem from "./StorageItem";
 import { useHistory } from "react-router";
@@ -36,8 +34,16 @@ function Storage(props: Props) {
   const [isLoading, setLoading] = useState(true);
   const history = useHistory();
 
+  const params = {
+    status: "Funnet",
+  };
+
+  const queryString = Object.entries(params)
+    .map(([key, val]) => `${key}=${val}`)
+    .join("&");
+
   useEffect(() => {
-    fetch("/api/admin/found" + "?" + queryString)
+    fetch("/api/admin/found?" + queryString)
       .then((response) => response.json())
       .then((jsonData) => {
         setStorageItems(jsonData.data.items);
@@ -47,15 +53,6 @@ function Storage(props: Props) {
         setError(true);
       });
   }, []);
-
-  const params = {
-    from: 0,
-    to: 25,
-  };
-
-  const queryString = Object.entries(params)
-    .map(([key, val]) => `${key}=${val}`)
-    .join("&");
 
   function clickedRowItem(id: number) {
     history.push("/admin/lager/" + id);

@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { TableContainer, TableSortLabel } from "@material-ui/core";
+import {
+  createStyles,
+  IconButton,
+  InputBase,
+  TableContainer,
+  TableSortLabel,
+  Theme,
+} from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -11,10 +18,12 @@ import Henvendelse from "./Henvendelse";
 import { Route } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useTableStyles } from "./styles";
-
+import SearchIcon from "@material-ui/icons/Search";
+import { log } from "util";
 type Henvendelse = {
   id: number;
   name: string;
+  phone: string;
   subcategory: string;
   description: string;
   matchCount: number;
@@ -34,14 +43,30 @@ type ColumnProps = {
   labelName: string;
 };
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    input: {
+      marginLeft: theme.spacing(1),
+      flex: 1,
+      width: "90%",
+    },
+    iconButton: {
+      padding: 10,
+    },
+  })
+);
+
 function Henvendelser(props: Props) {
   const classes = useTableStyles();
+  const searchClasses = useStyles();
   const history = useHistory();
   const [henvendelser, setHenvendelser] = useState<Henvendelse[]>([]);
   const [isloading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [orderBy, setOrderBy] = useState<string>("desc");
   const [collumnName, setCollumnName] = useState("id");
+  const [searchValue, setSearchValue] = useState("");
+  const [henvendelserOld, sethenvendelserOld] = useState<Henvendelse[]>([]);
   const params = {
     status: "Mistet",
   };
@@ -59,6 +84,24 @@ function Henvendelser(props: Props) {
     }
   }, [orderBy, collumnName]);
 
+  useEffect(() => {
+    let nameSearched = henvendelser.filter((user) =>
+      user.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
+    );
+
+    let phoneNumberSearched = henvendelser.filter((user) =>
+      user.phone.split(" ").join("").includes(searchValue)
+    );
+
+    if (nameSearched.length !== 0) {
+      setHenvendelser(nameSearched);
+    } else if (phoneNumberSearched.length !== 0) {
+      setHenvendelser(phoneNumberSearched);
+    } else {
+      setHenvendelser(henvendelserOld);
+    }
+  }, [searchValue]);
+
   const queryString = Object.entries(params)
     .map(([key, val]) => `${key}=${val}`)
     .join("&");
@@ -68,12 +111,15 @@ function Henvendelser(props: Props) {
     fetch("/api/admin/lost?" + queryString)
       .then((response) => response.json())
       .then((jsonData) => {
+        console.log(jsonData);
         const lostData = jsonData.data.items;
+        sethenvendelserOld(lostData);
         if (orderBy === "desc") {
           setHenvendelser(lostData.sort(compare).reverse());
         } else {
           setHenvendelser(lostData.sort(compare));
         }
+
         setLoading(false);
       })
       .catch(() => {
@@ -133,12 +179,30 @@ function Henvendelser(props: Props) {
   return (
     <div className={classes.root}>
       <div className={classes.leftCol}>
+        <InputBase
+          className={searchClasses.input}
+          placeholder="Søk på henvendelser"
+          onChange={(event) => {
+            if (event.target.value === "") {
+              setHenvendelser(henvendelserOld);
+            } else setSearchValue(event.target.value);
+          }}
+          inputProps={{ "aria-label": "Søk på henvendelser" }}
+        />
+        <IconButton
+          type="submit"
+          className={searchClasses.iconButton}
+          aria-label="search"
+        >
+          <SearchIcon />
+        </IconButton>
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow className={classes.thRow}>
                 <HenvendelseColumn columnName={"id"} labelName={"Id"} />
                 <HenvendelseColumn columnName={"name"} labelName={"Navn"} />
+                <HenvendelseColumn columnName={"phone"} labelName={"Telefon"} />
                 <HenvendelseColumn
                   columnName={"subcategory"}
                   labelName={"Underkategori"}
@@ -171,6 +235,7 @@ function Henvendelser(props: Props) {
                   >
                     <TableCell>{item.id}</TableCell>
                     <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.phone}</TableCell>
                     <TableCell>{item.subcategory}</TableCell>
                     <TableCell>{item.description}</TableCell>
                     <TableCell align="center">{item.matchCount}</TableCell>

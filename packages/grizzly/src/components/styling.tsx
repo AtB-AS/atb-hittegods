@@ -17,8 +17,9 @@ export const theme = createMuiTheme({
         background: "#ffffff",
       },
     },
-    MuiFormLabel: {
-      root: {
+
+    MuiStepLabel: {
+      label: {
         color: "#323A48",
       },
     },

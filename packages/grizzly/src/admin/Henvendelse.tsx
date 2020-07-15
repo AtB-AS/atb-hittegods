@@ -44,7 +44,6 @@ function Henvendelse(props: Props) {
       })
       .then((jsonData) => {
         setHenvendelse(jsonData.data);
-
         setMatch(jsonData.data.foundids);
         setLoading(false);
       })
@@ -87,7 +86,7 @@ function Henvendelse(props: Props) {
           </Paper>
         </Grid>
       </Grid>
-      <Matches ids={match} />
+      <Matches ids={match}/>
     </div>
   );
 }

@@ -42,8 +42,7 @@ function Storage() {
   const [isLoading, setLoading] = useState(true);
 
   const params = {
-    from: 0,
-    to: 25,
+    status: "På vei",
   };
 
   const queryString = Object.entries(params)

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Grid } from "@material-ui/core";
+import { Box, Button, Grid, TextField } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
@@ -54,6 +54,8 @@ function TransitItem(props: Props) {
   const styles = useStyles();
   const history = useHistory();
   const [notFound, setNotFound] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [editValue, setEditValue] = useState("");
   const parameters = {
     id: props.match.params.id,
   };
@@ -72,7 +74,8 @@ function TransitItem(props: Props) {
       })
       .then((jsonData) => {
         setItem(jsonData.data);
-        if (jsonData.data.status != "På vei") {
+        setEditValue(jsonData.data.description);
+        if (jsonData.data.status !== "På vei") {
           setNotFound(true);
         }
         setLoading(false);
@@ -129,6 +132,97 @@ function TransitItem(props: Props) {
     }
   };
 
+  const editClickHandler = () => {
+    if (edit) {
+      if (props.match.params.id != undefined) {
+        fetch("/api/admin/found/" + props.match.params.id, {
+          body: JSON.stringify({
+            status: "Funnet",
+            subCategory: item?.subcategory,
+            category: item?.category,
+            description: editValue,
+            name: item?.name,
+            phone: item?.phone,
+            email: item?.email,
+            brand: item?.brand,
+            color: item?.color,
+            line: item?.line,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "PUT",
+        }).then((response) => {
+          if (response.status === 401) {
+          } else if (response.status === 200) {
+            props.removeItem(parseInt(props.match.params.id));
+            history.replace("/admin/påVei");
+          }
+        });
+      }
+    } else {
+      setEdit(true);
+    }
+  };
+
+  const textChangeHandler = (value: string) => {
+    setEditValue(value);
+  };
+
+  let description;
+  let buttons;
+  if (edit) {
+    description = (
+      <TextField
+        label="Beskrivelse"
+        value={editValue}
+        onChange={(e) => {
+          textChangeHandler(e.target.value);
+        }}
+      />
+    );
+    buttons = (
+      <Grid item justify="space-between">
+        <Button
+          variant="contained"
+          color="primary"
+          className="editButton"
+          onClick={(event) => {
+            editClickHandler();
+          }}
+        >
+          Lagre og legg til lager
+        </Button>
+      </Grid>
+    );
+  } else {
+    description = <p>{item?.description}</p>;
+    buttons = (
+      <Grid item justify="space-between">
+        <Button
+          variant="contained"
+          color="primary"
+          className="editButton"
+          onClick={(event) => {
+            editClickHandler();
+          }}
+        >
+          Rediger
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          className="storageButton"
+          onClick={(event) => {
+            storageClickHandler();
+          }}
+        >
+          Legg til lager
+        </Button>
+      </Grid>
+    );
+  }
+
   return (
     <div className={styles.root}>
       <Box p={3} mt={4} className={styles.card}>
@@ -137,7 +231,7 @@ function TransitItem(props: Props) {
             <h2>
               {item?.subcategory} - {item?.brand}
             </h2>
-            <p>{item?.description}</p>
+            {description}
           </Grid>
           <Grid item md={8}>
             <h3 className="h4">På gjenstanden</h3>
@@ -161,21 +255,7 @@ function TransitItem(props: Props) {
               <dd>{item?.color}</dd>
             </dl>
           </Grid>
-          <Grid item justify="space-between">
-            <Button variant="contained" color="primary" className="editButton">
-              Rediger
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              className="storageButton"
-              onClick={(event) => {
-                storageClickHandler();
-              }}
-            >
-              Legg til lager
-            </Button>
-          </Grid>
+          {buttons}
         </Grid>
       </Box>
     </div>

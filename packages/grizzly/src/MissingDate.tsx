@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { Grid, LinearProgress } from "@material-ui/core";
-import { Paper } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 import Button from "@material-ui/core/Button";
 
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import { Box, Container } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 
 type Props = {
   onDateSelect: (date: string) => void;
@@ -93,7 +92,6 @@ function MissingDate(props: Props) {
               <TextField
                 label="Dato"
                 type="date"
-                defaultValue={new Date()}
                 className={classes.textField}
                 InputLabelProps={{
                   shrink: true,

@@ -17,6 +17,11 @@ type Props = {
   line: string;
 };
 
+type LineObj = {
+  line: string;
+  description: string;
+};
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     textfield: {
@@ -29,15 +34,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-type Line = {
-  line: string;
-  description: string;
-};
-
 function Location(props: Props) {
   const styles = useStyles();
   const { register, handleSubmit, watch, errors } = useForm<Props>();
-  const [lines, setLines] = useState<Line[]>([]);
+  const [lines, setLines] = useState<LineObj[]>([]);
   const [error, setError] = useState(false);
   const [isloading, setLoading] = useState(true);
   const [line, setLine] = useState(props.line);
@@ -75,8 +75,6 @@ function Location(props: Props) {
     return <p>Laster...</p>;
   }
 
-  const lineNumbers = lines.map((line) => line.line);
-
   return (
     <div>
       <Box mt={4} mb={4}>
@@ -89,19 +87,16 @@ function Location(props: Props) {
               <Grid item xs={12}>
                 <h3 className={styles.heading}>Linje</h3>
                 <Autocomplete
-                  options={lineNumbers}
-                  getOptionLabel={(item) => item}
+                  options={lines}
+                  getOptionLabel={(item) => item.line + " " + item.description}
                   style={{ width: 300 }}
-                  defaultValue={line}
-                  onInputChange={(event, value) => {
-                    console.log("Sett veri", value);
-                    //setLine(value);
-                  }}
+                  defaultValue={lines.find((l) => l.line === line)}
                   onChange={(event, value) => {
-                    console.log("Sett veri onchange", value);
-                    if (value) {
+                    console.log("Sett veri onchange", value?.line);
+                    if (value?.line) {
                       // @ts-ignore
-                      props.onLocationSelect(value);
+                      props.onLocationSelect(value.line);
+                      setLine(value.line);
                     }
                   }}
                   renderInput={(params) => (

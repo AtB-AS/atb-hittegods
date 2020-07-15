@@ -2,34 +2,45 @@ import { createMuiTheme } from "@material-ui/core/styles";
 
 export const theme = createMuiTheme({
   overrides: {
-    /*
-    MuiStepLabel: {
-      iconContainer: {
-        border: "2px solid red",
-        borderRadius: "50%",
-        color: "red",
-        "& > svg": {
-          margin: "4px",
-        },
+    MuiButton: {
+      root: {
+        borderRadius: 0,
       },
     },
-    /*
-    MuiStepIcon: {
-      active: {
-        color: "transparent !important",
-        border: "2px solid #00758D",
-        borderRadius: "50%",
+    MuiGrid: {
+      root: {
+        padding: 0,
       },
+    },
+    MuiFormControl: {
+      root: {
+        background: "#ffffff",
+      },
+    },
 
+    MuiStepLabel: {
+      label: {
+        color: "#323A48",
+      },
     },
-     */
   },
   palette: {
     primary: {
-      main: "#00758D",
+      // Dark grey
+      main: "#323A48",
     },
     secondary: {
-      main: "#A9AD00",
+      // Blue
+      main: "#00758D",
+      light: "#60d1E0",
+    },
+    error: {
+      main: "#b2292e",
+    },
+    background: {
+      // Light grey
+      default: "#F1F1F1",
+      paper: "#ffffff",
     },
   },
   typography: {

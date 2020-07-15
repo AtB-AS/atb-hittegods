@@ -1,33 +1,20 @@
-import React, { useState } from "react";
-import { mainCategory } from "./components/constants";
-import { createStyles, Grid, styled, Theme } from "@material-ui/core";
-import { Paper } from "@material-ui/core";
+import React from "react";
+import { createStyles, Grid, Theme } from "@material-ui/core";
 import { categoryData } from "./components/subCategoryData";
 import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import AccessAlarmIcon from "@material-ui/icons/AccessAlarm";
-import Container from "@material-ui/core/Container";
+import CategoryBtn from "./components/CategoryBtn";
 
 type Props = {
   onSubCategorySelect: (category: string) => void;
   getMainCat: string;
-  //icon?: object;
+  icon?: object;
 };
 
 type subCatProps = {
   name: string;
   imgUrl: string;
 };
-
-const CategoryButton = styled(Button)({
-  border: 0,
-  borderRadius: 3,
-  boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .3)",
-  height: "160px",
-  padding: "0 30px",
-  width: "160px",
-});
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,13 +41,11 @@ function SubCategory(props: Props) {
 
   function SubCategoryComponent(subprops: subCatProps) {
     return (
-      <CategoryButton onClick={() => props.onSubCategorySelect(subprops.name)}>
-        <div>
-          <AccessAlarmIcon />
-          {/*<img src={subprops.imgUrl} />*/}
-        </div>
-        <div>{subprops.name}</div>
-      </CategoryButton>
+      <CategoryBtn
+        icon={subprops.imgUrl}
+        title={subprops.name}
+        onClick={() => props.onSubCategorySelect(subprops.name)}
+      />
     );
   }
 
@@ -70,10 +55,10 @@ function SubCategory(props: Props) {
         <h2>Velg underkategori </h2>
       </Box>
       <Box mt={4}>
-        <Grid container spacing={3} key={"subcategory"}>
+        <Grid container key={"subcategory"}>
           {subCatData.map((data) => (
-            <Grid item className={styles.paper} xs={6}>
-              <div key={data.name}>
+            <Grid item className={styles.paper} xs={12} key={data.name}>
+              <div>
                 <SubCategoryComponent {...data} />
               </div>
             </Grid>

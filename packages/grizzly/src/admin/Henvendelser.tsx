@@ -18,18 +18,8 @@ import Henvendelse from "./Henvendelse";
 import { Route } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useTableStyles } from "./styles";
+import { searchHenvendelse, HenvendelseType } from "./utils";
 import SearchIcon from "@material-ui/icons/Search";
-import { log } from "util";
-import TransitItem from "./TransitItem";
-type Henvendelse = {
-  id: number;
-  name: string;
-  phone: string;
-  subcategory: string;
-  description: string;
-  matchCount: number;
-  newMatchCount: number;
-};
 
 type Props = {
   match: {
@@ -61,13 +51,12 @@ function Henvendelser(props: Props) {
   const classes = useTableStyles();
   const searchClasses = useStyles();
   const history = useHistory();
-  const [henvendelser, setHenvendelser] = useState<Henvendelse[]>([]);
+  const [henvendelser, setHenvendelser] = useState<HenvendelseType[]>([]);
   const [isloading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [orderBy, setOrderBy] = useState<string>("desc");
   const [collumnName, setCollumnName] = useState("id");
   const [searchValue, setSearchValue] = useState("");
-  const [henvendelserOld, sethenvendelserOld] = useState<Henvendelse[]>([]);
   const params = {
     status: "Mistet",
   };
@@ -85,24 +74,6 @@ function Henvendelser(props: Props) {
     }
   }, [orderBy, collumnName]);
 
-  useEffect(() => {
-    let nameSearched = henvendelser.filter((user) =>
-      user.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
-    );
-
-    let phoneNumberSearched = henvendelser.filter((user) =>
-      user.phone.split(" ").join("").includes(searchValue)
-    );
-
-    if (nameSearched.length !== 0) {
-      setHenvendelser(nameSearched);
-    } else if (phoneNumberSearched.length !== 0) {
-      setHenvendelser(phoneNumberSearched);
-    } else {
-      setHenvendelser(henvendelserOld);
-    }
-  }, [searchValue]);
-
   const queryString = Object.entries(params)
     .map(([key, val]) => `${key}=${val}`)
     .join("&");
@@ -114,7 +85,6 @@ function Henvendelser(props: Props) {
       .then((jsonData) => {
         console.log(jsonData);
         const lostData = jsonData.data.items;
-        sethenvendelserOld(lostData);
         if (orderBy === "desc") {
           setHenvendelser(lostData.sort(compare).reverse());
         } else {
@@ -139,7 +109,7 @@ function Henvendelser(props: Props) {
     setCollumnName(col);
   }
 
-  function compare(a: Henvendelse, b: Henvendelse) {
+  function compare(a: HenvendelseType, b: HenvendelseType) {
     // @ts-ignore
     return `${a[collumnName]}`.localeCompare(`${b[collumnName]}`, "en", {
       numeric: true,
@@ -177,18 +147,6 @@ function Henvendelser(props: Props) {
     return <p>Ingen henvendelser registrert</p>;
   }
 
-  const removeItem = (id: number) => {
-    if(henvendelser){
-      const keepItems: Array<Henvendelse> = [];
-      henvendelser.forEach((item) => {
-        if (item.id != id) {
-          keepItems.push(item);
-        }
-      });
-      setHenvendelser(keepItems);
-    }};
-
-
   return (
     <div className={classes.root}>
       <div className={classes.leftCol}>
@@ -196,9 +154,7 @@ function Henvendelser(props: Props) {
           className={searchClasses.input}
           placeholder="Søk på henvendelser"
           onChange={(event) => {
-            if (event.target.value === "") {
-              setHenvendelser(henvendelserOld);
-            } else setSearchValue(event.target.value);
+            setSearchValue(event.target.value);
           }}
           inputProps={{ "aria-label": "Søk på henvendelser" }}
         />
@@ -235,38 +191,35 @@ function Henvendelser(props: Props) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {henvendelser.map((item, index) => {
-                return (
-                  <TableRow
-                    hover
-                    onClick={(event) => clickedRowItem(item.id)}
-                    className={
-                      `${item.id}` === props.match.params?.id
-                        ? classes.activeRow
-                        : classes.row
-                    }
-                  >
-                    <TableCell>{item.id}</TableCell>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.phone}</TableCell>
-                    <TableCell>{item.subcategory}</TableCell>
-                    <TableCell>{item.description}</TableCell>
-                    <TableCell align="center">{item.matchCount}</TableCell>
-                    <TableCell align="center">{item.newMatchCount}</TableCell>
-                  </TableRow>
-                );
-              })}
+              {searchHenvendelse(henvendelser, searchValue).map(
+                (item, index) => {
+                  return (
+                    <TableRow
+                      hover
+                      onClick={(event) => clickedRowItem(item.id)}
+                      className={
+                        `${item.id}` === props.match.params?.id
+                          ? classes.activeRow
+                          : classes.row
+                      }
+                    >
+                      <TableCell>{item.id}</TableCell>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.phone}</TableCell>
+                      <TableCell>{item.subcategory}</TableCell>
+                      <TableCell>{item.description}</TableCell>
+                      <TableCell align="center">{item.matchCount}</TableCell>
+                      <TableCell align="center">{item.newMatchCount}</TableCell>
+                    </TableRow>
+                  );
+                }
+              )}
             </TableBody>
           </Table>
         </TableContainer>
       </div>
       <div className={classes.rightCol}>
-        <Route
-            path="/admin/henvendelser/:id"
-            render={(routeProps) => (
-                <Henvendelse {...routeProps} removeItem={removeItem} />
-            )}
-        />
+        <Route path="/admin/henvendelser/:id" component={Henvendelse} />
       </div>
     </div>
   );

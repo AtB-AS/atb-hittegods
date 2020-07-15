@@ -67,7 +67,7 @@ function App() {
           </Grid>
           <Grid item className={classes.menuLink}>
             <Paper className={classes.paper}>
-              <Link to="/admin/paVei">På vei</Link>
+              <Link to="/admin/påVei">På vei</Link>
             </Paper>
           </Grid>
           <Grid item className={classes.menuLink}>
@@ -83,9 +83,7 @@ function App() {
             <Route path="/admin/tilUtlevering">
               <ReadyToPickUp />
             </Route>
-            <Route path="/admin/paVei">
-              <Transit />
-            </Route>
+            <Route path="/admin/påVei" component={Transit} />
             <Route path="/admin/registrereFunn">
               <RegisterFound />
             </Route>

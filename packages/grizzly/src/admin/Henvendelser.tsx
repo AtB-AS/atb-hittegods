@@ -65,7 +65,7 @@ function Henvendelser(props: Props) {
 
   useEffect(() => {
     setLoading(true);
-    fetch("/api/admin/lost" + "?" + queryString)
+    fetch("/api/admin/lost?" + queryString)
       .then((response) => response.json())
       .then((jsonData) => {
         const lostData = jsonData.data.items;

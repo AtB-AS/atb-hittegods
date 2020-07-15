@@ -19,7 +19,7 @@ export function searchHenvendelse(
     return (
       user.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()) ||
       user.phone.split(" ").join("").includes(query) ||
-      user.description.includes(query)
+      user.description.toLocaleLowerCase().includes(query.toLocaleLowerCase())
     );
   });
   return searchResults;

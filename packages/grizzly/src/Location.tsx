@@ -94,11 +94,11 @@ function Location(props: Props) {
                   style={{ width: 300 }}
                   defaultValue={line}
                   onInputChange={(event, value) => {
-                    console.log("Sett veri", value);
+                    console.log("Sett verdi", value);
                     //setLine(value);
                   }}
                   onChange={(event, value) => {
-                    console.log("Sett veri onchange", value);
+                    console.log("Sett verdi onchange");
                     if (value) {
                       // @ts-ignore
                       props.onLocationSelect(value);

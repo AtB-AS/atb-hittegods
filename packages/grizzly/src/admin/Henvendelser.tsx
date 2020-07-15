@@ -126,6 +126,10 @@ function Henvendelser(props: Props) {
     );
   }
 
+  if (henvendelser.length === 0) {
+    return <p>Ingen henvendelser registrert</p>;
+  }
+
   return (
     <div className={classes.root}>
       <div className={classes.leftCol}>

@@ -1,20 +1,68 @@
 import React, { useEffect, useState } from "react";
+import { TableContainer } from "@material-ui/core";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
+import { Route } from "react-router-dom";
+import { useTableStyles } from "./styles";
+import { useHistory } from "react-router";
+import TransitItem from "./TransitItem";
 
 type Items = {
   id: number;
-  name: string;
   subcategory: string;
-  desctiption: string;
+  description: string;
+  matchCount: number;
+  newMatchCount: number;
+  name: string;
+  phone: string;
+  email: string;
+  brand: string;
+  status: string;
+  color: string;
+  date: string;
+  line: string;
+  foundids: number[];
 };
 
-function Transit() {
+type Props = {
+  match: {
+    params: {
+      id?: string;
+    };
+  };
+};
+
+function Transit(props: Props) {
+  const classes = useTableStyles();
   const [items, setItems] = useState<Items[]>([]);
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const history = useHistory();
+
+  const params = {
+    status: "På vei",
+  };
+
+  const queryString = Object.entries(params)
+    .map(([key, val]) => `${key}=${val}`)
+    .join("&");
+
+  const removeItem = (id: number) => {
+    const keepItems: Array<Items> = [];
+    items.forEach((item) => {
+      if (item.id != id) {
+        keepItems.push(item);
+      }
+    });
+    setItems(keepItems);
+  };
 
   useEffect(() => {
     setLoading(true);
-    fetch("/api/admin/inTransit")
+    fetch("/api/admin/found?" + queryString)
       .then((response) => {
         if (response.status === 401) {
           //Unauthorized
@@ -29,7 +77,7 @@ function Transit() {
       .catch(() => {
         setError(true);
       });
-  });
+  }, []);
 
   if (error) {
     return <p>Noe gikk galt</p>;
@@ -39,7 +87,64 @@ function Transit() {
     return <p>Laster...</p>;
   }
 
-  return <div>Gjenstander på vei!</div>;
+  function clickedRowItem(id: number) {
+    history.push("/admin/påVei/" + id);
+  }
+
+  return (
+    <div className={classes.root}>
+      <div className={classes.leftCol}>
+        <TableContainer className={classes.container}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow className={classes.thRow}>
+                <TableCell className={classes.th}>Id</TableCell>
+                <TableCell className={classes.th}>Navn</TableCell>
+                <TableCell className={classes.th}>Underkategori</TableCell>
+                <TableCell className={classes.th}>Beskrivelse</TableCell>
+                <TableCell className={`${classes.th} ${classes.inStock}`}>
+                  På lager
+                </TableCell>
+                <TableCell className={`${classes.th} ${classes.inStock}`}>
+                  Nye funn
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {items.map((item, index) => {
+                return (
+                  <TableRow
+                    hover
+                    onClick={(event) => clickedRowItem(item.id)}
+                    className={
+                      `${item.id}` === props.match.params?.id
+                        ? classes.activeRow
+                        : classes.row
+                    }
+                  >
+                    <TableCell>{item.id}</TableCell>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.subcategory}</TableCell>
+                    <TableCell>{item.description}</TableCell>
+                    <TableCell align="center">{item.matchCount}</TableCell>
+                    <TableCell align="center">{item.newMatchCount}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+      <div className={classes.rightCol}>
+        <Route
+          path="/admin/påVei/:id"
+          render={(routeProps) => (
+            <TransitItem {...routeProps} removeItem={removeItem} />
+          )}
+        />
+      </div>
+    </div>
+  );
 }
 
 export default Transit;

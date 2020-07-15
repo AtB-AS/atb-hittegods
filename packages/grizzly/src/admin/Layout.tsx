@@ -82,7 +82,7 @@ const routes = [
     title: "Til utlevering",
   },
   {
-    path: "/admin/paVei",
+    path: "/admin/påVei",
     title: "På vei",
   },
 ];
@@ -120,7 +120,7 @@ function Layout() {
           <Route path="/admin/lager/registrere" component={RegisterFound} />
           <Route path="/admin/lager/:id?" exact component={Storage} />
           <Route path="/admin/tilUtlevering" component={ReadyToPickUp} />
-          <Route path="/admin/paVei" component={Transit} />
+          <Route path="/admin/påVei" component={Transit} />
         </Switch>
       </main>
     </div>

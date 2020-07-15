@@ -11,6 +11,8 @@ import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import CategoryBtn from "./components/CategoryBtn";
+import LueIcon from "./components/icons/Lue.svg";
 
 type Props = {
   onLocationSelect: (location: string) => void;

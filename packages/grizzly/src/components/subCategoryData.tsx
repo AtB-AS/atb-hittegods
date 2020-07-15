@@ -1,7 +1,3 @@
-import categoryClothing from "./img/categoryClothing.png";
-import categoryBags from "./img/categoryBags.png";
-import categoryPersonalEffects from "./img/PersonalEffects.png";
-import categoryElectronics from "./img/categoryElectronics.png";
 import LueIcon from "../components/icons/Lue.svg";
 import ClothingIcon from "../components/icons/sweater.svg";
 import PhoneIcon from "../components/icons/Mobil.svg";
@@ -18,7 +14,6 @@ import Gloves from "../components/icons/hanskerOgvotter.svg";
 import Key from "../components/icons/Nokkel.svg";
 
 import Bag from "../components/icons/sekk.svg";
-import Suitcase from "../components/icons/trillekoffert.svg";
 
 import Purse from "../components/icons/veske.svg";
 

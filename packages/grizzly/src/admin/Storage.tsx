@@ -212,6 +212,7 @@ function Storage(props: Props) {
                         : classes.row
                     }
                     onClick={(event) => clickedRowItem(item.id)}
+                    key={item.id}
                   >
                     <TableCell>{item.id}</TableCell>
                     <TableCell>{item.subcategory}</TableCell>

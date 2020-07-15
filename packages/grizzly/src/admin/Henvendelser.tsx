@@ -20,7 +20,6 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { useTableStyles } from "./styles";
 import { searchHenvendelse, HenvendelseType } from "./utils";
 import SearchIcon from "@material-ui/icons/Search";
-import { log } from "util";
 
 type Props = {
   match: {

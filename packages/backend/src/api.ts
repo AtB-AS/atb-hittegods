@@ -312,14 +312,19 @@ export default async (
     }
   });
 
+  type Line = {
+    line: string;
+    description: string;
+  };
   app.get("/api/line", (req: Request, res: Response) => {
     client
-      .query("select line from line")
+      .query("select line, description from line")
       .then((queryResult) => {
-        const lines: Array<string> = [];
+        const lines: Array<Line> = [];
         queryResult.rows.forEach((row) => {
           if (row.line != "") {
-            lines.push(row.line);
+            const line: Line = { line: row.line, description: row.description };
+            lines.push(line);
           }
         });
         res.json({ status: "success", data: { lines: lines } });

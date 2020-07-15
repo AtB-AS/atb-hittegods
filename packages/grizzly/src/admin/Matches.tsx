@@ -12,7 +12,6 @@ import Henvendelser from "./Henvendelser";
 import Henvendelse from "./Henvendelse";
 
 type MatchIDs = {
-  lostid:number;
   ids: number[];
 };
 
@@ -22,7 +21,6 @@ type MatchResponse = {
 };
 
 type Match = {
-  lostid: number;
   id: number;
   name: string;
   phone: string;

@@ -46,7 +46,7 @@ type Items = {
   foundids: number[];
 };
 
-function StorageItem(props: Props) {
+function TransitItem(props: Props) {
   const [item, setItem] = useState<Items | null>(null);
   const [isLoading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState(false);
@@ -72,7 +72,7 @@ function StorageItem(props: Props) {
       })
       .then((jsonData) => {
         setItem(jsonData.data);
-        if (jsonData.data.status != "Funnet") {
+        if (jsonData.data.status != "På vei") {
           setNotFound(true);
         }
         setLoading(false);
@@ -98,6 +98,36 @@ function StorageItem(props: Props) {
   if (notFound) {
     return <p>Beklager denne gjenstaden finnes ikke</p>;
   }
+
+  const storageClickHandler = () => {
+    if (props.match.params.id != undefined) {
+      fetch("/api/admin/found/" + props.match.params.id, {
+        body: JSON.stringify({
+          status: "Funnet",
+          subCategory: item?.subcategory,
+          category: item?.category,
+          description: item?.description,
+          name: item?.name,
+          phone: item?.phone,
+          email: item?.email,
+          brand: item?.brand,
+          color: item?.color,
+          line: item?.line,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "PUT",
+      }).then((response) => {
+        if (response.status === 401) {
+        } else if (response.status === 200) {
+          console.log(props);
+          props.removeItem(parseInt(props.match.params.id));
+          history.replace("/admin/påVei");
+        }
+      });
+    }
+  };
 
   return (
     <div className={styles.root}>
@@ -131,10 +161,25 @@ function StorageItem(props: Props) {
               <dd>{item?.color}</dd>
             </dl>
           </Grid>
+          <Grid item justify="space-between">
+            <Button variant="contained" color="primary" className="editButton">
+              Rediger
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              className="storageButton"
+              onClick={(event) => {
+                storageClickHandler();
+              }}
+            >
+              Legg til lager
+            </Button>
+          </Grid>
         </Grid>
       </Box>
     </div>
   );
 }
 
-export default StorageItem;
+export default TransitItem;

@@ -56,3 +56,11 @@ export const foundPutBodyValidator = Joi.object({
 export const foundPutParamValidator = Joi.object({
   id: Joi.number().required(),
 });
+
+export const lostIdStatusPutBodyValidator = Joi.object({
+  status: Joi.string().required(),
+});
+
+export const lostIdStatusPutParamValidator = Joi.object({
+  id: Joi.number().required(),
+});

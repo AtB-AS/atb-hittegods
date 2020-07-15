@@ -29,13 +29,18 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+type Line = {
+  line: string;
+  description: string;
+};
+
 function Location(props: Props) {
   const styles = useStyles();
   const { register, handleSubmit, watch, errors } = useForm<Props>();
-  const [lines, setLines] = useState([]);
+  const [lines, setLines] = useState<Line[]>([]);
   const [error, setError] = useState(false);
   const [isloading, setLoading] = useState(true);
-  const [line, setLine] = useState("");
+  const [line, setLine] = useState(props.line);
 
   useEffect(() => {
     setLoading(true);
@@ -70,6 +75,8 @@ function Location(props: Props) {
     return <p>Laster...</p>;
   }
 
+  const lineNumbers = lines.map((line) => line.line);
+
   return (
     <div>
       <Box mt={4} mb={4}>
@@ -82,10 +89,21 @@ function Location(props: Props) {
               <Grid item xs={12}>
                 <h3 className={styles.heading}>Linje</h3>
                 <Autocomplete
-                  options={lines}
+                  options={lineNumbers}
                   getOptionLabel={(item) => item}
                   style={{ width: 300 }}
-                  onInputChange={(event, value) => setLine(value)}
+                  defaultValue={line}
+                  onInputChange={(event, value) => {
+                    console.log("Sett veri", value);
+                    //setLine(value);
+                  }}
+                  onChange={(event, value) => {
+                    console.log("Sett veri onchange", value);
+                    if (value) {
+                      // @ts-ignore
+                      props.onLocationSelect(value);
+                    }
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -101,11 +119,6 @@ function Location(props: Props) {
                   onClick={unknownLineButtonHandler}
                 >
                   Husker ikke
-                </Button>
-              </Grid>
-              <Grid item xs={12}>
-                <Button color="primary" type="submit" variant="contained">
-                  Neste
                 </Button>
               </Grid>
             </Grid>

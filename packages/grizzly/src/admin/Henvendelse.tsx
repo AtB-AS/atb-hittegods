@@ -1,14 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { log } from "util";
-import { Grid } from "@material-ui/core";
-import Paper from "@material-ui/core/Paper";
+import { Box, Grid } from "@material-ui/core";
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import moment from "moment";
 import Matches from "./Matches";
+
+const useStyles = makeStyles({
+  root: {
+    padding: "20px 0 0 20px",
+    fontSize: "18px",
+  },
+  loading: {
+    textAlign: "center",
+    marginTop: "60px",
+  },
+  card: {
+    backgroundColor: "#fff",
+  },
+});
 
 type Props = {
   match: {
@@ -24,6 +39,14 @@ type Henvendelsen = {
   description: string;
   matchCount: number;
   newMatchCount: number;
+  name: string;
+  phone: string;
+  email: string;
+  brand: string;
+  status: string;
+  color: string;
+  date: string;
+  line: string;
   foundids: number[];
 };
 
@@ -32,6 +55,10 @@ function Henvendelse(props: Props) {
   const [isLoading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState(false);
   const [match, setMatch] = useState<number[]>([]);
+  const styles = useStyles();
+  const parameters = {
+    id: props.match.params.id,
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -57,36 +84,50 @@ function Henvendelse(props: Props) {
   }
 
   if (isLoading) {
-    return <p>Laster...</p>;
+    return (
+      <div className={styles.loading}>
+        <CircularProgress />
+      </div>
+    );
   }
 
   return (
-    <div>
-      HEI {props.match.params.id}
-      <Grid container>
-        <Grid item md={12}>
-          <Paper>
-            <p> ID, subcat, merke og dato</p>
-          </Paper>
-        </Grid>
-        <Grid item md={6}>
-          <Paper>
-            <h3>Innsender:</h3>
-            <p></p>
-            <p>90807060</p>
-            <p>email@email.com</p>
-            <h3>{henvendelse?.subcategory}</h3>
+    <div className={styles.root}>
+      <Box p={3} mt={4} className={styles.card}>
+        <Grid container>
+          <Grid item md={12}>
+            <h2>
+              {henvendelse?.subcategory} - {henvendelse?.brand}
+            </h2>
             <p>{henvendelse?.description}</p>
-          </Paper>
+          </Grid>
+          <Grid item md={8}>
+            <h3 className="h4">Innsender</h3>
+            <dl>
+              <dt>Navn:</dt>
+              <dd>{henvendelse?.name}</dd>
+              <dt>Telefon:</dt>
+              <dd>{henvendelse?.phone}</dd>
+              <dt>E-post:</dt>
+              <dd>{henvendelse?.email}</dd>
+            </dl>
+          </Grid>
+          <Grid item md={4}>
+            <h3 className="h4">Detaljer</h3>
+            <dl>
+              <dt>Dato:</dt>
+              <dd>{moment(henvendelse?.date).format("DD.MM.yy")}</dd>
+              <dt>Linje:</dt>
+              <dd>{henvendelse?.line}</dd>
+              <dt>Farge:</dt>
+              <dd>{henvendelse?.color}</dd>
+            </dl>
+          </Grid>
         </Grid>
-        <Grid item md={6}>
-          <Paper>
-            <h3>BILDE:)</h3>
-            <p>Linje: 3</p>
-          </Paper>
-        </Grid>
-      </Grid>
-      <Matches ids={match}/>
+      </Box>
+      <Box p={2} className={styles.card} mt={4}>
+        <Matches ids={match} />
+      </Box>
     </div>
   );
 }

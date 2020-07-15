@@ -55,7 +55,7 @@ function MainCategory(props: Props) {
     return (
       <CategoryButton onClick={() => props.onCategorySelect(subprops.name)}>
         <div>
-          <AccessAlarmIcon />
+          <img src="/components/img/Mobileelectronics.svg" />
         </div>
         <div>{subprops.name}</div>
         {/*<img src={subprops.imgUrl} />*/}

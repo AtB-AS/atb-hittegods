@@ -9,6 +9,8 @@ import {
   foundPutParamValidator,
   lostGetValidator,
   lostIdGetValidator,
+  lostIdStatusPutBodyValidator,
+  lostIdStatusPutParamValidator,
   matchDeleteValidator,
   matchPostValidator,
 } from "./validators/adminValidator";
@@ -31,6 +33,7 @@ import {
   selectFoundById,
   selectLostById,
   updateFound,
+  updateLostStatusById,
 } from "./queries";
 import https = require("https");
 import { dbError, getMatches, RemoveDuplicates, compare } from "./util";
@@ -452,27 +455,28 @@ export default async (
                 res.json({ status: "success", data: queryRes.rows[0] });
                 const foundid = queryRes.rows[0].foundid;
                 const url =
-                    "https://hittegods-matchmaker.azurewebsites.net/found/" +
-                    foundid;
-                console.log("Notify new found to hittegods-matchmaker : " + url);
+                  "https://hittegods-matchmaker.azurewebsites.net/found/" +
+                  foundid;
+                console.log(
+                  "Notify new found to hittegods-matchmaker : " + url
+                );
                 https
-                    .get(url, (httpsRes) => {
-                      httpsRes.setEncoding("utf8");
-                      let body = "";
-                      httpsRes.on("data", (data) => {
-                        body += data;
-                        console.log("Response from matchmaker : " + data);
-                      });
-                      httpsRes.on("end", () => {
-                        console.log("hittegods-matchmaker : " + body);
-                      });
-                    })
-                    .on("error", (error) => {
-                      console.log("matchmaker error : " + error);
+                  .get(url, (httpsRes) => {
+                    httpsRes.setEncoding("utf8");
+                    let body = "";
+                    httpsRes.on("data", (data) => {
+                      body += data;
+                      console.log("Response from matchmaker : " + data);
                     });
+                    httpsRes.on("end", () => {
+                      console.log("hittegods-matchmaker : " + body);
+                    });
+                  })
+                  .on("error", (error) => {
+                    console.log("matchmaker error : " + error);
+                  });
                 //TODO send confirmation email or sms
                 //TODO determine possible errors
-
               })
               .catch((e) => {
                 dbError(e, res);
@@ -607,6 +611,52 @@ export default async (
                 errorMessage: "invalid status",
               });
             }
+          }
+        })
+        .catch((e) => {
+          dbError(e, res);
+        });
+    }
+  });
+
+  app.put("/api/admin/lost/:id/status", isAuthenticated, async (req, res) => {
+    const body = req.body;
+    const id = req.params.id;
+    const bodyError = lostIdStatusPutBodyValidator.validate(body).error;
+    const paramError = lostIdStatusPutParamValidator.validate(req.params).error;
+    if (bodyError != undefined) {
+      //TODO figure out if error message leaks server information
+      res
+        .status(400)
+        .json({ status: "error", errorMessage: bodyError.details[0].message });
+    } else if (paramError != undefined) {
+      res
+        .status(400)
+        .json({ status: "error", errorMessage: paramError.details[0].message });
+    } else {
+      getStatusId(req.body.status, { client })
+        .then((statusQueryResult) => {
+          if (statusQueryResult.rowCount != 0) {
+            const statusId = statusQueryResult.rows[0].statusid;
+            client
+              .query(updateLostStatusById, [statusId, req.params.id])
+              .then((queryResult) => {
+                if (queryResult.rowCount > 0) {
+                  req.body.foundid = id;
+                  res.json({ status: "success", data: { id: req.params.id } });
+                } else {
+                  res
+                    .status(404)
+                    .json({ status: "error", errorMessage: "unknown id" });
+                }
+              })
+              .catch((e) => {
+                dbError(e, res);
+              });
+          } else {
+            res
+              .status(400)
+              .json({ status: "error", errorMessage: "unknown status" });
           }
         })
         .catch((e) => {

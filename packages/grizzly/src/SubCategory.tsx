@@ -9,11 +9,12 @@ import Button from "@material-ui/core/Button";
 import AccessAlarmIcon from "@material-ui/icons/AccessAlarm";
 import Container from "@material-ui/core/Container";
 import LueIcon from "./components/icons/Lue.svg";
+import CategoryBtn from "./components/CategoryBtn";
 
 type Props = {
   onSubCategorySelect: (category: string) => void;
   getMainCat: string;
-  //icon?: object;
+  icon?: object;
 };
 
 type subCatProps = {
@@ -55,13 +56,11 @@ function SubCategory(props: Props) {
 
   function SubCategoryComponent(subprops: subCatProps) {
     return (
-      <CategoryButton onClick={() => props.onSubCategorySelect(subprops.name)}>
-        <div>
-          <AccessAlarmIcon />
-          {/*<img src={subprops.imgUrl} />*/}
-        </div>
-        <div>{subprops.name}</div>
-      </CategoryButton>
+      <CategoryBtn
+        icon={subprops.imgUrl}
+        title={subprops.name}
+        onClick={() => props.onSubCategorySelect(subprops.name)}
+      />
     );
   }
 
@@ -71,9 +70,9 @@ function SubCategory(props: Props) {
         <h2>Velg underkategori </h2>
       </Box>
       <Box mt={4}>
-        <Grid container spacing={3} key={"subcategory"}>
+        <Grid container key={"subcategory"}>
           {subCatData.map((data) => (
-            <Grid item className={styles.paper} xs={6}>
+            <Grid item className={styles.paper} xs={12}>
               <div key={data.name}>
                 <SubCategoryComponent {...data} />
               </div>

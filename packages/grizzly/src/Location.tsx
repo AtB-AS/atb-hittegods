@@ -90,8 +90,7 @@ function Location(props: Props) {
                   options={lines}
                   getOptionLabel={(item) => item.line + " " + item.description}
                   style={{ width: 300 }}
-                  //TODO Fix default value
-                  //defaultValue={line}
+                  defaultValue={lines.find((l) => l.line === line)}
                   onChange={(event, value) => {
                     console.log("Sett veri onchange", value?.line);
                     if (value?.line) {

@@ -19,7 +19,13 @@ import Confirmation from "./Confirmation";
 import Container from "@material-ui/core/Container";
 import { Box, StepConnector, StepLabel } from "@material-ui/core";
 import moment from "moment";
-import { Room, CalendarToday, Help, PersonOutline } from "@material-ui/icons";
+import {
+  Room,
+  CalendarToday,
+  HelpOutline,
+  PersonOutline,
+} from "@material-ui/icons";
+import QuestionMark from "./components/icons/questionMark";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -74,7 +80,7 @@ export default function Wizard() {
       },
       {
         label: activeStep <= 2 ? "Hva" : subCategory,
-        icon: Help,
+        icon: HelpOutline,
       },
       {
         label: "Kontakt",
@@ -260,7 +266,7 @@ export default function Wizard() {
     const icons: { [k: string]: any } = {
       "1": <Room />,
       "2": <CalendarToday />,
-      "3": <Help />,
+      "3": <QuestionMark />,
       "4": <PersonOutline />,
     };
 

@@ -5,6 +5,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import logo from "./img/AtB_strek-grå.png";
 import { NavLink } from "react-router-dom";
+import Logo from "./icons/logo";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,22 +17,26 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       flexGrow: 1,
-      color: "#000",
-      fontSize: "26px",
+      color: "#37424A",
+      fontSize: "30px",
       display: "flex",
+      padding: "10px 0",
       alignItems: "center",
       "&:hover, &:focus, &:active": {
         textDecoration: "none",
         color: "inherit",
       },
     },
-    btn: {
-      height: "36px",
-      paddingRight: "24px",
+    logo: {
+      width: "50px",
+      height: "50px",
+      color: "#37424A",
+      marginRight: "20px",
     },
     header: {
       backgroundColor: "white",
-      color: "black",
+      color: "#37424A",
+      boxShadow: "none",
     },
   })
 );
@@ -44,7 +49,7 @@ export default function ButtonAppBar() {
       <AppBar className={classes.header} position="static">
         <Toolbar>
           <NavLink to="/" className={classes.title}>
-            <img src={logo} className={classes.btn} alt="" />
+            <Logo className={classes.logo} />
             Hittegods
           </NavLink>
         </Toolbar>

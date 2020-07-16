@@ -17,10 +17,15 @@ export const theme = createMuiTheme({
         background: "#ffffff",
       },
     },
-
-    MuiStepLabel: {
-      label: {
-        color: "#323A48",
+    MuiStep: {
+      alternativeLabel: {
+        textAlign: "center",
+      },
+    },
+    MuiStepButton: {
+      root: {
+        boxSizing: "border-box",
+        padding: "24px 4px",
       },
     },
   },

@@ -1,10 +1,29 @@
 import { createMuiTheme } from "@material-ui/core/styles";
+import shadows from "@material-ui/core/styles/shadows";
 
 export const theme = createMuiTheme({
   overrides: {
     MuiButton: {
       root: {
         borderRadius: 0,
+        boxShadow: "0",
+      },
+      contained: {
+        marginTop: "12px",
+        color: "#00758D",
+        display: "block",
+        width: "100%",
+        backgroundColor: "#ffffff",
+        fontWeight: "lighter",
+        border: "solid 1px",
+        borderColor: "rgba(0, 0, 0, 0.12)",
+        boxShadow: "0",
+        "&:hover": {
+          backgroundColor: "#ffffff",
+          border: "solid 1px",
+          borderColor: "#00758D",
+          boxShadow: "none",
+        },
       },
     },
     MuiGrid: {
@@ -15,6 +34,14 @@ export const theme = createMuiTheme({
     MuiFormControl: {
       root: {
         background: "#ffffff",
+        display: "block",
+        width: "100%",
+      },
+    },
+    MuiFormLabel: {
+      root: {
+        color: "#323A48",
+        fontWeight: "bold",
       },
     },
     MuiStep: {
@@ -28,7 +55,32 @@ export const theme = createMuiTheme({
         padding: "24px 4px",
       },
     },
+    MuiButtonBase: {
+      root: {
+        boxSizing: "border-box",
+      },
+    },
+    MuiOutlinedInput: {
+      root: {
+        borderRadius: 0,
+      },
+    },
+    MuiInput: {
+      input: {
+        padding: "12px 10px 10px",
+      },
+      underline: {
+        "&:before, &:after": {
+          display: "none",
+        },
+        borderBottom: "2px solid #ccc",
+        "&:focus, &:focus-within, &:hover": {
+          borderBottom: "2px solid #00758D",
+        },
+      },
+    },
   },
+
   palette: {
     primary: {
       // Dark grey
@@ -49,6 +101,10 @@ export const theme = createMuiTheme({
     },
   },
   typography: {
+    body2: {
+      color: "#323A48",
+    },
+
     fontFamily: ["UnitOT", "Roboto", "sans-serif"].join(","),
     fontSize: 16,
   },

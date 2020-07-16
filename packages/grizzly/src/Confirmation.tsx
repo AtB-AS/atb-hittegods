@@ -28,7 +28,7 @@ function Confirmation(props: Props) {
   return (
     <div>
       <Box mt={6}>
-        <h2 className={styles.headingh2}>Din henvendelse er registrert!</h2>
+        <h2>Din henvendelse er registrert!</h2>
         <p>Takk for din henvendelse, {props.name}.</p>
       </Box>
       <Box>

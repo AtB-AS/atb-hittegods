@@ -7,6 +7,8 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import FormControl from "@material-ui/core/FormControl";
+import { Label } from "@material-ui/icons";
+import InputLabel from "@material-ui/core/InputLabel";
 
 type Props = {
   onCharacteristicsSelect: (characteristics: Characteristics) => void;
@@ -45,10 +47,6 @@ const useStyles = makeStyles((theme: Theme) =>
     textfield: {
       display: "flex",
     },
-    heading: {
-      fontWeight: 300,
-      fontSize: "24px",
-    },
   })
 );
 
@@ -75,11 +73,11 @@ function Characteristics(props: Props, characteristics: Characteristics) {
       <Box>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <h3 className={styles.heading}>Farge</h3>
-
+            <InputLabel htmlFor="color">Farge</InputLabel>
             <FormControl component="fieldset">
               <RadioGroup
                 row
+                id="color"
                 name="color"
                 onChange={(event) => setColor(event.target.value)}
               >
@@ -95,25 +93,25 @@ function Characteristics(props: Props, characteristics: Characteristics) {
             </FormControl>
           </Grid>
           <Grid item xs={12}>
-            <h3 className={styles.heading}>Merke</h3>
+            <InputLabel htmlFor="brand">Merke</InputLabel>
             <TextField
               className={styles.textfield}
               type="text"
               value={brand}
-              label="Merke"
               onChange={(event) => setBrand(event.target.value)}
-              variant="outlined"
+              variant="standard"
+              id="brand"
             />
           </Grid>
           <Grid item xs={12}>
-            <h3 className={styles.heading}>Beskrivelse</h3>
+            <InputLabel htmlFor="description">Beskrivelse</InputLabel>
             <TextField
+              name="description"
               className={styles.textfield}
               type="text"
               value={description}
-              label="Beskrivelse"
               onChange={(event) => setDescription(event.target.value)}
-              variant="outlined"
+              variant="standard"
             />
           </Grid>
           <Grid item xs={12}>

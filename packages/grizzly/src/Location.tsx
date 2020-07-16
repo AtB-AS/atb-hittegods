@@ -104,7 +104,7 @@ function Location(props: Props) {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      variant="outlined"
+                      variant="standard"
                       name="line"
                       id="line"
                     />

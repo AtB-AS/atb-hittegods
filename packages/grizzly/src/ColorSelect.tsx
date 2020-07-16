@@ -1,16 +1,20 @@
 import React, {useState} from 'react';
-import {Box, Chip, Collapse, createStyles, Fab, Paper, Theme} from "@material-ui/core";
+import {Box, Chip, Collapse, createStyles, Fab, Grid, Paper, Theme} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import FormControl from "@material-ui/core/FormControl";
 import {makeStyles} from "@material-ui/core/styles";
+import {colorData} from "./components/colorConstant";
 
 type Props = {
     onColorSelect: (color:string) => void;
 }
 
 type Color = {
-    label:string
-    color:string
+    label:string,
+    color:string,
+    outlineColor:string,
+    textColor:string,
+
 }
 
 type Colors = {
@@ -19,14 +23,7 @@ type Colors = {
 
 
 
-const colorData:Colors = {data:[
-    {label:"Blå",color:'blue'},
-    {label: "Grønn",color:'green'},
-        {label: "Rød",color:'red'},
-        {label: "Hvit",color:'white'},
-        {label: "Svart",color:'black'},
-        {label: "Lilla",color:'purple'},
-]};
+
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -129,15 +126,17 @@ function ColorSelect(props:Props) {
     }
 
     return (
+        <Grid>
         <Box>
         <Box>
             {selectedColors.data.map((color)=>(
                 <Chip
                     variant="outlined"
-                    style={{borderColor:color.color}}
+                    style={{borderColor:color.outlineColor,backgroundColor:color.color,textDecorationColor:color.textColor}}
+                    //style={{textEmphasisColor:color.textColor}}
                     key={color.label}
                     //icon={<AddIcon/>}
-                    label={color.label}
+                    label={<label style={{color:color.textColor}}>{color.label}</label>}
                     onClick={()=>clickedSelectedColor(color)}
                     //className={classes.chip}
                 />))}
@@ -152,10 +151,10 @@ function ColorSelect(props:Props) {
 
                     <Chip
                         variant="outlined"
-                        style={{borderColor:color.color}}
+                        style={{borderColor:color.outlineColor,backgroundColor:color.color}}
                         key={color.label}
-                        icon={<AddIcon style={{color:color.color}}/>}
-                        label={color.label}
+                        icon={<AddIcon style={{color:color.textColor}}/>}
+                        label={<label style={{color:color.textColor}}>{color.label}</label>}
                         onClick={()=>clickedColorOption(color)}
                         //className={classes.chip}
                     />))}
@@ -164,6 +163,7 @@ function ColorSelect(props:Props) {
 
     </Collapse>
         </Box>
+        </Grid>
     );
 }
 

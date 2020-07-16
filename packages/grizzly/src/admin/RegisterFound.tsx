@@ -176,8 +176,8 @@ function RegisterFound() {
 
         <Autocomplete
           id="combo-box-demo"
-          options={colorData.map((colorName: { name: string }) => ({
-            name: colorName.name,
+          options={colorData.data.map((colorName: { label: string }) => ({
+            name: colorName.label,
           }))}
           getOptionLabel={(option) => option.name}
           className={classes.TextField}

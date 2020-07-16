@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
-import {Button, Grid, Box} from "@material-ui/core";
+import { Button, Grid, Box } from "@material-ui/core";
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
-import Collapse from '@material-ui/core/Collapse';
+import Collapse from "@material-ui/core/Collapse";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import Paper from "@material-ui/core/Paper";
 import Henvendelser from "./Henvendelser";
 import Henvendelse from "./Henvendelse";
-import {useParams} from "react-router";
+import { useParams } from "react-router";
 import MatchRow from "./MatchRow";
 
 type Props = {
   ids: number[];
   hendvendelsesid: string;
   removeItem: (id: number) => void;
+  setLoading: (loading: boolean) => void;
 };
-
 
 type MatchResponse = {
   status: string;
@@ -39,7 +39,6 @@ type FoundMatch = {
   brand: string;
   description: string;
 };
-
 
 function Matches(props: Props) {
   const [isLoading, setLoading] = useState<boolean>(true);
@@ -84,11 +83,13 @@ function Matches(props: Props) {
               <TableCell>Linje</TableCell>
             </TableRow>
           </TableHead>
-          {matches.map((item)=>(
-              <MatchRow item={item} removeItem={props.removeItem}/>
-              ))}
-
-
+          {matches.map((item) => (
+            <MatchRow
+              item={item}
+              removeItem={props.removeItem}
+              setLoading={props.setLoading}
+            />
+          ))}
         </Table>
       </TableContainer>
     </Grid>

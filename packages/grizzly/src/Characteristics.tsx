@@ -59,7 +59,6 @@ function Characteristics(props: Props, characteristics: Characteristics) {
       <Box>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <h3 className={styles.heading}>Farge</h3>
               <ColorSelect onColorSelect={setColor}/>
           </Grid>
           <Grid item xs={12}>

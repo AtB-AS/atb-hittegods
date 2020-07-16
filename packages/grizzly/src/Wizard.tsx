@@ -344,7 +344,11 @@ export default function Wizard() {
             />
           </Route>
           <Route path="/bekreftelse">
-            <Confirmation name={contactInfo.name} email={contactInfo.email} />
+            <Confirmation
+              name={contactInfo.name}
+              email={contactInfo.email}
+              lostDate={date}
+            />
           </Route>
         </Switch>
       </Container>

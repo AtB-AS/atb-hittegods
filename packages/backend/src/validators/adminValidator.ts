@@ -64,3 +64,12 @@ export const lostIdStatusPutBodyValidator = Joi.object({
 export const lostIdStatusPutParamValidator = Joi.object({
   id: Joi.number().required(),
 });
+
+export const possibleMatchGetValidator = Joi.object({
+  lostid: Joi.number(),
+  foundid: Joi.number(),
+});
+
+export const possibleMatchIdDeleteValidator = Joi.object({
+  id: Joi.number().required(),
+});

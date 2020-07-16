@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Box,
   createStyles,
   IconButton,
   InputBase,
@@ -19,6 +20,7 @@ import { useTableStyles } from "./styles";
 import SearchIcon from "@material-ui/icons/Search";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import moment from "moment";
+import TextField from "@material-ui/core/TextField";
 
 type StorageItems = {
   id: number;
@@ -40,6 +42,7 @@ type Props = {
       id?: string;
     };
   };
+  onDateSelect: (date: string) => void;
 };
 
 type ColumnProps = {
@@ -52,10 +55,20 @@ const useStyles = makeStyles((theme: Theme) =>
     input: {
       marginLeft: theme.spacing(1),
       flex: 1,
-      width: "90%",
+      width: "50%",
     },
     iconButton: {
       padding: 10,
+    },
+    container: {
+      display: "flex",
+      flexWrap: "wrap",
+    },
+    textField: {
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+      width: "20%",
+      color: "#000000",
     },
   })
 );
@@ -70,6 +83,8 @@ function Storage(props: Props) {
   const [searchValue, setSearchValue] = useState("");
   const [orderBy, setOrderBy] = useState<string>("desc");
   const [columnName, setColumnName] = useState("id");
+  const [toDate, setToDate] = useState("");
+  const [fromDate, setFromDate] = useState("");
 
   const params = {
     status: "Funnet",
@@ -122,8 +137,9 @@ function Storage(props: Props) {
 
   function searchStorage(storageToSearch: StorageItems[], query: string) {
     if (!query || query === "") {
-      return storageToSearch;
+      return filterSearch(storageToSearch);
     }
+
     const searchResults = storageToSearch.filter((user) => {
       return (
         user.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()) ||
@@ -132,10 +148,30 @@ function Storage(props: Props) {
           .includes(query.toLocaleLowerCase()) ||
         user.brand.toLocaleLowerCase().includes(query.toLocaleLowerCase()) ||
         user.color.toLocaleLowerCase().includes(query.toLocaleLowerCase()) ||
-        user.line.toLocaleLowerCase().includes(query.toLocaleLowerCase())
+        user.line.toLocaleLowerCase().includes(query.toLocaleLowerCase()) ||
+        user.description
+          .toLocaleLowerCase()
+          .includes(query.toLocaleLowerCase()) ||
+        user.id.toLocaleString().includes(query)
       );
     });
-    return searchResults;
+
+    return filterSearch(searchResults);
+  }
+
+  function filterSearch(storageToSearch: StorageItems[]) {
+    if (!fromDate || (fromDate === "" && !toDate) || toDate === "") {
+      return storageToSearch;
+    }
+    const filterSearch = storageToSearch.filter((user) => {
+      let from = moment(fromDate).subtract(2, "days");
+      let to = moment(toDate);
+      let userDate = moment(user.date.toLocaleString().split("T")[0]);
+      console.log(userDate);
+      console.log(userDate.isBetween(from, to));
+      return userDate.isBetween(from, to);
+    });
+    return filterSearch;
   }
 
   function clickedColumnName(col: string) {
@@ -184,6 +220,42 @@ function Storage(props: Props) {
         >
           <SearchIcon />
         </IconButton>
+
+        <TextField
+          label="Fra dato"
+          type="date"
+          className={searchClasses.textField}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          value={fromDate}
+          inputProps={{
+            min: ((d) => new Date(d.setDate(d.getDate() - 90)))(new Date())
+              .toJSON()
+              .split("T")[0],
+            max: toDate || new Date().toJSON().split("T")[0],
+          }}
+          onChange={(event) => {
+            setFromDate(event.target.value);
+          }}
+        />
+        <TextField
+          label="Til dato"
+          type="date"
+          className={searchClasses.textField}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          value={toDate}
+          inputProps={{
+            min: fromDate,
+            max: new Date().toJSON().split("T")[0],
+          }}
+          onChange={(event) => {
+            setToDate(event.target.value);
+          }}
+        />
+
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>

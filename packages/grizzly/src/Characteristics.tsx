@@ -9,6 +9,8 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import FormControl from "@material-ui/core/FormControl";
 import ColorSelect from "./ColorSelect";
+import InputLabel from "@material-ui/core/InputLabel";
+
 
 type Props = {
   onCharacteristicsSelect: (characteristics: Characteristics) => void;
@@ -28,10 +30,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     textfield: {
       display: "flex",
-    },
-    heading: {
-      fontWeight: 300,
-      fontSize: "24px",
     },
   })
 );
@@ -62,30 +60,28 @@ function Characteristics(props: Props, characteristics: Characteristics) {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <h3 className={styles.heading}>Farge</h3>
-
               <ColorSelect onColorSelect={setColor}/>
-
           </Grid>
           <Grid item xs={12}>
-            <h3 className={styles.heading}>Merke</h3>
+            <InputLabel htmlFor="brand">Merke</InputLabel>
             <TextField
               className={styles.textfield}
               type="text"
               value={brand}
-              label="Merke"
               onChange={(event) => setBrand(event.target.value)}
-              variant="outlined"
+              variant="standard"
+              id="brand"
             />
           </Grid>
           <Grid item xs={12}>
-            <h3 className={styles.heading}>Beskrivelse</h3>
+            <InputLabel htmlFor="description">Beskrivelse</InputLabel>
             <TextField
+              name="description"
               className={styles.textfield}
               type="text"
               value={description}
-              label="Beskrivelse"
               onChange={(event) => setDescription(event.target.value)}
-              variant="outlined"
+              variant="standard"
             />
           </Grid>
           <Grid item xs={12}>

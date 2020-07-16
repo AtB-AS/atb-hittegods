@@ -31,6 +31,7 @@ type Props = {
       id: string;
     };
   };
+  removeItem: (id: number) => void;
 };
 
 type Henvendelsen = {
@@ -126,7 +127,12 @@ function Henvendelse(props: Props) {
         </Grid>
       </Box>
       <Box p={2} className={styles.card} mt={4}>
-        <Matches ids={match} />
+        <Matches
+          ids={match}
+          hendvendelsesid={props.match.params.id}
+          removeItem={props.removeItem}
+          setLoading={setLoading}
+        />
       </Box>
     </div>
   );

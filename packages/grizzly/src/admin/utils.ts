@@ -19,7 +19,13 @@ export function searchHenvendelse(
     return (
       user.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()) ||
       user.phone.split(" ").join("").includes(query) ||
-      user.description.toLocaleLowerCase().includes(query.toLocaleLowerCase())
+      user.description
+        .toLocaleLowerCase()
+        .includes(query.toLocaleLowerCase()) ||
+      user.subcategory
+        .toLocaleLowerCase()
+        .includes(query.toLocaleLowerCase()) ||
+      user.id.toLocaleString().includes(query)
     );
   });
   return searchResults;

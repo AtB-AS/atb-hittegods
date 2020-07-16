@@ -9,6 +9,7 @@ import { Route } from "react-router-dom";
 import { useTableStyles } from "./styles";
 import { useHistory } from "react-router";
 import TransitItem from "./TransitItem";
+import moment from "moment";
 
 type Items = {
   id: number;
@@ -99,15 +100,10 @@ function Transit(props: Props) {
             <TableHead>
               <TableRow className={classes.thRow}>
                 <TableCell className={classes.th}>Id</TableCell>
-                <TableCell className={classes.th}>Navn</TableCell>
                 <TableCell className={classes.th}>Underkategori</TableCell>
                 <TableCell className={classes.th}>Beskrivelse</TableCell>
-                <TableCell className={`${classes.th} ${classes.inStock}`}>
-                  På lager
-                </TableCell>
-                <TableCell className={`${classes.th} ${classes.inStock}`}>
-                  Nye funn
-                </TableCell>
+                <TableCell className={classes.th}>Telefon</TableCell>
+                <TableCell className={classes.th}>Dato</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -123,11 +119,12 @@ function Transit(props: Props) {
                     }
                   >
                     <TableCell>{item.id}</TableCell>
-                    <TableCell>{item.name}</TableCell>
                     <TableCell>{item.subcategory}</TableCell>
                     <TableCell>{item.description}</TableCell>
-                    <TableCell align="center">{item.matchCount}</TableCell>
-                    <TableCell align="center">{item.newMatchCount}</TableCell>
+                    <TableCell>{item.phone}</TableCell>
+                    <TableCell>
+                      {moment(item?.date).format("DD.MM.yy")}
+                    </TableCell>
                   </TableRow>
                 );
               })}

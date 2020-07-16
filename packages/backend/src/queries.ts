@@ -109,3 +109,11 @@ where foundid=$11`;
 export const updateLostStatusById = `
 update lost set statusid=$1
 where lostid=$2`;
+
+export const selectPossibleMatches = `
+select matchid as id, lostid, foundid, score, new from match `;
+
+export const deletePossibleMatch = `
+delete from match
+where matchid = $1
+returning *`;

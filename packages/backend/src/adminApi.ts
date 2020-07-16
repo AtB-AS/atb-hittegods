@@ -13,6 +13,8 @@ import {
   lostIdStatusPutParamValidator,
   matchDeleteValidator,
   matchPostValidator,
+  possibleMatchGetValidator,
+  possibleMatchIdDeleteValidator,
 } from "./validators/adminValidator";
 import {
   getCategoryId,
@@ -25,6 +27,7 @@ import {
 } from "./db";
 import {
   deleteConfirmedMatch,
+  deletePossibleMatch,
   insertConfirmedMatch,
   insertNewFound,
   selectAllFound,
@@ -32,6 +35,7 @@ import {
   selectConfirmedMatches,
   selectFoundById,
   selectLostById,
+  selectPossibleMatches,
   updateFound,
   updateLostStatusById,
 } from "./queries";
@@ -657,6 +661,81 @@ export default async (
             res
               .status(400)
               .json({ status: "error", errorMessage: "unknown status" });
+          }
+        })
+        .catch((e) => {
+          dbError(e, res);
+        });
+    }
+  });
+
+  app.get("/api/admin/possibleMatch", isAuthenticated, (req, res) => {
+    const { error, value } = possibleMatchGetValidator.validate(req.query);
+    if (error != undefined) {
+      //TODO figure out if error message leaks server information
+      res
+        .status(400)
+        .json({ status: "error", errorMessage: error.details[0].message });
+    } else {
+      const queryAnds = [];
+      const queryParams = [];
+      //All this fancy stuff is done to avoid sqli
+      if (req.query.foundid != undefined) {
+        queryParams.push(req.query.foundid);
+        const paramNumber = queryAnds.length + 1;
+        queryAnds.push(`foundid=$${paramNumber}`);
+      }
+      if (req.query.lostid != undefined) {
+        queryParams.push(req.query.lostid);
+        const paramNumber = queryAnds.length + 1;
+        queryAnds.push(`lostid=$${paramNumber}`);
+      }
+      let queryAppend = "";
+      if (queryAnds.length != 0) {
+        queryAppend += "where ";
+        let firstRun = true;
+        queryAnds.forEach((stringFragment) => {
+          if (!firstRun) {
+            queryAppend += "and ";
+          }
+          queryAppend += stringFragment + " ";
+          firstRun = false;
+        });
+      }
+      const query = selectPossibleMatches + queryAppend;
+
+      client
+        .query(query, queryParams)
+        .then((queryResult) => {
+          res.json({ status: "success", data: queryResult.rows });
+        })
+        .catch((e) => {
+          dbError(e, res);
+        });
+    }
+  });
+
+  app.delete("/api/admin/possibleMatch/:id", isAuthenticated, (req, res) => {
+    const { error, value } = possibleMatchIdDeleteValidator.validate(
+      req.params
+    );
+    if (error != undefined) {
+      //TODO figure out if error message leaks server information
+      res
+        .status(400)
+        .json({ status: "error", errorMessage: error.details[0].message });
+    } else {
+      const id = req.params.id;
+      client
+        .query(deletePossibleMatch, [id])
+        .then((queryResult) => {
+          if (queryResult.rowCount > 0) {
+            res.json({ status: "success", data: queryResult.rows[0] });
+          } else {
+            res.status(404).json({
+              status: "error",
+              errorMessage: "match not found",
+            });
           }
         })
         .catch((e) => {

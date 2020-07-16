@@ -116,4 +116,9 @@ select matchid as id, lostid, foundid, score, new from match `;
 export const deletePossibleMatch = `
 delete from match
 where matchid = $1
-returning *`;
+returning matchid as id, lostid, foundid, score, new`;
+
+export const updatePossibleMatchNewById = `
+update match set new=$1
+where matchid=$2
+returning matchid as id, lostid, foundid, score, new`;

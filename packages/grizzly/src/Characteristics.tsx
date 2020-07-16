@@ -1,6 +1,15 @@
 import React, { useState } from "react";
-import {Box, Collapse, createStyles, Grid, Theme, Fab, Paper, Chip} from "@material-ui/core";
-import AddIcon from '@material-ui/icons/Add';
+import {
+  Box,
+  Collapse,
+  createStyles,
+  Grid,
+  Theme,
+  Fab,
+  Paper,
+  Chip,
+} from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
@@ -10,7 +19,6 @@ import Radio from "@material-ui/core/Radio";
 import FormControl from "@material-ui/core/FormControl";
 import ColorSelect from "./ColorSelect";
 import InputLabel from "@material-ui/core/InputLabel";
-
 
 type Props = {
   onCharacteristicsSelect: (characteristics: Characteristics) => void;
@@ -24,7 +32,6 @@ type Characteristics = {
   brand: string;
   description: string;
 };
-
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,8 +51,6 @@ function Characteristics(props: Props, characteristics: Characteristics) {
     props.onCharacteristicsSelect({ color, brand, description });
   }
 
-
-
   return (
     <div>
       <Box mt={4} mb={4}>
@@ -59,13 +64,14 @@ function Characteristics(props: Props, characteristics: Characteristics) {
       <Box>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-              <ColorSelect onColorSelect={setColor}/>
+            <ColorSelect onColorSelect={setColor} />
           </Grid>
           <Grid item xs={12}>
             <InputLabel htmlFor="brand">Merke</InputLabel>
             <TextField
               className={styles.textfield}
               type="text"
+              helperText="For eksempel Samsung, Stormberg, Patagonia"
               value={brand}
               onChange={(event) => setBrand(event.target.value)}
               variant="standard"
@@ -76,6 +82,7 @@ function Characteristics(props: Props, characteristics: Characteristics) {
             <InputLabel htmlFor="description">Beskrivelse</InputLabel>
             <TextField
               name="description"
+              multiline={true}
               className={styles.textfield}
               type="text"
               value={description}

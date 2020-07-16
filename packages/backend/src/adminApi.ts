@@ -15,6 +15,8 @@ import {
   matchPostValidator,
   possibleMatchGetValidator,
   possibleMatchIdDeleteValidator,
+  possibleMatchIdNewPutBodyValidator,
+  possibleMatchIdNewPutParamValidator,
 } from "./validators/adminValidator";
 import {
   getCategoryId,
@@ -38,6 +40,7 @@ import {
   selectPossibleMatches,
   updateFound,
   updateLostStatusById,
+  updatePossibleMatchNewById,
 } from "./queries";
 import https = require("https");
 import { dbError, getMatches, RemoveDuplicates, compare } from "./util";
@@ -743,4 +746,45 @@ export default async (
         });
     }
   });
+
+  app.put(
+    "/api/admin/possibleMatch/:id/new",
+    isAuthenticated,
+    async (req, res) => {
+      const body = req.body;
+      const id = req.params.id;
+      const bodyError = possibleMatchIdNewPutBodyValidator.validate(body).error;
+      const paramError = possibleMatchIdNewPutParamValidator.validate(
+        req.params
+      ).error;
+      if (bodyError != undefined) {
+        //TODO figure out if error message leaks server information
+        res.status(400).json({
+          status: "error",
+          errorMessage: bodyError.details[0].message,
+        });
+      } else if (paramError != undefined) {
+        res.status(400).json({
+          status: "error",
+          errorMessage: paramError.details[0].message,
+        });
+      } else {
+        client
+          .query(updatePossibleMatchNewById, [body.new, id])
+          .then((queryResult) => {
+            if (queryResult.rowCount > 0) {
+              res.json({ status: "success", data: queryResult.rows[0] });
+            } else {
+              res.status(404).json({
+                status: "error",
+                errorMessage: "match not found",
+              });
+            }
+          })
+          .catch((e) => {
+            dbError(e, res);
+          });
+      }
+    }
+  );
 };

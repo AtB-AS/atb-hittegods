@@ -73,3 +73,11 @@ export const possibleMatchGetValidator = Joi.object({
 export const possibleMatchIdDeleteValidator = Joi.object({
   id: Joi.number().required(),
 });
+
+export const possibleMatchIdNewPutBodyValidator = Joi.object({
+  new: Joi.string().required(),
+});
+
+export const possibleMatchIdNewPutParamValidator = Joi.object({
+  id: Joi.number().required(),
+});

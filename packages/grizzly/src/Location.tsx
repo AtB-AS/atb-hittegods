@@ -88,6 +88,7 @@ function Location(props: Props) {
               <Grid item xs={12}>
                 <InputLabel htmlFor="line">Velg linje</InputLabel>
                 <Autocomplete
+                  placeholder="Velg linje"
                   options={lines}
                   getOptionLabel={(item) => item.line + " " + item.description}
                   style={{ width: "100%" }}

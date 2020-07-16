@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { Box, Grid } from "@material-ui/core";
@@ -10,10 +8,8 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { categoryData, subCatStrings } from "../components/subCategoryData";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { log } from "util";
 import { colorData } from "../components/colorConstant";
 import { lineData } from "../components/lineConstants";
-import ContactInfo from "../ContactInfo";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -22,9 +18,6 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-type reg = {
-  [key: string]: string;
-};
 
 type OptionProps = {
   name: string;
@@ -94,18 +87,6 @@ function RegDropdown(props: DropdownProps) {
 function RegisterFound() {
   const classes = useStyles();
   const { register, errors } = useForm<FormValues>();
-  const [state, setState] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    category: "",
-    subcategory: "",
-    color: "",
-    line: "",
-    date: "",
-    brand: "",
-    description: "",
-  });
 
   const catData = categoryData;
   const [mainCat, setMainCat] = useState("");
@@ -139,30 +120,11 @@ function RegisterFound() {
       return [{ name: "velg hovedkategori", imgUrl: "yes" }];
     }
   }
-  const sleep = (milliseconds: number) => {
-    console.log(state);
-    return new Promise((resolve) => setTimeout(resolve, milliseconds));
-  };
 
   const sendForm = (event: React.FormEvent) => {
-    //setOpen(true);
-    setState({
-      name: name,
-      phone: tlf,
-      email: email,
-      category: mainCat,
-      subcategory: subCat,
-      color: color,
-      line: line,
-      date: date,
-      brand: brand,
-      description: desc,
-    });
-
     event.preventDefault();
     console.log(mainCat);
 
-    console.log(state);
     return fetch("/api/admin/found", {
       method: "post",
       body: JSON.stringify({
@@ -201,7 +163,7 @@ function RegisterFound() {
             name: subCatName.name,
           }))}
           getOptionLabel={(option) => option.name}
-          style={{ width: 300 }}
+          className={classes.TextField}
           renderInput={(params) => (
             <TextField {...params} label="Underkategori" variant="outlined" />
           )}
@@ -218,7 +180,7 @@ function RegisterFound() {
             name: colorName.name,
           }))}
           getOptionLabel={(option) => option.name}
-          style={{ width: 300 }}
+          className={classes.TextField}
           renderInput={(params) => (
             <TextField {...params} label="Farge" variant="outlined" />
           )}
@@ -235,7 +197,7 @@ function RegisterFound() {
             name: lineName.line,
           }))}
           getOptionLabel={(option) => option.name}
-          style={{ width: 300 }}
+          className={classes.TextField}
           renderInput={(params) => (
             <TextField {...params} label="Linje" variant="outlined" />
           )}

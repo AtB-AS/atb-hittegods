@@ -136,7 +136,7 @@ function RegisterFound() {
         color: color,
         line: line,
         brand: brand,
-        status: "Funnet",
+        status: "På vei",
         description: desc,
       }),
       headers: {

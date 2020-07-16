@@ -23,6 +23,8 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: "20px",
     },
     step: {
+      position: "relative",
+      marginBottom: "60px",
       "&:nth-child(2n) $stepContent": {
         gridTemplateAreas: '"desc image"',
         "& svg": {
@@ -41,6 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
         transform: "scale(1.3)",
         position: "relative",
         left: "-40px",
+        width: "100%",
       },
       "& p": {
         margin: 0,
@@ -50,15 +53,20 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     stepLine1: {
       display: "block",
-      margin: "20px auto 0",
+      position: "absolute",
+      left: "calc(1vw * 30)",
+      bottom: "-80px",
     },
     stepLine2: {
       display: "block",
-      margin: "20px auto 0 150px",
+      position: "absolute",
+      right: "calc(1vw * 25)",
     },
     stepLine3: {
       display: "block",
-      margin: "20px auto 0 150px",
+      position: "absolute",
+      left: "calc(1vw * 35)",
+      bottom: "-60px",
     },
   })
 );

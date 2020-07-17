@@ -52,6 +52,12 @@ export const theme = createMuiTheme({
         fontWeight: "bold",
       },
     },
+    MuiFormHelperText: {
+      root: {
+        backgroundColor: "#F1F1F1",
+        marginTop: "0px",
+      },
+    },
     MuiStep: {
       alternativeLabel: {
         textAlign: "center",

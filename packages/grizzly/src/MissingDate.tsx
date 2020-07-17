@@ -7,6 +7,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import { Box } from "@material-ui/core";
 import NextBtn from "./components/NextBtn";
+import BackBtn from "./components/BackBtn";
 
 type Props = {
   onDateSelect: (date: string) => void;
@@ -50,68 +51,73 @@ function MissingDate(props: Props) {
   function onSubmitDatepicker() {
     props.onDateSelect(date);
   }
+  function onBackBtnClick() {}
 
   return (
     <div>
       <Box mt={4} mb={4}>
         <h2>Hvilken dag var det?</h2>
       </Box>
-      <Grid container spacing={3}>
-        <Grid item xs={6}>
-          <Box mt={3}>
-            <Button variant="contained" type="submit" onClick={onSubmitToday}>
-              I dag
-            </Button>
-          </Box>
-        </Grid>
-        <Grid item xs={6}>
-          <Box mt={3}>
+      <form noValidate>
+        <Grid container spacing={3} justify="space-between">
+          <Grid item xs={6}>
+            <Box mt={3}>
+              <Button variant="outlined" type="submit" onClick={onSubmitToday}>
+                I dag
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={6}>
+            <Box mt={3}>
+              <Button
+                variant="outlined"
+                type="submit"
+                onClick={onSubmitYesterday}
+              >
+                I går
+              </Button>
+            </Box>
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              type="date"
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={date}
+              inputProps={{
+                min: ((d) => new Date(d.setDate(d.getDate() - 90)))(new Date())
+                  .toJSON()
+                  .split("T")[0],
+                max: new Date().toJSON().split("T")[0],
+              }}
+              onChange={(event) => {
+                setDate(event.target.value);
+                setStatus(true);
+              }}
+            />
+          </Grid>
+
+          <Grid item>
+            <BackBtn onClick={onBackBtnClick} />
+          </Grid>
+          <Grid item>
+            <NextBtn onClick={onSubmitDatepicker} />
+          </Grid>
+
+          {status && (
             <Button
-              variant="contained"
               type="submit"
-              onClick={onSubmitYesterday}
+              variant="contained"
+              onClick={onSubmitDatepicker}
             >
-              I går
+              Neste
             </Button>
-          </Box>
+          )}
         </Grid>
-        <Grid item xs={12}>
-          <Box mt={3}>
-            <form noValidate>
-              <TextField
-                type="date"
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                value={date}
-                inputProps={{
-                  min: ((d) => new Date(d.setDate(d.getDate() - 90)))(
-                    new Date()
-                  )
-                    .toJSON()
-                    .split("T")[0],
-                  max: new Date().toJSON().split("T")[0],
-                }}
-                onChange={(event) => {
-                  setDate(event.target.value);
-                  setStatus(true);
-                }}
-              />
-              {status && (
-                <Button
-                  type="submit"
-                  variant="contained"
-                  onClick={onSubmitDatepicker}
-                >
-                  Neste
-                </Button>
-              )}
-              <NextBtn onClick={onSubmitDatepicker} />
-            </form>
-          </Box>
-        </Grid>
-      </Grid>
+      </form>
     </div>
   );
 }

@@ -9,8 +9,8 @@ export const theme = createMuiTheme({
         boxShadow: "0",
         color: "#00758D",
       },
-      contained: {
-        marginTop: "12px",
+      outlined: {
+        padding: "10px 16px 12px",
         color: "#00758D",
         display: "block",
         width: "100%",
@@ -28,6 +28,10 @@ export const theme = createMuiTheme({
         text: {
           color: "#00758D",
         },
+      },
+      contained: {
+        borderBottom: "solid 3px #00758D",
+        display: "block",
       },
     },
     MuiGrid: {
@@ -93,7 +97,7 @@ export const theme = createMuiTheme({
     secondary: {
       // Blue
       main: "#00758D",
-      light: "#60d1E0",
+      light: "#018da6",
     },
     error: {
       main: "#b2292e",

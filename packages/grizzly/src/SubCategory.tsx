@@ -4,6 +4,8 @@ import { categoryData } from "./components/subCategoryData";
 import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import CategoryBtn from "./components/CategoryBtn";
+import NextBtn from "./components/NextBtn";
+import BackBtn from "./components/BackBtn";
 
 type Props = {
   onSubCategorySelect: (category: string) => void;
@@ -37,6 +39,7 @@ function SubCategory(props: Props) {
       .subCategories;
   }
 
+  function backBtnOnClick() {}
   const subCatData = getSubCatData(mainCat);
   function SubCategoryComponent(subprops: subCatProps) {
     return (
@@ -63,6 +66,7 @@ function SubCategory(props: Props) {
               </div>
             </Grid>
           ))}
+          <BackBtn onClick={backBtnOnClick} />
         </Grid>
       </Box>
     </div>

@@ -1,8 +1,8 @@
 import React from "react";
-import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { theme } from "./styling";
 import { Button } from "@material-ui/core";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 
 type Props = {
   onClick: () => void;
@@ -15,25 +15,24 @@ const useStyles = makeStyles({
   },
 
   button: {
-    color: theme.palette.background.paper,
-    backgroundColor: theme.palette.secondary.light,
+    color: theme.palette.primary.main,
     padding: "12px 16px 10px",
   },
 });
 
-function NextBtn(props: Props) {
+function BackBtn(props: Props) {
   const style = useStyles();
 
   return (
     <Button
       onClick={props.onClick}
-      variant="contained"
+      variant="text"
       type="submit"
       className={style.button}
     >
-      Gå videre <ArrowForwardIosIcon />
+      <ArrowBackIosIcon /> Tilbake
     </Button>
   );
 }
 
-export default NextBtn;
+export default BackBtn;

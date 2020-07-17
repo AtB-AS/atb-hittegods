@@ -107,7 +107,7 @@ function Location(props: Props) {
                     />
                   )}
                 />
-                <Button variant="contained" onClick={unknownLineButtonHandler}>
+                <Button variant="outlined" onClick={unknownLineButtonHandler}>
                   Usikker
                 </Button>
               </Grid>

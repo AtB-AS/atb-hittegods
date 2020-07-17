@@ -10,7 +10,7 @@ import React from "react";
 import { log } from "util";
 
 type Props = {
-  item: FoundMatch;
+  foundItem: FoundMatch;
   removeItem: (id: number) => void;
   setLoading: (loading: boolean) => void;
 };
@@ -57,7 +57,7 @@ function MatchDetails(props: Props) {
     props.setLoading(true);
     registerMatch({
       lostid: id,
-      foundid: props.item.id,
+      foundid: props.foundItem.id,
     })
       .then((response) => {
         if (response.status === 409) {
@@ -66,7 +66,7 @@ function MatchDetails(props: Props) {
         } else if (response.status === 200) {
           const lostPossibleMatchePromise = getPossibleMatches({ lostid: id });
           const foundPossibleMatchesPromise = getPossibleMatches({
-            foundid: props.item.id,
+            foundid: props.foundItem.id,
           });
 
           Promise.all([lostPossibleMatchePromise, foundPossibleMatchesPromise])
@@ -78,7 +78,7 @@ function MatchDetails(props: Props) {
               Promise.all(tempPromises)
                 .then((data) => {
                   const lostPromise = updateLostStatus(id);
-                  const foundPromise = updateFoundStatus(props.item.id);
+                  const foundPromise = updateFoundStatus(props.foundItem.id);
                   const promises2: Promise<Response>[] = [
                     lostPromise,
                     foundPromise,
@@ -151,15 +151,15 @@ function MatchDetails(props: Props) {
       method: "put",
       body: JSON.stringify({
         status: "Til utlevering",
-        name: props.item.name,
-        phone: props.item.phone,
-        email: props.item.email,
-        category: props.item.category,
-        subCategory: props.item.subcategory,
-        color: props.item.color,
-        brand: props.item.brand,
-        description: props.item.description,
-        line: props.item.line,
+        name: props.foundItem.name,
+        phone: props.foundItem.phone,
+        email: props.foundItem.email,
+        category: props.foundItem.category,
+        subCategory: props.foundItem.subcategory,
+        color: props.foundItem.color,
+        brand: props.foundItem.brand,
+        description: props.foundItem.description,
+        line: props.foundItem.line,
       }),
       headers: {
         Accept: "application/json",
@@ -181,8 +181,8 @@ function MatchDetails(props: Props) {
     });
   };
   let confirmButton;
-  console.log(props.item.status);
-  if (props.item.status === "Funnet") {
+  console.log(props.foundItem.status);
+  if (props.foundItem.status === "Funnet") {
     confirmButton = (
       <Button onClick={() => confirmMatch()}>Bekreft match</Button>
     );
@@ -196,26 +196,27 @@ function MatchDetails(props: Props) {
     <div>
       <Paper>
         <h6>
-          Detaljvisning for {props.item.subcategory} - {props.item.brand}
+          Detaljvisning for {props.foundItem.subcategory} -{" "}
+          {props.foundItem.brand}
         </h6>
         <Table size="small">
           <TableContainer>
             <TableBody>
               <TableRow>
                 <TableCell>ID: </TableCell>
-                <TableCell>{props.item.id}</TableCell>
+                <TableCell>{props.foundItem.id}</TableCell>
                 <TableCell>Status: </TableCell>
-                <TableCell>{props.item.status}</TableCell>
+                <TableCell>{props.foundItem.status}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Farge: </TableCell>
-                <TableCell>{props.item.color}</TableCell>
+                <TableCell>{props.foundItem.color}</TableCell>
                 <TableCell>Registreringsdato: </TableCell>
-                <TableCell>{props.item.date.slice(0, 10)}</TableCell>
+                <TableCell>{props.foundItem.date.slice(0, 10)}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Beskrivelse: </TableCell>
-                <TableCell colSpan={3}>{props.item.description}</TableCell>
+                <TableCell colSpan={3}>{props.foundItem.description}</TableCell>
               </TableRow>
               <TableRow></TableRow>
             </TableBody>

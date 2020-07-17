@@ -159,17 +159,18 @@ function Storage(props: Props) {
     return filterSearch(searchResults);
   }
 
-  function filterSearch(storageToSearch: StorageItems[]) {
+  function filterSearch(items: StorageItems[]) {
     if (!fromDate || (fromDate === "" && !toDate) || toDate === "") {
-      return storageToSearch;
+      return items;
     }
-    const filterSearch = storageToSearch.filter((user) => {
-      let from = moment(fromDate).subtract(2, "days");
-      let to = moment(toDate);
-      let userDate = moment(user.date.toLocaleString().split("T")[0]);
-      console.log(userDate);
-      console.log(userDate.isBetween(from, to));
-      return userDate.isBetween(from, to);
+    const filterSearch = items.filter((user) => {
+      let from = moment.utc(fromDate);
+      let to = moment.utc(toDate);
+      let userDate = moment(user.date);
+      return (
+        userDate.isSameOrAfter(from, "day") &&
+        userDate.isSameOrBefore(to, "day")
+      );
     });
     return filterSearch;
   }
@@ -205,57 +206,58 @@ function Storage(props: Props) {
   return (
     <div className={classes.root}>
       <div className={classes.leftCol}>
-        <InputBase
-          className={searchClasses.input}
-          placeholder="Søk på lagerbeholdning"
-          onChange={(event) => {
-            setSearchValue(event.target.value);
-          }}
-          inputProps={{ "aria-label": "Søk på lagerbeholdning" }}
-        />
-        <IconButton
-          type="submit"
-          className={searchClasses.iconButton}
-          aria-label="search"
-        >
-          <SearchIcon />
-        </IconButton>
+        <Box mt={2} mb={2}>
+          <InputBase
+            className={searchClasses.input}
+            placeholder="Søk på lagerbeholdning"
+            onChange={(event) => {
+              setSearchValue(event.target.value);
+            }}
+            inputProps={{ "aria-label": "Søk på lagerbeholdning" }}
+          />
+          <IconButton
+            type="submit"
+            className={searchClasses.iconButton}
+            aria-label="search"
+          >
+            <SearchIcon />
+          </IconButton>
 
-        <TextField
-          label="Fra dato"
-          type="date"
-          className={searchClasses.textField}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          value={fromDate}
-          inputProps={{
-            min: ((d) => new Date(d.setDate(d.getDate() - 90)))(new Date())
-              .toJSON()
-              .split("T")[0],
-            max: toDate || new Date().toJSON().split("T")[0],
-          }}
-          onChange={(event) => {
-            setFromDate(event.target.value);
-          }}
-        />
-        <TextField
-          label="Til dato"
-          type="date"
-          className={searchClasses.textField}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          value={toDate}
-          inputProps={{
-            min: fromDate,
-            max: new Date().toJSON().split("T")[0],
-          }}
-          onChange={(event) => {
-            setToDate(event.target.value);
-          }}
-        />
-
+          <TextField
+            label="Fra dato"
+            type="date"
+            className={searchClasses.textField}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            value={fromDate}
+            inputProps={{
+              min: ((d) => new Date(d.setDate(d.getDate() - 90)))(new Date())
+                .toJSON()
+                .split("T")[0],
+              max: toDate || new Date().toJSON().split("T")[0],
+            }}
+            onChange={(event) => {
+              setFromDate(event.target.value);
+            }}
+          />
+          <TextField
+            label="Til dato"
+            type="date"
+            className={searchClasses.textField}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            value={toDate}
+            inputProps={{
+              min: fromDate,
+              max: new Date().toJSON().split("T")[0],
+            }}
+            onChange={(event) => {
+              setToDate(event.target.value);
+            }}
+          />
+        </Box>
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>

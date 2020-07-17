@@ -92,4 +92,9 @@ export const categoryData = [
       { name: subCatStrings.OTHER, imgUrl: Other },
     ],
   },
+  {
+    name: mainCategory.OTHER,
+    imgUrl: Other,
+    subCategories: [{ name: subCatStrings.OTHER, imgUrl: Other }],
+  },
 ];

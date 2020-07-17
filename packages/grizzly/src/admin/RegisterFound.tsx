@@ -29,6 +29,12 @@ type DropdownProps = {
   onChanged: (value: string) => void;
 };
 
+type SelectProps = {
+  name: string;
+  Options: OptionProps[];
+  onChanged: (value: string) => void;
+};
+
 type FormValues = {
   mainCat: string;
   subCat: string;
@@ -84,6 +90,33 @@ function RegDropdown(props: DropdownProps) {
   );
 }
 
+function RegAutoSelect(props: SelectProps) {
+  const classes = useStyles();
+  const [mainCat, setMainCat] = useState("");
+
+  return (
+    <Grid item xs={12}>
+      <h3 className={classes.heading}>Kategori</h3>
+      <Autocomplete
+        id="combo-box-demo"
+        options={props.Options.map((option) => ({ name: option.name }))}
+        getOptionLabel={(option) => option.name}
+        className={classes.TextField}
+        renderInput={(params) => (
+          <TextField {...params} label="Kategori" variant="outlined" />
+        )}
+        onChange={(event, newValue) => {
+          if (newValue != null) {
+            {
+              setMainCat(newValue.name);
+            }
+          }
+        }}
+      />
+    </Grid>
+  );
+}
+
 function RegisterFound() {
   const classes = useStyles();
   const { register, errors } = useForm<FormValues>();
@@ -93,7 +126,6 @@ function RegisterFound() {
   const [subCat, setSubCat] = useState("");
   const [color, setColor] = useState("");
   const [line, setLine] = useState("");
-  const [date, setDate] = useState("");
   const [brand, setBrand] = useState("");
   const [desc, setDesc] = useState("");
   const [name, setName] = useState("");
@@ -106,10 +138,6 @@ function RegisterFound() {
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const namedf = () => {
-    console.log("funker");
   };
 
   function getSubCatData(mainCat: string) {
@@ -136,7 +164,7 @@ function RegisterFound() {
         color: color,
         line: line,
         brand: brand,
-        status: "På vei",
+        status: "Funnet",
         description: desc,
       }),
       headers: {
@@ -150,63 +178,82 @@ function RegisterFound() {
     <div>
       <form onSubmit={sendForm}>
         <h2>Registrer funn</h2>
-
-        <RegDropdown
-          name={"Kategori"}
-          Options={catData.map((catName) => ({ name: catName.name }))}
-          onChanged={setMainCat}
-        />
-
-        <Autocomplete
-          id="combo-box-demo"
-          options={getSubCatData(mainCat).map((subCatName) => ({
-            name: subCatName.name,
-          }))}
-          getOptionLabel={(option) => option.name}
-          className={classes.TextField}
-          renderInput={(params) => (
-            <TextField {...params} label="Underkategori" variant="outlined" />
-          )}
-          onChange={(event, newValue) => {
-            if (newValue != null) {
-              setSubCat(newValue.name);
-            }
-          }}
-        />
-
-        <Autocomplete
-          id="combo-box-demo"
-          options={colorData.data.map((colorName: { label: string }) => ({
-            name: colorName.label,
-          }))}
-          getOptionLabel={(option) => option.name}
-          className={classes.TextField}
-          renderInput={(params) => (
-            <TextField {...params} label="Farge" variant="outlined" />
-          )}
-          onChange={(event, newValue) => {
-            if (newValue != null) {
-              setColor(newValue.name);
-            }
-          }}
-        />
-
-        <Autocomplete
-          id="combo-box-demo"
-          options={lineData.map((lineName: { line: string }) => ({
-            name: lineName.line,
-          }))}
-          getOptionLabel={(option) => option.name}
-          className={classes.TextField}
-          renderInput={(params) => (
-            <TextField {...params} label="Linje" variant="outlined" />
-          )}
-          onChange={(event, newValue) => {
-            if (newValue != null) {
-              setLine(newValue.name);
-            }
-          }}
-        />
+        <Grid item xs={12}>
+          <h3 className={classes.heading}>Kategori</h3>
+          <Autocomplete
+            id="combo-box-demo"
+            options={catData.map((catName) => ({ name: catName.name }))}
+            getOptionLabel={(option) => option.name}
+            className={classes.TextField}
+            renderInput={(params) => (
+              <TextField {...params} label="Kategori" variant="outlined" />
+            )}
+            onChange={(event, newValue) => {
+              if (newValue != null) {
+                {
+                  setMainCat(newValue.name);
+                }
+              }
+            }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <h3 className={classes.heading}>Underkategori</h3>
+          <Autocomplete
+            id="combo-box-demo"
+            options={getSubCatData(mainCat).map((subCatName) => ({
+              name: subCatName.name,
+            }))}
+            getOptionLabel={(option) => option.name}
+            className={classes.TextField}
+            renderInput={(params) => (
+              <TextField {...params} label="Underkategori" variant="outlined" />
+            )}
+            onChange={(event, newValue) => {
+              if (newValue != null) {
+                setSubCat(newValue.name);
+              }
+            }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <h3 className={classes.heading}>Farge</h3>
+          <Autocomplete
+            id="combo-box-demo"
+            options={colorData.data.map((colorName: { label: string }) => ({
+              name: colorName.label,
+            }))}
+            getOptionLabel={(option) => option.name}
+            className={classes.TextField}
+            renderInput={(params) => (
+              <TextField {...params} label="Farge" variant="outlined" />
+            )}
+            onChange={(event, newValue) => {
+              if (newValue != null) {
+                setColor(newValue.name);
+              }
+            }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <h3 className={classes.heading}>Linje</h3>
+          <Autocomplete
+            id="combo-box-demo"
+            options={lineData.map((lineName: { line: string }) => ({
+              name: lineName.line,
+            }))}
+            getOptionLabel={(option) => option.name}
+            className={classes.TextField}
+            renderInput={(params) => (
+              <TextField {...params} label="Linje" variant="outlined" />
+            )}
+            onChange={(event, newValue) => {
+              if (newValue != null) {
+                setLine(newValue.name);
+              }
+            }}
+          />
+        </Grid>
         <Grid item xs={12}>
           <h3 className={classes.heading}>Merke</h3>
           <TextField
@@ -244,10 +291,6 @@ function RegisterFound() {
             //TODO InputProps not working -> https://material-ui.com/components/text-fields/ or https://codesandbox.io/s/6v444wnvp3?file=/src/FormattedInput.js
           />
         </Grid>
-        <Box mt={4} mb={4}>
-          <h2>Kontaktinformasjon</h2>
-        </Box>
-
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <h3 className={classes.heading}>Navn</h3>

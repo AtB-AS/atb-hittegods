@@ -75,7 +75,7 @@ export const possibleMatchIdDeleteValidator = Joi.object({
 });
 
 export const possibleMatchIdNewPutBodyValidator = Joi.object({
-  new: Joi.string().required(),
+  new: Joi.boolean().required(),
 });
 
 export const possibleMatchIdNewPutParamValidator = Joi.object({

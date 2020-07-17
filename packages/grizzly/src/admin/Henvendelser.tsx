@@ -20,7 +20,6 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { useTableStyles } from "./styles";
 import { searchHenvendelse, HenvendelseType } from "./utils";
 import SearchIcon from "@material-ui/icons/Search";
-import TransitItem from "./TransitItem";
 
 type Props = {
   match: {
@@ -78,6 +77,19 @@ function Henvendelser(props: Props) {
   const queryString = Object.entries(params)
     .map(([key, val]) => `${key}=${val}`)
     .join("&");
+
+  const decrementNewMatch = (lostid: number): void => {
+    const updatedHenvendelser = henvendelser.map((henvendelse) => {
+      if (henvendelse.id === lostid) {
+        return {
+          ...henvendelse,
+          newMatchCount: henvendelse.newMatchCount - 1,
+        };
+      }
+      return henvendelse;
+    });
+    setHenvendelser(updatedHenvendelser);
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -158,7 +170,6 @@ function Henvendelser(props: Props) {
     setHenvendelser(keepItems);
   };
 
-
   return (
     <div className={classes.root}>
       <div className={classes.leftCol}>
@@ -232,10 +243,15 @@ function Henvendelser(props: Props) {
       </div>
       <div className={classes.rightCol}>
         <Route
-            path="/admin/henvendelser/:id"
-            render={(routeProps) => (
-                <Henvendelse {...routeProps} removeItem={removeItem} />
-            )} />
+          path="/admin/henvendelser/:id"
+          render={(routeProps) => (
+            <Henvendelse
+              {...routeProps}
+              removeItem={removeItem}
+              decrementNewMatch={decrementNewMatch}
+            />
+          )}
+        />
       </div>
     </div>
   );

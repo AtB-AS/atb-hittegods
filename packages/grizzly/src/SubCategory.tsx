@@ -38,7 +38,6 @@ function SubCategory(props: Props) {
   }
 
   const subCatData = getSubCatData(mainCat);
-
   function SubCategoryComponent(subprops: subCatProps) {
     return (
       <CategoryBtn

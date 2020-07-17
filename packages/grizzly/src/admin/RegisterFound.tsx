@@ -220,8 +220,8 @@ function RegisterFound() {
           <h3 className={classes.heading}>Farge</h3>
           <Autocomplete
             id="combo-box-demo"
-            options={colorData.map((colorName: { name: string }) => ({
-              name: colorName.name,
+            options={colorData.data.map((colorName: { label: string }) => ({
+              name: colorName.label,
             }))}
             getOptionLabel={(option) => option.name}
             className={classes.TextField}

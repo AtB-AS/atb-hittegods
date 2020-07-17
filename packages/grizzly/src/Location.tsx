@@ -75,11 +75,8 @@ function Location(props: Props) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2>Hvor </h2>
-        <p>
-          Hvis du ikke vet hvilken linje du mistet gjenstanden kan du trykke på
-          "usikker".{" "}
-        </p>
+        <h2>Husker du hvilken linje du tok? </h2>
+        <p>Om du ikker er helt sikkert går det fint. </p>
       </Box>
       <div>
         <Box>
@@ -88,7 +85,7 @@ function Location(props: Props) {
               <Grid item xs={12}>
                 <InputLabel htmlFor="line">Velg linje</InputLabel>
                 <Autocomplete
-                  placeholder="Velg linje"
+                  placeholder="Linjenummer"
                   options={lines}
                   getOptionLabel={(item) => item.line + " " + item.description}
                   style={{ width: "100%" }}
@@ -111,7 +108,7 @@ function Location(props: Props) {
                   )}
                 />
                 <Button variant="contained" onClick={unknownLineButtonHandler}>
-                  Husker ikke
+                  Usikker
                 </Button>
               </Grid>
             </Grid>

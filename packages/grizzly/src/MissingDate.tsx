@@ -50,7 +50,7 @@ function MissingDate(props: Props) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2>Når mistet du gjenstanden din?</h2>
+        <h2>Hvilken dag var det?</h2>
       </Box>
       <Grid container spacing={3}>
         <Grid item xs={6}>

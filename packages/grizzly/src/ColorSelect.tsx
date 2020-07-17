@@ -136,6 +136,8 @@ function ColorSelect(props: Props) {
               style={{
                 borderColor: color.primary,
                 backgroundColor: color.primary,
+                paddingTop: "6px",
+                margin: "4px 8px",
               }}
               key={color.label}
               //icon={<AddIcon/>}
@@ -150,7 +152,6 @@ function ColorSelect(props: Props) {
         </Box>
 
         <Collapse in={openColorSelect} timeout="auto" unmountOnExit>
-          <h4 className={styles.heading}>Legg til ny farge</h4>
           <Box>
             {colorOptions.data.map((color) => (
               <Chip
@@ -158,9 +159,10 @@ function ColorSelect(props: Props) {
                 style={{
                   borderColor: color.primary,
                   backgroundColor: color.primary,
+                  paddingTop: "6px",
+                  margin: "4px 8px",
                 }}
                 key={color.label}
-                icon={<AddIcon style={{ color: color.secondary }} />}
                 label={
                   <label style={{ color: color.secondary }}>
                     {color.label}

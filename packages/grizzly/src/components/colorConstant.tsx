@@ -5,25 +5,45 @@ export const colorStrings = {
   RED: "Rød",
   BLACK: "Svart",
   BROWN: "Brun",
-  PURPLE: "Lilla"
+  PURPLE: "Lilla",
+  GRAY: "Grå",
+  WHITE: "Hvit",
+  GOLD: "Gull",
+  SILVER: "Sølv",
+  PINK: "Rosa",
 };
 
 type Color = {
-    label:string,
-    primary:string,
-    secondary:string
-}
+  label: string;
+  primary: string;
+  secondary: string;
+};
 
 type Colors = {
-    data:Color[]
-}
+  data: Color[];
+};
 
-
-export const colorData:Colors = {data:[
-    {label:colorStrings.BLUE, primary:'blue',secondary:'white'},
-    {label: colorStrings.GREEN, primary:'green',secondary:'white'},
-    {label: colorStrings.YELLOW, primary:'yellow',secondary:'black'},
-    {label: colorStrings.RED,primary:'red',secondary:'white'},
-    {label: colorStrings.BLACK,primary:'black',secondary:'white'},
-    {label: colorStrings.PURPLE,primary:'purple',secondary:'white'},
-  ]};
+export const colorData: Colors = {
+  data: [
+    { label: colorStrings.BLUE, primary: "#1565C0", secondary: "white" },
+    { label: colorStrings.GREEN, primary: "#4CAF50", secondary: "white" },
+    { label: colorStrings.YELLOW, primary: "#FFEB3B", secondary: "#323A48" },
+    { label: colorStrings.RED, primary: "#F44336", secondary: "white" },
+    { label: colorStrings.BLACK, primary: "black", secondary: "white" },
+    { label: colorStrings.PURPLE, primary: "#75009E", secondary: "white" },
+    { label: colorStrings.GRAY, primary: "#757575", secondary: "white" },
+    { label: colorStrings.WHITE, primary: "white", secondary: "#323A48" },
+    {
+      label: colorStrings.GOLD,
+      primary: "#FFC107",
+      secondary: "#323A48",
+    },
+    {
+      label: colorStrings.SILVER,
+      primary: "#CFD8DC",
+      secondary: "#323A48",
+    },
+    { label: colorStrings.PINK, primary: "#FF4081", secondary: "white" },
+    { label: colorStrings.BROWN, primary: "#795548", secondary: "white" },
+  ],
+};

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   makeStyles,
   Theme,
@@ -8,7 +8,6 @@ import {
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepButton from "@material-ui/core/StepButton";
-import { Route, Switch, useHistory } from "react-router-dom";
 import MainCategory from "./MainCategory";
 import SubCategory from "./SubCategory";
 import Characteristics from "./Characteristics";
@@ -39,15 +38,23 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-type reg = {
-  [key: string]: string;
+const WIZARD_STEP = {
+  LINE: 0,
+  LOCATION: 1,
+  DETAILS: 2,
+  CONTACT_INFO: 3,
+  CONFIRMATION: 4,
+};
+
+const WIZARD_DETAILS_STEP = {
+  MAIN_CATEGORY: 0,
+  SUB_CATEGORY: 1,
+  CHARACTERISTICS: 2,
 };
 
 export default function Wizard() {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = useState(0);
-  const [completed, setCompleted] = useState<{ [k: number]: boolean }>({});
-
+  const [activeStep, setActiveStep] = useState(WIZARD_STEP.LINE);
   const [category, setCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
   const [characteristics, setCharacteristics] = useState({
@@ -62,24 +69,71 @@ export default function Wizard() {
     phoneNumber: "",
     email: "",
   });
-  // status 1: maincategory, status 2: subcategory, status 3: characteristics
-  const [status, setStatus] = useState(0);
+  const [wizardDetailsStep, setWizardDetailsStep] = useState(
+    WIZARD_DETAILS_STEP.MAIN_CATEGORY
+  );
 
-  const history = useHistory();
+  const onNavigation = (event: PopStateEvent) => {
+    const data = event.state;
+    if (data) {
+      setActiveStep(data.activeStep);
+      if (data.detailsStep !== undefined) {
+        setWizardDetailsStep(data.detailsStep);
+      }
+    } else {
+      setActiveStep(WIZARD_STEP.LINE);
+    }
+  };
+
+  useEffect(() => {
+    addToBrowserHistory({ activeStep: WIZARD_STEP.LINE });
+    return setupNavigationListener();
+  }, []);
+
+  function setupNavigationListener() {
+    window.addEventListener("popstate", onNavigation);
+    return () => {
+      window.removeEventListener("popstate", onNavigation);
+    };
+  }
+
+  function addToBrowserHistory(data: object) {
+    // eslint-disable-next-line no-restricted-globals
+    history.pushState(data, "");
+  }
+
+  function getStepLabelForDate(date: string) {
+    const selectedDate = moment.utc(date);
+    const today = moment.utc();
+    if (selectedDate.isSame(today, "day")) {
+      return "I dag";
+    }
+    if (selectedDate.isSame(today.add(-1, "days"), "day")) {
+      return "I går";
+    }
+    return moment(date, "YYYY-MM-DD").format("DD.MM");
+  }
 
   function getSteps() {
     return [
       {
-        label: activeStep === 0 ? "Hvor" : `Linje ${line}`,
+        label:
+          activeStep === WIZARD_STEP.LINE
+            ? "Hvor"
+            : line.length
+            ? `Linje ${line}`
+            : "Usikker",
         icon: Room,
       },
       {
         label:
-          activeStep <= 1 ? "Når" : moment(date, "YYYY-MM-DD").format("DD.MM"),
+          activeStep <= WIZARD_STEP.LOCATION
+            ? "Når"
+            : getStepLabelForDate(date),
         icon: CalendarToday,
       },
       {
-        label: activeStep <= 2 ? "Hva" : subCategory,
+        label: activeStep <= WIZARD_STEP.DETAILS ? "Hva" : subCategory,
         icon: HelpOutline,
       },
       {
@@ -89,91 +143,53 @@ export default function Wizard() {
     ];
   }
 
-  const steps = getSteps();
-
-  const totalSteps = () => {
-    return steps.length;
-  };
-
-  const completedSteps = () => {
-    return Object.keys(completed).length;
-  };
-
-  const isLastStep = () => {
-    return activeStep === totalSteps() - 1;
-  };
-
-  const allStepsCompleted = () => {
-    return completedSteps() === totalSteps();
-  };
-
-  const handleStep = (step: number) => () => {
-    setActiveStep(step);
-    if (step === 0) {
-      setCompleted({});
-      nextPage("/");
-    }
-    if (step === 1) {
-      setCompleted({
-        0: true,
-      });
-      nextPage("/tidspunkt");
-    }
-    if (step === 2) {
-      setCompleted({
-        0: true,
-        1: true,
-      });
-      nextPage("/hva");
-    }
-  };
-
   function onCategorySelect(cat: string) {
     setCategory(cat);
     if (cat === "Annet") {
-      setStatus(3);
+      setWizardDetailsStep(WIZARD_DETAILS_STEP.CHARACTERISTICS);
       setSubCategory("Annet");
+      addToBrowserHistory({
+        activeStep: WIZARD_STEP.DETAILS,
+        detailsStep: WIZARD_DETAILS_STEP.CHARACTERISTICS,
+      });
     } else {
-      //nextPage("/underkategori");
-      setStatus(2);
+      addToBrowserHistory({
+        activeStep: WIZARD_STEP.DETAILS,
+        detailsStep: WIZARD_DETAILS_STEP.SUB_CATEGORY,
+      });
+      setWizardDetailsStep(WIZARD_DETAILS_STEP.SUB_CATEGORY);
     }
   }
 
   function onSubCategorySelected(subCat: string) {
     setSubCategory(subCat);
-    //nextPage("/kjennetegn");
-    setStatus(3);
+    setWizardDetailsStep(WIZARD_DETAILS_STEP.CHARACTERISTICS);
+    addToBrowserHistory({
+      activeStep: WIZARD_STEP.DETAILS,
+      detailsStep: WIZARD_DETAILS_STEP.CHARACTERISTICS,
+    });
   }
 
   function onCharacteristicsDone(characteristics: Characteristics) {
     setCharacteristics(characteristics);
-    nextPage("/personopplysninger");
     setActiveStep(activeStep + 1);
-    setCompleted({
-      0: true,
-      1: true,
-      2: true,
-    });
+    addToBrowserHistory({ activeStep: WIZARD_STEP.CONTACT_INFO });
   }
 
   function setLocation(location: string) {
     setLine(location);
-    nextPage("/tidspunkt");
     setActiveStep(activeStep + 1);
-    setCompleted({
-      0: true,
-    });
+    addToBrowserHistory({ activeStep: WIZARD_STEP.LOCATION });
   }
 
   function setDate(date: string) {
     setNewDate(date);
-    nextPage("/hva");
     setActiveStep(activeStep + 1);
-    setCompleted({
-      0: true,
-      1: true,
+    setWizardDetailsStep(WIZARD_DETAILS_STEP.MAIN_CATEGORY);
+    addToBrowserHistory({
+      activeStep: WIZARD_STEP.DETAILS,
+      detailsStep: WIZARD_DETAILS_STEP.MAIN_CATEGORY,
     });
-    setStatus(1);
   }
 
   function setContactInfo(contInfo: ContactInfoType) {
@@ -190,15 +206,12 @@ export default function Wizard() {
     setContInfo(contInfo);
     sendForm(payload)
       .then(() => {
-        nextPage("/bekreftelse");
+        setActiveStep(activeStep + 1);
+        addToBrowserHistory({ activeStep: WIZARD_STEP.CONTACT_INFO });
       })
       .catch(() => {
         console.log("oh no, it broke");
       });
-  }
-
-  function nextPage(path: string) {
-    history.push(path);
   }
 
   function sendForm(payload: ContactInfoType) {
@@ -214,7 +227,7 @@ export default function Wizard() {
 
   const ColorlibConnector = withStyles({
     alternativeLabel: {
-      top: 25,
+      top: 21,
     },
     active: {
       "& $line": {
@@ -286,79 +299,74 @@ export default function Wizard() {
     );
   }
 
+  const showNavigationStepper = activeStep < WIZARD_STEP.CONFIRMATION;
   return (
     <div className={classes.root}>
-      <Box mt={2}>
-        <Stepper
-          activeStep={activeStep}
-          alternativeLabel
-          className={classes.stepper}
-          connector={<ColorlibConnector />}
-        >
-          {steps.map((step, index) => (
-            <Step key={step.label}>
-              <StepButton
-                onClick={handleStep(index)}
-                completed={completed[index]}
-              >
+      {showNavigationStepper && (
+        <Box mt={2}>
+          <Stepper
+            activeStep={activeStep}
+            alternativeLabel
+            className={classes.stepper}
+            connector={<ColorlibConnector />}
+          >
+            {getSteps().map((step, index) => (
+              <Step key={step.label} completed={activeStep > index}>
                 <StepLabel StepIconComponent={ColorlibStepIcon}>
                   {step.label}
                 </StepLabel>
-              </StepButton>
-            </Step>
-          ))}
-        </Stepper>
-      </Box>
+              </Step>
+            ))}
+          </Stepper>
+        </Box>
+      )}
       <Container maxWidth="sm">
-        <Switch>
-          <Route path="/" exact>
-            <Location line={line} onLocationSelect={setLocation} />
-          </Route>
-          <Route path="/tidspunkt">
-            <MissingDate date={date} onDateSelect={setDate} />
-          </Route>
-          <Route path="/hva">
-            {status === 1 && (
-              <MainCategory
-                category={category}
-                description=""
-                onCategorySelect={onCategorySelect}
-              />
-            )}
-            {status === 2 && (
-              <SubCategory
-                getMainCat={category}
-                description=""
-                onSubCategorySelect={onSubCategorySelected}
-              />
-            )}
-            {status === 3 && (
-              <Characteristics
-                color={characteristics.color}
-                brand={characteristics.brand}
-                description={characteristics.description}
-                onCharacteristicsSelect={onCharacteristicsDone}
-                subCategory={subCategory}
-              />
-            )}
-          </Route>
-
-          <Route path="/personopplysninger">
-            <ContactInfo
-              name={contactInfo.name}
-              phoneNumber={contactInfo.phoneNumber}
-              email={contactInfo.email}
-              onContactInfoSelect={setContactInfo}
+        {activeStep === WIZARD_STEP.LINE && (
+          <Location line={line} onLocationSelect={setLocation} />
+        )}
+        {activeStep === WIZARD_STEP.LOCATION && (
+          <MissingDate date={date} onDateSelect={setDate} />
+        )}
+        {activeStep === WIZARD_STEP.DETAILS &&
+          wizardDetailsStep === WIZARD_DETAILS_STEP.MAIN_CATEGORY && (
+            <MainCategory
+              category={category}
+              onCategorySelect={onCategorySelect}
+              description=""
             />
-          </Route>
-          <Route path="/bekreftelse">
-            <Confirmation
-              name={contactInfo.name}
-              email={contactInfo.email}
-              lostDate={date}
+          )}
+        {activeStep === WIZARD_STEP.DETAILS &&
+          wizardDetailsStep === WIZARD_DETAILS_STEP.SUB_CATEGORY && (
+            <SubCategory
+              getMainCat={category}
+              onSubCategorySelect={onSubCategorySelected}
             />
-          </Route>
-        </Switch>
+          )}
+        {activeStep === WIZARD_STEP.DETAILS &&
+          wizardDetailsStep === WIZARD_DETAILS_STEP.CHARACTERISTICS && (
+            <Characteristics
+              color={characteristics.color}
+              brand={characteristics.brand}
+              description={characteristics.description}
+              onCharacteristicsSelect={onCharacteristicsDone}
+              subCategory={subCategory}
+            />
+          )}
+        {activeStep === WIZARD_STEP.CONTACT_INFO && (
+          <ContactInfo
+            name={contactInfo.name}
+            phoneNumber={contactInfo.phoneNumber}
+            email={contactInfo.email}
+            onContactInfoSelect={setContactInfo}
+          />
+        )}
+        {activeStep === WIZARD_STEP.CONFIRMATION && (
+          <Confirmation
+            name={contactInfo.name}
+            email={contactInfo.email}
+            lostDate={date}
+          />
+        )}
       </Container>
     </div>
   );

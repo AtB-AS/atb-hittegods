@@ -3,8 +3,6 @@ import React from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import logo from "./img/AtB_strek-grå.png";
-import { NavLink } from "react-router-dom";
 import Logo from "./icons/logo";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -48,10 +46,10 @@ export default function ButtonAppBar() {
     <div className={classes.root}>
       <AppBar className={classes.header} position="static">
         <Toolbar>
-          <NavLink to="/" className={classes.title}>
+          <a href="/" className={classes.title}>
             <Logo className={classes.logo} />
             Hittegods
-          </NavLink>
+          </a>
         </Toolbar>
       </AppBar>
     </div>

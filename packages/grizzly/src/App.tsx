@@ -1,6 +1,5 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-
 import Header from "./components/header";
 import { Helmet } from "react-helmet";
 import { Box } from "@material-ui/core";
@@ -13,9 +12,7 @@ function App() {
       <Helmet>
         <title>Hittegods - AtB</title>
       </Helmet>
-
       <Header />
-
       <Wizard />
     </Box>
   );

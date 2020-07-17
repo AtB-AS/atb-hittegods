@@ -58,6 +58,7 @@ function Location(props: Props) {
   }, []);
 
   const onSubmit: SubmitHandler<Props> = (data) => {
+    console.log(` on submit line`);
     props.onLocationSelect(line);
     console.log(line);
   };

@@ -32,9 +32,9 @@ function BackBtn(props: Props) {
 
   return (
     <Button
+      type="button"
       onClick={props.onClick}
       variant="text"
-      type="submit"
       className={style.button}
     >
       <ArrowBackIosIcon /> Tilbake

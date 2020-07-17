@@ -29,7 +29,7 @@ export type ContactInfoType = {
   name: string;
   phoneNumber: string;
   email: string;
-  terms: boolean;
+  terms?: boolean;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -69,7 +69,6 @@ function ContactInfo(props: Props, contactInfo: ContactInfoType) {
       name: data.name,
       phoneNumber: formatPhonenumber(data.phoneNumber),
       email: data.email,
-      terms: true,
     });
   };
 

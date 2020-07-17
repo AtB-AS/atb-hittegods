@@ -6,7 +6,7 @@ import Henvendelser from "./Henvendelser";
 import Storage from "./Storage";
 import ReadyToPickUp from "./ReadyToPickUp";
 import Transit from "./Transit";
-import RegisterFound from "./RegisterFound";
+import RegisterFound from "./registerFound/RegisterFound";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

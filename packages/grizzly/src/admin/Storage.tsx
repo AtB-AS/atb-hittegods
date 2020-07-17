@@ -21,7 +21,11 @@ import SearchIcon from "@material-ui/icons/Search";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import moment from "moment";
 import TextField from "@material-ui/core/TextField";
+<<<<<<< HEAD
 import DataLoadingContainer from "../DataLoadingContainer";
+=======
+import Button from "@material-ui/core/Button";
+>>>>>>> Cleanup register found code and layout.
 
 type StorageItems = {
   id: number;
@@ -297,6 +301,9 @@ function Storage(props: Props) {
         </TableContainer>
       </div>
       <div className={classes.rightCol}>
+        <Button href="/admin/lager/registrere">
+          Registrer funnet gjenstand
+        </Button>
         <Route path="/admin/lager/:id" component={StorageItem} />
       </div>
     </div>

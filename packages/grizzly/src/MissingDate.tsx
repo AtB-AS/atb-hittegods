@@ -6,6 +6,7 @@ import Button from "@material-ui/core/Button";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import { Box } from "@material-ui/core";
+import NextBtn from "./components/NextBtn";
 
 type Props = {
   onDateSelect: (date: string) => void;
@@ -22,6 +23,9 @@ function MissingDate(props: Props) {
       textField: {
         display: "flex",
         width: "100%",
+      },
+      button: {
+        color: theme.palette.secondary.main,
       },
     })
   );
@@ -96,14 +100,14 @@ function MissingDate(props: Props) {
               />
               {status && (
                 <Button
-                  color="primary"
-                  variant="contained"
                   type="submit"
+                  variant="contained"
                   onClick={onSubmitDatepicker}
                 >
                   Neste
                 </Button>
               )}
+              <NextBtn onClick={onSubmitDatepicker} />
             </form>
           </Box>
         </Grid>

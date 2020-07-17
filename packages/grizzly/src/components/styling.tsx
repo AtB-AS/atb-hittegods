@@ -7,6 +7,7 @@ export const theme = createMuiTheme({
       root: {
         borderRadius: 0,
         boxShadow: "0",
+        color: "#00758D",
       },
       contained: {
         marginTop: "12px",
@@ -23,6 +24,9 @@ export const theme = createMuiTheme({
           border: "solid 1px",
           borderColor: "#00758D",
           boxShadow: "none",
+        },
+        text: {
+          color: "#00758D",
         },
       },
     },

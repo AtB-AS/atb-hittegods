@@ -14,24 +14,13 @@ type Props = {
 
 function MissingDate(props: Props) {
   const [date, setDate] = useState(props.date);
+  // false: , true:
+  const [status, setStatus] = useState(false);
 
   const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-      container: {
-        display: "flex",
-        flexWrap: "wrap",
-      },
       textField: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-        width: "100%",
-      },
-      btn: {
-        border: 0,
-        borderRadius: 3,
-        boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .3)",
-        height: "60px",
-        padding: "0 30px",
+        display: "flex",
         width: "100%",
       },
     })
@@ -54,6 +43,10 @@ function MissingDate(props: Props) {
     props.onDateSelect(yesterday);
   }
 
+  function onSubmitDatepicker() {
+    props.onDateSelect(date);
+  }
+
   return (
     <div>
       <Box mt={4} mb={4}>
@@ -62,13 +55,7 @@ function MissingDate(props: Props) {
       <Grid container spacing={3}>
         <Grid item xs={6}>
           <Box mt={3}>
-            <Button
-              color="primary"
-              variant="contained"
-              type="submit"
-              onClick={onSubmitToday}
-              className={classes.btn}
-            >
+            <Button variant="contained" type="submit" onClick={onSubmitToday}>
               I dag
             </Button>
           </Box>
@@ -76,11 +63,9 @@ function MissingDate(props: Props) {
         <Grid item xs={6}>
           <Box mt={3}>
             <Button
-              color="primary"
               variant="contained"
               type="submit"
               onClick={onSubmitYesterday}
-              className={classes.btn}
             >
               I går
             </Button>
@@ -90,7 +75,6 @@ function MissingDate(props: Props) {
           <Box mt={3}>
             <form noValidate>
               <TextField
-                label="Dato"
                 type="date"
                 className={classes.textField}
                 InputLabelProps={{
@@ -107,9 +91,19 @@ function MissingDate(props: Props) {
                 }}
                 onChange={(event) => {
                   setDate(event.target.value);
-                  props.onDateSelect(event.target.value);
+                  setStatus(true);
                 }}
               />
+              {status && (
+                <Button
+                  color="primary"
+                  variant="contained"
+                  type="submit"
+                  onClick={onSubmitDatepicker}
+                >
+                  Neste
+                </Button>
+              )}
             </form>
           </Box>
         </Grid>

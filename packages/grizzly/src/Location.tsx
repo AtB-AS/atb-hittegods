@@ -11,6 +11,7 @@ import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import InputLabel from "@material-ui/core/InputLabel";
 
 type Props = {
   onLocationSelect: (location: string) => void;
@@ -26,10 +27,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     textfield: {
       display: "flex",
-    },
-    heading: {
-      fontWeight: 300,
-      fontSize: "24px",
     },
   })
 );
@@ -78,18 +75,23 @@ function Location(props: Props) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2>Husker du hvor du mistet gjenstanden din?</h2>
+        <h2>Hvor </h2>
+        <p>
+          Hvis du ikke vet hvilken linje du mistet gjenstanden kan du trykke på
+          "usikker".{" "}
+        </p>
       </Box>
       <div>
         <Box>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <h3 className={styles.heading}>Linje</h3>
+                <InputLabel htmlFor="line">Velg linje</InputLabel>
                 <Autocomplete
+                  placeholder="Velg linje"
                   options={lines}
                   getOptionLabel={(item) => item.line + " " + item.description}
-                  style={{ width: 300 }}
+                  style={{ width: "100%" }}
                   defaultValue={lines.find((l) => l.line === line)}
                   onChange={(event, value) => {
                     console.log("Sett veri onchange", value?.line);
@@ -102,17 +104,13 @@ function Location(props: Props) {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Skriv inn linjenummer"
-                      variant="outlined"
+                      variant="standard"
                       name="line"
+                      id="line"
                     />
                   )}
                 />
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={unknownLineButtonHandler}
-                >
+                <Button variant="contained" onClick={unknownLineButtonHandler}>
                   Husker ikke
                 </Button>
               </Grid>

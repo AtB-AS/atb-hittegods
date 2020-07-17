@@ -4,6 +4,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import { useForm, SubmitHandler } from "react-hook-form";
+import InputLabel from "@material-ui/core/InputLabel";
 
 type Props = {
   onContactInfoSelect: (contactInfo: ContactInfo) => void;
@@ -22,14 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     textfield: {
       display: "flex",
-    },
-    heading: {
-      fontWeight: 300,
-      fontSize: "24px",
-    },
-    headingh2: {
-      fontWeight: 350,
-      fontSize: "36px",
     },
   })
 );
@@ -64,16 +57,17 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <h3 className={styles.heading}>Navn</h3>
+            <InputLabel htmlFor="name">Navn</InputLabel>
             <TextField
+              autoComplete="name"
               className={styles.textfield}
               type="text"
+              id="name"
               name="name"
               defaultValue={props.name}
               helperText={errors.name?.message}
-              label="Navn"
               error={!!errors.name}
-              variant="outlined"
+              variant="standard"
               inputProps={{ minLength: 2, maxLength: 40 }}
               inputRef={register({
                 required: "Husk å legg til navn",
@@ -89,17 +83,18 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
             />
           </Grid>
           <Grid item xs={12}>
-            <h3 className={styles.heading}>Mobil</h3>
+            <InputLabel htmlFor="phoneNumber">Telefonnummer</InputLabel>
 
             <TextField
               className={styles.textfield}
+              autoComplete="tel"
               type="text"
               name="phoneNumber"
+              id="phoneNumber"
               defaultValue={props.phoneNumber}
-              label="Telefonummer"
               helperText={errors.phoneNumber?.message}
               error={!!errors.phoneNumber}
-              variant="outlined"
+              variant="standard"
               inputRef={register({
                 required: "Husk å legge til ditt telefonnummer",
                 minLength: {
@@ -114,17 +109,17 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
             />
           </Grid>
           <Grid item xs={12}>
-            <h3 className={styles.heading}>E-post</h3>
+            <InputLabel htmlFor="email">E-post</InputLabel>
             <TextField
               className={styles.textfield}
+              autoComplete="email"
               type="text"
               name="email"
-              //value={email}
-              label="E-post"
+              id="email"
               defaultValue={props.email}
               helperText={errors.email?.message}
               error={!!errors.email}
-              variant="outlined"
+              variant="standard"
               inputRef={register({
                 required: "Dette feltet må du fylle inn",
               })}

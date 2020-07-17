@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Box, createStyles, Grid, Theme } from "@material-ui/core";
+import {
+  Box,
+  Collapse,
+  createStyles,
+  Grid,
+  Theme,
+  Fab,
+  Paper,
+  Chip,
+} from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
@@ -7,6 +17,8 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import FormControl from "@material-ui/core/FormControl";
+import ColorSelect from "./ColorSelect";
+import InputLabel from "@material-ui/core/InputLabel";
 
 type Props = {
   onCharacteristicsSelect: (characteristics: Characteristics) => void;
@@ -21,33 +33,10 @@ type Characteristics = {
   description: string;
 };
 
-const Color = {
-  BLUE: "Blå",
-  GREEN: "Grønn",
-  YELLOW: "Gul",
-  RED: "Rød",
-  BLACK: "Svart",
-  BROWN: "Brun",
-};
-
-// Liste som skal mappes gjennom
-const ColorData = [
-  Color.BLUE,
-  Color.BLACK,
-  Color.GREEN,
-  Color.YELLOW,
-  Color.RED,
-  Color.BROWN,
-];
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     textfield: {
       display: "flex",
-    },
-    heading: {
-      fontWeight: 300,
-      fontSize: "24px",
     },
   })
 );
@@ -75,45 +64,30 @@ function Characteristics(props: Props, characteristics: Characteristics) {
       <Box>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <h3 className={styles.heading}>Farge</h3>
-
-            <FormControl component="fieldset">
-              <RadioGroup
-                row
-                name="color"
-                onChange={(event) => setColor(event.target.value)}
-              >
-                {ColorData.map((color) => (
-                  <FormControlLabel
-                    control={<Radio />}
-                    label={color}
-                    value={color}
-                    key={color}
-                  />
-                ))}
-              </RadioGroup>
-            </FormControl>
+            <ColorSelect onColorSelect={setColor} />
           </Grid>
           <Grid item xs={12}>
-            <h3 className={styles.heading}>Merke</h3>
+            <InputLabel htmlFor="brand">Merke</InputLabel>
             <TextField
               className={styles.textfield}
               type="text"
+              helperText="For eksempel Samsung, Stormberg, Patagonia"
               value={brand}
-              label="Merke"
               onChange={(event) => setBrand(event.target.value)}
-              variant="outlined"
+              variant="standard"
+              id="brand"
             />
           </Grid>
           <Grid item xs={12}>
-            <h3 className={styles.heading}>Beskrivelse</h3>
+            <InputLabel htmlFor="description">Beskrivelse</InputLabel>
             <TextField
+              name="description"
+              multiline={true}
               className={styles.textfield}
               type="text"
               value={description}
-              label="Beskrivelse"
               onChange={(event) => setDescription(event.target.value)}
-              variant="outlined"
+              variant="standard"
             />
           </Grid>
           <Grid item xs={12}>

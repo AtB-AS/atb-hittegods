@@ -180,6 +180,17 @@ function MatchDetails(props: Props) {
       method: "DELETE",
     });
   };
+  let confirmButton;
+  console.log(props.item.status);
+  if (props.item.status === "Funnet") {
+    confirmButton = (
+      <Button onClick={() => confirmMatch()}>Bekreft match</Button>
+    );
+  } else {
+    confirmButton = (
+      <Button disabled={true}>Gjenstand er ikke bekreftet ankommet</Button>
+    );
+  }
 
   return (
     <div>
@@ -210,7 +221,7 @@ function MatchDetails(props: Props) {
             </TableBody>
           </TableContainer>
         </Table>
-        <Button onClick={() => confirmMatch()}>Bekreft match</Button>
+        {confirmButton}
       </Paper>
     </div>
   );

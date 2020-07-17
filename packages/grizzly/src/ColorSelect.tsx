@@ -127,7 +127,7 @@ function ColorSelect(props: Props) {
   }
 
   return (
-    <Grid xs={6}>
+    <Grid>
       <Box>
         <Box>
           {selectedColors.data.map((color) => (

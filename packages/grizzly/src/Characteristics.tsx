@@ -50,7 +50,7 @@ function Characteristics(props: Props, characteristics: Characteristics) {
   function onSubmit() {
     props.onCharacteristicsSelect({ color, brand, description });
   }
-
+  //TODO Legge til ID i colorselect-
   return (
     <div>
       <Box mt={4} mb={4}>
@@ -64,7 +64,6 @@ function Characteristics(props: Props, characteristics: Characteristics) {
       <Box>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            //TODO Legge til ID i colorselect-
             <InputLabel htmlFor="color">Hvilken farge passer best?</InputLabel>
             <ColorSelect onColorSelect={setColor} />
           </Grid>

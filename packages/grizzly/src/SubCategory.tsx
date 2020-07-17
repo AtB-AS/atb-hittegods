@@ -51,7 +51,8 @@ function SubCategory(props: Props) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2>Velg underkategori </h2>
+        <h2>Hvilken underkategori passer best? </h2>
+        <p>Om det ikke passer kan du velge "annet".</p>
       </Box>
       <Box mt={4}>
         <Grid container key={"subcategory"}>

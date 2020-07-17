@@ -70,6 +70,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "20%",
       color: "#000000",
     },
+    box: {
+      color: "#000000",
+    },
   })
 );
 
@@ -206,7 +209,7 @@ function Storage(props: Props) {
   return (
     <div className={classes.root}>
       <div className={classes.leftCol}>
-        <Box mt={2} mb={2}>
+        <Box mt={2} mb={2} display="flex" className={searchClasses.box}>
           <InputBase
             className={searchClasses.input}
             placeholder="Søk på lagerbeholdning"

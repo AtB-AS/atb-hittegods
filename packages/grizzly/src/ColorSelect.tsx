@@ -11,19 +11,13 @@ type Props = {
 
 type Color = {
     label:string,
-    color:string,
-    outlineColor:string,
-    textColor:string,
-
+    primary:string,
+    secondary:string
 }
 
 type Colors = {
     data:Color[]
 }
-
-
-
-
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -126,22 +120,20 @@ function ColorSelect(props:Props) {
     }
 
     return (
-        <Grid>
+        <Grid xs={6} spacing={12}>
         <Box>
         <Box>
             {selectedColors.data.map((color)=>(
                 <Chip
                     variant="outlined"
-                    style={{borderColor:color.outlineColor,backgroundColor:color.color,textDecorationColor:color.textColor}}
-                    //style={{textEmphasisColor:color.textColor}}
+                    style={{borderColor:color.primary,backgroundColor:color.primary}}
                     key={color.label}
                     //icon={<AddIcon/>}
-                    label={<label style={{color:color.textColor}}>{color.label}</label>}
+                    label={<label style={{color:color.secondary}}>{color.label}</label>}
                     onClick={()=>clickedSelectedColor(color)}
                     //className={classes.chip}
                 />))}
             <AddButton/>
-
         </Box>
 
     <Collapse in={openColorSelect} timeout="auto" unmountOnExit>
@@ -151,10 +143,10 @@ function ColorSelect(props:Props) {
 
                     <Chip
                         variant="outlined"
-                        style={{borderColor:color.outlineColor,backgroundColor:color.color}}
+                        style={{borderColor:color.primary,backgroundColor:color.primary}}
                         key={color.label}
-                        icon={<AddIcon style={{color:color.textColor}}/>}
-                        label={<label style={{color:color.textColor}}>{color.label}</label>}
+                        icon={<AddIcon style={{color:color.secondary}}/>}
+                        label={<label style={{color:color.secondary}}>{color.label}</label>}
                         onClick={()=>clickedColorOption(color)}
                         //className={classes.chip}
                     />))}

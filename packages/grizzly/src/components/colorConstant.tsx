@@ -9,29 +9,21 @@ export const colorStrings = {
 };
 
 type Color = {
-  label:string,
-  color:string,
-  outlineColor:string,
-  textColor:string,
-
+    label:string,
+    primary:string,
+    secondary:string
 }
 
 type Colors = {
-  data:Color[]
+    data:Color[]
 }
 
 
 export const colorData:Colors = {data:[
-    {label:colorStrings.BLUE,
-      color:'blue',
-      outlineColor:'blue',
-      textColor:'white'},
-    {label: colorStrings.GREEN,
-      color:'green',
-      outlineColor:'green',
-      textColor:'white'},
-    {label: colorStrings.YELLOW,color:'red',outlineColor:'red',textColor:'white'},
-    {label: colorStrings.RED,color:'white',outlineColor:'white',textColor:'black'},
-    {label: colorStrings.BLACK,color:'black',outlineColor:'black',textColor:'white'},
-    {label: colorStrings.PURPLE,color:'purple',outlineColor:'purple',textColor:'white'},
+    {label:colorStrings.BLUE, primary:'blue',secondary:'white'},
+    {label: colorStrings.GREEN, primary:'green',secondary:'white'},
+    {label: colorStrings.YELLOW, primary:'yellow',secondary:'black'},
+    {label: colorStrings.RED,primary:'red',secondary:'white'},
+    {label: colorStrings.BLACK,primary:'black',secondary:'white'},
+    {label: colorStrings.PURPLE,primary:'purple',secondary:'white'},
   ]};

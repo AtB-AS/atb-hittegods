@@ -12,6 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import InputLabel from "@material-ui/core/InputLabel";
+import DataLoadingContainer from "./DataLoadingContainer";
 
 type Props = {
   onLocationSelect: (location: string) => void;
@@ -64,21 +65,13 @@ function Location(props: Props) {
     props.onLocationSelect(line);
   }
 
-  if (error) {
-    return <p>Kunne ikke laste inn linjer.</p>;
-  }
-
-  if (isloading) {
-    return <p>Laster...</p>;
-  }
-
   return (
     <div>
       <Box mt={4} mb={4}>
         <h2>Husker du hvilken linje du tok? </h2>
         <p>Om du ikker er helt sikkert går det fint. </p>
       </Box>
-      <div>
+      <DataLoadingContainer loading={isloading} error={error}>
         <Box>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
@@ -114,7 +107,7 @@ function Location(props: Props) {
             </Grid>
           </form>
         </Box>
-      </div>
+      </DataLoadingContainer>
     </div>
   );
 }

@@ -7,6 +7,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import MatchRow from "./MatchRow";
 import { Match } from "./Henvendelse";
+import DataLoadingContainer from "../DataLoadingContainer";
 
 type Props = {
   matches: Match[];
@@ -62,39 +63,35 @@ function Matches(props: Props) {
   const matchByFoundId = (foundid: number): Match | undefined => {
     return props.matches.find((m) => m.foundid === foundid);
   };
-  if (error) {
-    return <p>Noe gikk galt :(</p>;
-  }
 
-  if (isLoading) {
-    return <p>Laster...</p>;
-  }
   return (
-    <Grid item md={12}>
-      <TableContainer>
-        <h3>Mulige funn:</h3>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Navn</TableCell>
-              <TableCell>Underkategori</TableCell>
-              <TableCell>Merke</TableCell>
-              <TableCell>Linje</TableCell>
-            </TableRow>
-          </TableHead>
-          {foundItems.map((foundItem) => (
-            <MatchRow
-              foundItem={foundItem}
-              removeItem={props.removeItem}
-              setLoading={props.setLoading}
-              decrementNewMatch={props.decrementNewMatch}
-              match={matchByFoundId(foundItem.id)}
-              hendvendelsesid={props.hendvendelsesid}
-            />
-          ))}
-        </Table>
-      </TableContainer>
-    </Grid>
+    <DataLoadingContainer loading={isLoading} error={error}>
+      <Grid item md={12}>
+        <TableContainer>
+          <h3>Mulige funn:</h3>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Navn</TableCell>
+                <TableCell>Underkategori</TableCell>
+                <TableCell>Merke</TableCell>
+                <TableCell>Linje</TableCell>
+              </TableRow>
+            </TableHead>
+            {foundItems.map((foundItem) => (
+              <MatchRow
+                foundItem={foundItem}
+                removeItem={props.removeItem}
+                setLoading={props.setLoading}
+                decrementNewMatch={props.decrementNewMatch}
+                match={matchByFoundId(foundItem.id)}
+                hendvendelsesid={props.hendvendelsesid}
+              />
+            ))}
+          </Table>
+        </TableContainer>
+      </Grid>
+    </DataLoadingContainer>
   );
 }
 

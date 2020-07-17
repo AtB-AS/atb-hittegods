@@ -20,7 +20,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { useTableStyles } from "./styles";
 import { searchHenvendelse, HenvendelseType } from "./utils";
 import SearchIcon from "@material-ui/icons/Search";
-import TransitItem from "./TransitItem";
+import DataLoadingContainer from "../DataLoadingContainer";
 
 type Props = {
   match: {
@@ -79,6 +79,19 @@ function Henvendelser(props: Props) {
     .map(([key, val]) => `${key}=${val}`)
     .join("&");
 
+  const decrementNewMatch = (lostid: number): void => {
+    const updatedHenvendelser = henvendelser.map((henvendelse) => {
+      if (henvendelse.id === lostid) {
+        return {
+          ...henvendelse,
+          newMatchCount: henvendelse.newMatchCount - 1,
+        };
+      }
+      return henvendelse;
+    });
+    setHenvendelser(updatedHenvendelser);
+  };
+
   useEffect(() => {
     setLoading(true);
     fetch("/api/admin/lost?" + queryString)
@@ -132,22 +145,6 @@ function Henvendelser(props: Props) {
     );
   }
 
-  if (error) {
-    return <p>Noe gikk galt</p>;
-  }
-
-  if (isloading) {
-    return (
-      <div className={classes.loading}>
-        <CircularProgress />
-      </div>
-    );
-  }
-
-  if (henvendelser.length === 0) {
-    return <p>Ingen henvendelser registrert</p>;
-  }
-
   const removeItem = (id: number) => {
     const keepItems: Array<HenvendelseType> = [];
     henvendelser.forEach((item) => {
@@ -158,86 +155,97 @@ function Henvendelser(props: Props) {
     setHenvendelser(keepItems);
   };
 
-
   return (
-    <div className={classes.root}>
-      <div className={classes.leftCol}>
-        <InputBase
-          className={searchClasses.input}
-          placeholder="Søk på henvendelser"
-          onChange={(event) => {
-            setSearchValue(event.target.value);
-          }}
-          inputProps={{ "aria-label": "Søk på henvendelser" }}
-        />
-        <IconButton
-          type="submit"
-          className={searchClasses.iconButton}
-          aria-label="search"
-        >
-          <SearchIcon />
-        </IconButton>
-        <TableContainer className={classes.container}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow className={classes.thRow}>
-                <HenvendelseColumn columnName={"id"} labelName={"Id"} />
-                <HenvendelseColumn columnName={"name"} labelName={"Navn"} />
-                <HenvendelseColumn columnName={"phone"} labelName={"Telefon"} />
-                <HenvendelseColumn
-                  columnName={"subcategory"}
-                  labelName={"Underkategori"}
-                />
-                <HenvendelseColumn
-                  columnName={"description"}
-                  labelName={"Beskrivelse"}
-                />
-                <HenvendelseColumn
-                  columnName={"matchCount"}
-                  labelName={"På lager"}
-                />
-                <HenvendelseColumn
-                  columnName={"newMatchCount"}
-                  labelName={"Nye funn"}
-                />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {searchHenvendelse(henvendelser, searchValue).map(
-                (item, index) => {
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => clickedRowItem(item.id)}
-                      className={
-                        `${item.id}` === props.match.params?.id
-                          ? classes.activeRow
-                          : classes.row
-                      }
-                    >
-                      <TableCell>{item.id}</TableCell>
-                      <TableCell>{item.name}</TableCell>
-                      <TableCell>{item.phone}</TableCell>
-                      <TableCell>{item.subcategory}</TableCell>
-                      <TableCell>{item.description}</TableCell>
-                      <TableCell align="center">{item.matchCount}</TableCell>
-                      <TableCell align="center">{item.newMatchCount}</TableCell>
-                    </TableRow>
-                  );
-                }
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
-      <div className={classes.rightCol}>
-        <Route
+    <DataLoadingContainer loading={isloading} error={error}>
+      <div className={classes.root}>
+        <div className={classes.leftCol}>
+          <InputBase
+            className={searchClasses.input}
+            placeholder="Søk på henvendelser"
+            onChange={(event) => {
+              setSearchValue(event.target.value);
+            }}
+            inputProps={{ "aria-label": "Søk på henvendelser" }}
+          />
+          <IconButton
+            type="submit"
+            className={searchClasses.iconButton}
+            aria-label="search"
+          >
+            <SearchIcon />
+          </IconButton>
+          <TableContainer className={classes.container}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow className={classes.thRow}>
+                  <HenvendelseColumn columnName={"id"} labelName={"Id"} />
+                  <HenvendelseColumn columnName={"name"} labelName={"Navn"} />
+                  <HenvendelseColumn
+                    columnName={"phone"}
+                    labelName={"Telefon"}
+                  />
+                  <HenvendelseColumn
+                    columnName={"subcategory"}
+                    labelName={"Underkategori"}
+                  />
+                  <HenvendelseColumn
+                    columnName={"description"}
+                    labelName={"Beskrivelse"}
+                  />
+                  <HenvendelseColumn
+                    columnName={"matchCount"}
+                    labelName={"På lager"}
+                  />
+                  <HenvendelseColumn
+                    columnName={"newMatchCount"}
+                    labelName={"Nye funn"}
+                  />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {searchHenvendelse(henvendelser, searchValue).map(
+                  (item, index) => {
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => clickedRowItem(item.id)}
+                        className={
+                          `${item.id}` === props.match.params?.id
+                            ? classes.activeRow
+                            : classes.row
+                        }
+                      >
+                        <TableCell>{item.id}</TableCell>
+                        <TableCell>{item.name}</TableCell>
+                        <TableCell>{item.phone}</TableCell>
+                        <TableCell>{item.subcategory}</TableCell>
+                        <TableCell>{item.description}</TableCell>
+                        <TableCell align="center">{item.matchCount}</TableCell>
+                        <TableCell align="center">
+                          {item.newMatchCount}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+        <div className={classes.rightCol}>
+          <Route
             path="/admin/henvendelser/:id"
             render={(routeProps) => (
-                <Henvendelse {...routeProps} removeItem={removeItem} />
-            )} />
+              <Henvendelse
+                {...routeProps}
+                removeItem={removeItem}
+                decrementNewMatch={decrementNewMatch}
+              />
+            )}
+          />
+        </div>
       </div>
-    </div>
+    </DataLoadingContainer>
   );
 }
 

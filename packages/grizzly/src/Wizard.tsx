@@ -130,8 +130,13 @@ export default function Wizard() {
 
   function onCategorySelect(cat: string) {
     setCategory(cat);
-    //nextPage("/underkategori");
-    setStatus(2);
+    if (cat === "Annet") {
+      setStatus(3);
+      setSubCategory("Annet");
+    } else {
+      //nextPage("/underkategori");
+      setStatus(2);
+    }
   }
 
   function onSubCategorySelected(subCat: string) {

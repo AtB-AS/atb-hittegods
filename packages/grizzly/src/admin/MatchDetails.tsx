@@ -5,8 +5,9 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
-import {Box, Button, Grid} from "@material-ui/core";
+import { Box, Button, Grid } from "@material-ui/core";
 import React from "react";
+import { HTTPError } from "./Errors";
 import { log } from "util";
 import moment from "moment";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -68,8 +69,6 @@ function MatchDetails(props: Props) {
   const history = useHistory();
   const styles = useStyles();
 
-  //TODO Better code for network calls catching errors etc
-
   const confirmMatch = () => {
     props.setLoading(true);
     registerMatch({
@@ -77,67 +76,64 @@ function MatchDetails(props: Props) {
       foundid: props.foundItem.id,
     })
       .then((response) => {
-        if (response.status === 409) {
-          //TODO
-          throw new Error("Conflict");
-        } else if (response.status === 200) {
+        if (response.ok) {
           const lostPossibleMatchePromise = getPossibleMatches({ lostid: id });
           const foundPossibleMatchesPromise = getPossibleMatches({
             foundid: props.foundItem.id,
           });
-
-          Promise.all([lostPossibleMatchePromise, foundPossibleMatchesPromise])
-            .then((data) => {
-              const tempPromises: Promise<PossibleMatchResponse>[] = [];
-              data.forEach((response) => {
-                tempPromises.push(response.json());
-              });
-              Promise.all(tempPromises)
-                .then((data) => {
-                  const lostPromise = updateLostStatus(id);
-                  const foundPromise = updateFoundStatus(props.foundItem.id);
-                  const promises2: Promise<Response>[] = [
-                    lostPromise,
-                    foundPromise,
-                  ];
-                  const ids: number[] = [];
-                  data.map((item) => {
-                    console.log(item);
-                    item.data.forEach((match) => {
-                      if (!ids.includes(match.id)) {
-                        ids.push(match.id);
-                      }
-                    });
-                  });
-                  ids.forEach((id) => {
-                    promises2.push(deletePossibleMatch(id));
-                  });
-                  Promise.all(promises2)
-                    .then((data) => {
-                      props.removeItem(id);
-                      history.replace("/admin/henvendelser");
-                      props.setLoading(false);
-                    })
-                    .catch((e) => {
-                      console.log(e);
-                      props.setLoading(false);
-                    });
-                })
-                .catch((e) => {
-                  console.log(e);
-                  props.setLoading(false);
-                });
-            })
-            .catch((e) => {
-              console.log(e);
-              props.setLoading(false);
-            });
+          return Promise.all([
+            lostPossibleMatchePromise,
+            foundPossibleMatchesPromise,
+          ]);
+        } else {
+          throw new HTTPError("HTTPError", response.status);
         }
       })
-      //TODO
-      .catch((e) => {
-        console.log(e);
+      .then((responses) => {
+        const jsonPromises: Promise<PossibleMatchResponse>[] = [];
+        responses.forEach((response) => {
+          jsonPromises.push(response.json());
+        });
+        return Promise.all(jsonPromises);
+      })
+      .then((jsonDataList) => {
+        const lostPromise = updateLostStatus(id);
+        const foundPromise = updateFoundStatus(props.foundItem.id);
+        const responsePromises: Promise<Response>[] = [
+          lostPromise,
+          foundPromise,
+        ];
+        const ids: number[] = [];
+        jsonDataList.map((jsonData) => {
+          jsonData.data.forEach((match) => {
+            if (!ids.includes(match.id)) {
+              ids.push(match.id);
+            }
+          });
+        });
+        ids.forEach((id) => {
+          responsePromises.push(deletePossibleMatch(id));
+        });
+        return Promise.all(responsePromises);
+      })
+      .then((responses) => {
+        props.removeItem(parseInt(id));
+        history.replace("/admin/henvendelser");
         props.setLoading(false);
+      })
+      .catch((e) => {
+        props.setLoading(false);
+        if ((e.name = "HTTPError")) {
+          if (e.status === 409) {
+            //TODO 409 popup
+          } else if (e.status === 404) {
+            //TODO 404 error
+          } else {
+            //TODO standart error popup
+          }
+        } else {
+          //TODO standart error popup
+        }
       });
   };
 
@@ -201,99 +197,103 @@ function MatchDetails(props: Props) {
   if (props.foundItem.status === "Funnet") {
     confirmButton = (
       <Button
-          variant="contained"
-          color="primary"
-          className="editButton"
-          onClick={() => confirmMatch()}>Bekreft match</Button>
+        variant="contained"
+        color="primary"
+        className="editButton"
+        onClick={() => confirmMatch()}
+      >
+        Bekreft match
+      </Button>
     );
   } else {
     confirmButton = (
       <Button
-          variant="contained"
-          color="primary"
-          className="editButton"
-          disabled={true}>Gjenstand er ikke bekreftet ankommet</Button>
+        variant="contained"
+        color="primary"
+        className="editButton"
+        disabled={true}
+      >
+        Gjenstand er ikke bekreftet ankommet
+      </Button>
     );
   }
 
   function ContactInfo() {
-    if (props.foundItem.name!="" || props.foundItem.phone!="" || props.foundItem.email!=""){
-      return(<div>
-        <Grid container spacing={1}>
-          <Grid item md={12}>
-            <h3 className="h4">Kontaktinfo:</h3>
-          </Grid>
-        <Grid item md={4}>
-        <dl>
-          <dt>Navn:</dt>
-          <dd>{props.foundItem.name}</dd>
-        </dl>
-        </Grid>
-        <Grid item md={4}>
-          <dl>
-            <dt>Telefon:</dt>
-            <dd>{props.foundItem.phone}</dd>
-          </dl>
-        </Grid>
-        <Grid item md={4}>
-          <dl>
-            <dt>E-post:</dt>
-            <dd>{props.foundItem.email}</dd>
-          </dl>
-        </Grid>
-        </Grid>
-        </div>)
-
-    }
-    else{
-      return(
-          <div>
+    if (
+      props.foundItem.name != "" ||
+      props.foundItem.phone != "" ||
+      props.foundItem.email != ""
+    ) {
+      return (
+        <div>
+          <Grid container spacing={1}>
             <Grid item md={12}>
-              Ingen kontaktinfo funnet
+              <h3 className="h4">Kontaktinfo:</h3>
             </Grid>
-          </div>
-      )
+            <Grid item md={4}>
+              <dl>
+                <dt>Navn:</dt>
+                <dd>{props.foundItem.name}</dd>
+              </dl>
+            </Grid>
+            <Grid item md={4}>
+              <dl>
+                <dt>Telefon:</dt>
+                <dd>{props.foundItem.phone}</dd>
+              </dl>
+            </Grid>
+            <Grid item md={4}>
+              <dl>
+                <dt>E-post:</dt>
+                <dd>{props.foundItem.email}</dd>
+              </dl>
+            </Grid>
+          </Grid>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <Grid item md={12}>
+            Ingen kontaktinfo funnet
+          </Grid>
+        </div>
+      );
     }
-
   }
 
-
   return (
-      <div>
-        <Box p={2} mt={1} mb={0} className={styles.card}>
-          <Grid container spacing={1}>
-            <h3 className="h4">{props.foundItem.subcategory} - {props.foundItem.brand}</h3>
-            <Grid item md={12}>
-              <dt>Full beskrivelse:</dt>
-              <dd>{props.foundItem.description}</dd>
-            </Grid>
-            <Grid item md={4}>
-              <dl>
-                <dt>Dato funnet:</dt>
-                <dd>{moment(props.foundItem.date).format("DD.MM.yy")}</dd>
-              </dl>
-            </Grid>
-            <Grid item md={4}>
-              <dl>
-                <dt>Linje:</dt>
-                <dd>{props.foundItem.line}</dd>
-              </dl>
-            </Grid>
-            <Grid item md={4}>
-              <dl>
-                <dt>Farge:</dt>
-                <dd>{props.foundItem.color}</dd>
-              </dl>
-            </Grid>
-          </Grid>
-
-          <ContactInfo/>
-
-        </Box>
-        <Box mb={1}>
-          {confirmButton}
-        </Box>
-      </div>
+    <div>
+      <Paper>
+        <h6>
+          Detaljvisning for {props.foundItem.subcategory} -{" "}
+          {props.foundItem.brand}
+        </h6>
+        <Table size="small">
+          <TableContainer>
+            <TableBody>
+              <TableRow>
+                <TableCell>ID: </TableCell>
+                <TableCell>{props.foundItem.id}</TableCell>
+                <TableCell>Status: </TableCell>
+                <TableCell>{props.foundItem.status}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Farge: </TableCell>
+                <TableCell>{props.foundItem.color}</TableCell>
+                <TableCell>Registreringsdato: </TableCell>
+                <TableCell>{props.foundItem.date.slice(0, 10)}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Beskrivelse: </TableCell>
+                <TableCell colSpan={3}>{props.foundItem.description}</TableCell>
+              </TableRow>
+            </TableBody>
+          </TableContainer>
+        </Table>
+        {confirmButton}
+      </Paper>
+    </div>
   );
 }
 export default MatchDetails;

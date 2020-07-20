@@ -5,7 +5,8 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
 import Matches from "./Matches";
 import DataLoadingContainer from "../DataLoadingContainer";
-import {type} from "os";
+import { HTTPError } from "./Errors";
+import { type } from "os";
 
 const useStyles = makeStyles({
   root: {
@@ -57,17 +58,20 @@ export type Match = {
 function Henvendelse(props: Props) {
   const [henvendelse, setHenvendelse] = useState<HenvendelseType | null>(null);
   const [isLoading, setLoading] = useState<boolean>(true);
+  const [notFound, setNotFound] = useState<string | undefined>(undefined);
   const [error, setError] = useState(false);
   const [match, setMatch] = useState<Match[]>([]);
   const styles = useStyles();
 
   useEffect(() => {
     setLoading(true);
+    setNotFound(undefined);
     fetch("/api/admin/lost/" + props.match.params.id)
       .then((response) => {
-        if (response.status === 401) {
-        } else {
+        if (response.ok) {
           return response.json();
+        } else {
+          throw new HTTPError("HTTPError", response.status);
         }
       })
       .then((jsonData) => {
@@ -75,13 +79,22 @@ function Henvendelse(props: Props) {
         setMatch(jsonData.data.matches);
         setLoading(false);
       })
-      .catch(() => {
-        setError(true);
+      .catch((e) => {
+        setLoading(false);
+        if (e.name === "HTTPError") {
+          if (e.status === 404) {
+            setNotFound("Denne henvendelsen finnes ikke");
+          } else {
+            setError(true);
+          }
+        } else {
+          setError(true);
+        }
       });
   }, [props.match.params.id]);
 
   return (
-    <DataLoadingContainer loading={isLoading} error={error}>
+    <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
       <div className={styles.root}>
         <Box p={3} mt={4} className={styles.card}>
           <div>
@@ -116,7 +129,7 @@ function Henvendelse(props: Props) {
             </Grid>
           </Box>
           <h3 className="h4">Innsender:</h3>
-          <Box >
+          <Box>
             <Grid container>
               <Grid item md={12}>
                 <dl>
@@ -138,16 +151,14 @@ function Henvendelse(props: Props) {
               </Grid>
             </Grid>
           </Box>
-
-
         </Box>
         <Box p={2} className={styles.card} mt={4}>
           <Matches
-              matches={match}
-              hendvendelsesid={parseInt(props.match.params.id)}
-              removeItem={props.removeItem}
-              setLoading={setLoading}
-              decrementNewMatch={props.decrementNewMatch}
+            matches={match}
+            hendvendelsesid={parseInt(props.match.params.id)}
+            removeItem={props.removeItem}
+            setLoading={setLoading}
+            decrementNewMatch={props.decrementNewMatch}
           />
         </Box>
       </div>

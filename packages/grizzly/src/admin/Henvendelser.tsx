@@ -21,6 +21,8 @@ import { useTableStyles } from "./styles";
 import { searchHenvendelse, HenvendelseType } from "./utils";
 import SearchIcon from "@material-ui/icons/Search";
 import DataLoadingContainer from "../DataLoadingContainer";
+import { HTTPError } from "./Errors";
+import { type } from "os";
 import Button from "@material-ui/core/Button";
 
 type Props = {
@@ -54,7 +56,7 @@ function Henvendelser(props: Props) {
   const searchClasses = useStyles();
   const history = useHistory();
   const [henvendelser, setHenvendelser] = useState<HenvendelseType[]>([]);
-  const [isloading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [orderBy, setOrderBy] = useState<string>("desc");
   const [collumnName, setCollumnName] = useState("id");
@@ -96,19 +98,24 @@ function Henvendelser(props: Props) {
   useEffect(() => {
     setLoading(true);
     fetch("/api/admin/lost?" + queryString)
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new HTTPError("HTTPError", response.status);
+        }
+      })
       .then((jsonData) => {
-        console.log(jsonData);
         const lostData = jsonData.data.items;
         if (orderBy === "desc") {
           setHenvendelser(lostData.sort(compare).reverse());
         } else {
           setHenvendelser(lostData.sort(compare));
         }
-
         setLoading(false);
       })
-      .catch(() => {
+      .catch((e) => {
+        setLoading(false);
         setError(true);
       });
   }, []);
@@ -147,45 +154,40 @@ function Henvendelser(props: Props) {
   }
 
   const removeItem = (id: number) => {
-    const keepItems: Array<HenvendelseType> = [];
-    henvendelser.forEach((item) => {
-      if (item.id != id) {
-        keepItems.push(item);
-      }
+    const newHenvendelser = henvendelser.filter((henvendelse) => {
+      return henvendelse.id !== id;
     });
-    setHenvendelser(keepItems);
+    setHenvendelser(newHenvendelser);
   };
 
-  function formatDescription(desc:string|undefined) {
-    if(typeof(desc)==="string") {
+  function formatDescription(desc: string | undefined) {
+    if (typeof desc === "string") {
       if (desc.length > 16) {
-        return desc.slice(0, 16) + "..."
+        return desc.slice(0, 16) + "...";
       } else {
-        return desc
+        return desc;
       }
-    }
-    else {
-      return ""
+    } else {
+      return "";
     }
   }
 
-
   return (
-    <DataLoadingContainer loading={isloading} error={error}>
+    <DataLoadingContainer loading={isLoading} error={error}>
       <div className={classes.root}>
         <div className={classes.leftCol}>
           <InputBase
-              className={searchClasses.input}
-              placeholder="Søk på henvendelser"
-              onChange={(event) => {
-                setSearchValue(event.target.value);
-              }}
-              inputProps={{ "aria-label": "Søk på henvendelser" }}
+            className={searchClasses.input}
+            placeholder="Søk på henvendelser"
+            onChange={(event) => {
+              setSearchValue(event.target.value);
+            }}
+            inputProps={{ "aria-label": "Søk på henvendelser" }}
           />
           <IconButton
-              type="submit"
-              className={searchClasses.iconButton}
-              aria-label="search"
+            type="submit"
+            className={searchClasses.iconButton}
+            aria-label="search"
           >
             <SearchIcon />
           </IconButton>
@@ -195,48 +197,55 @@ function Henvendelser(props: Props) {
                 <TableRow className={classes.thRow}>
                   <HenvendelseColumn columnName={"id"} labelName={"Id"} />
                   <HenvendelseColumn columnName={"name"} labelName={"Navn"} />
-                  <HenvendelseColumn columnName={"phone"} labelName={"Telefon"} />
                   <HenvendelseColumn
-                      columnName={"subcategory"}
-                      labelName={"Underkategori"}
+                    columnName={"phone"}
+                    labelName={"Telefon"}
                   />
                   <HenvendelseColumn
-                      columnName={"description"}
-                      labelName={"Beskrivelse"}
+                    columnName={"subcategory"}
+                    labelName={"Underkategori"}
                   />
                   <HenvendelseColumn
-                      columnName={"matchCount"}
-                      labelName={"På lager"}
+                    columnName={"description"}
+                    labelName={"Beskrivelse"}
                   />
                   <HenvendelseColumn
-                      columnName={"newMatchCount"}
-                      labelName={"Nye funn"}
+                    columnName={"matchCount"}
+                    labelName={"På lager"}
+                  />
+                  <HenvendelseColumn
+                    columnName={"newMatchCount"}
+                    labelName={"Nye funn"}
                   />
                 </TableRow>
               </TableHead>
               <TableBody>
                 {searchHenvendelse(henvendelser, searchValue).map(
-                    (item, index) => {
-                      return (
-                          <TableRow
-                              hover
-                              onClick={(event) => clickedRowItem(item.id)}
-                              className={
-                                `${item.id}` === props.match.params?.id
-                                    ? classes.activeRow
-                                    : classes.row
-                              }
-                          >
-                            <TableCell>{item.id}</TableCell>
-                            <TableCell>{item.name}</TableCell>
-                            <TableCell>{item.phone}</TableCell>
-                            <TableCell>{item.subcategory}</TableCell>
-                            <TableCell>{formatDescription(item.description)}</TableCell>
-                            <TableCell align="center">{item.matchCount}</TableCell>
-                            <TableCell align="center">{item.newMatchCount}</TableCell>
-                          </TableRow>
-                      );
-                    }
+                  (item, index) => {
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => clickedRowItem(item.id)}
+                        className={
+                          `${item.id}` === props.match.params?.id
+                            ? classes.activeRow
+                            : classes.row
+                        }
+                      >
+                        <TableCell>{item.id}</TableCell>
+                        <TableCell>{item.name}</TableCell>
+                        <TableCell>{item.phone}</TableCell>
+                        <TableCell>{item.subcategory}</TableCell>
+                        <TableCell>
+                          {formatDescription(item.description)}
+                        </TableCell>
+                        <TableCell align="center">{item.matchCount}</TableCell>
+                        <TableCell align="center">
+                          {item.newMatchCount}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
                 )}
               </TableBody>
             </Table>

@@ -100,6 +100,7 @@ function Storage(props: Props) {
     .join("&");
 
   useEffect(() => {
+    setLoading(true);
     fetch("/api/admin/found?" + queryString)
       .then((response) => response.json())
       .then((jsonData) => {
@@ -107,6 +108,7 @@ function Storage(props: Props) {
         setLoading(false);
       })
       .catch(() => {
+        setLoading(false);
         setError(true);
       });
   }, []);

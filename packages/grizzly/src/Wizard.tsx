@@ -14,7 +14,7 @@ import SubCategory from "./SubCategory";
 import Characteristics from "./Characteristics";
 import Location from "./Location";
 import MissingDate from "./MissingDate";
-import ContactInfo from "./ContactInfo";
+import ContactInfo, { ContactInfoType } from "./ContactInfo";
 import Confirmation from "./Confirmation";
 import Container from "@material-ui/core/Container";
 import { Box, StepConnector, StepLabel } from "@material-ui/core";
@@ -176,7 +176,7 @@ export default function Wizard() {
     setStatus(1);
   }
 
-  function setContactInfo(contInfo: ContactInfo) {
+  function setContactInfo(contInfo: ContactInfoType) {
     const payload = {
       category,
       subCategory,
@@ -201,7 +201,7 @@ export default function Wizard() {
     history.push(path);
   }
 
-  function sendForm(payload: reg) {
+  function sendForm(payload: ContactInfoType) {
     return fetch("/api/register", {
       method: "post",
       body: JSON.stringify(payload),

@@ -336,6 +336,7 @@ export default function Wizard() {
                 brand={characteristics.brand}
                 description={characteristics.description}
                 onCharacteristicsSelect={onCharacteristicsDone}
+                subCategory={subCategory}
               />
             )}
           </Route>

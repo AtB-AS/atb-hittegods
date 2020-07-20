@@ -63,8 +63,7 @@ function Location(props: Props) {
   };
 
   function unknownLineButtonHandler() {
-    setLine("");
-    props.onLocationSelect(line);
+    props.onLocationSelect("");
   }
 
   return (

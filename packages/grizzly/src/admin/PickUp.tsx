@@ -22,6 +22,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import moment from "moment";
 import TextField from "@material-ui/core/TextField";
 import PickUpItem from "./PickUpItem";
+import Henvendelse from "./Henvendelse";
 
 type StorageItems = {
   id: number;
@@ -205,14 +206,14 @@ function PickUp(props: Props) {
   }
 
   const removeItem = (id: number) => {
-    const keepItems: Array<StorageItems> = [];
-    storageItems.forEach((item) => {
-      if (item.id !== id) {
-        keepItems.push(item);
-      }
-    });
-    setStorageItems(keepItems);
+    console.log(id);
+    const newStorageItems = storageItems.filter((item) => item.id !== id);
+    console.table(storageItems);
+    console.table(newStorageItems);
+    setStorageItems(newStorageItems);
   };
+  console.log("remove item");
+  console.log(removeItem);
 
   return (
     <div className={classes.root}>
@@ -316,8 +317,9 @@ function PickUp(props: Props) {
       <div className={classes.rightCol}>
         <Route
           path="/admin/tilUtlevering/:id"
-          component={PickUpItem}
-          removeItem={removeItem}
+          render={(routeProps) => (
+            <PickUpItem {...routeProps} removeItem={removeItem} />
+          )}
         />
       </div>
     </div>

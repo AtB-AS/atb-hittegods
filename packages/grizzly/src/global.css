@@ -1,3 +1,8 @@
 #root {
     overflow: hidden;
 }
+
+/* Because its really hard to style the autocomplete! Sorry, but its true */
+.MuiAutocomplete-input {
+    padding: 12px 16px 12px !important;
+}

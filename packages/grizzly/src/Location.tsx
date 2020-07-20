@@ -26,8 +26,10 @@ type LineObj = {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    textfield: {
-      display: "flex",
+    overrides: {
+      root: {
+        padding: "10px 16px 12px",
+      },
     },
   })
 );
@@ -80,7 +82,6 @@ function Location(props: Props) {
                 <Autocomplete
                   options={lines}
                   getOptionLabel={(item) => item.line + " " + item.description}
-                  style={{ width: "100%" }}
                   defaultValue={lines.find((l) => l.line === line)}
                   onChange={(event, value) => {
                     console.log("Sett veri onchange", value?.line);

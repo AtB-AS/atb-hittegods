@@ -7,9 +7,10 @@ export const theme = createMuiTheme({
       root: {
         borderRadius: 0,
         boxShadow: "0",
+        color: "#00758D",
       },
-      contained: {
-        marginTop: "12px",
+      outlined: {
+        padding: "10px 16px 12px",
         color: "#00758D",
         display: "block",
         width: "100%",
@@ -24,6 +25,13 @@ export const theme = createMuiTheme({
           borderColor: "#00758D",
           boxShadow: "none",
         },
+        text: {
+          color: "#00758D",
+        },
+      },
+      contained: {
+        borderBottom: "solid 3px #00758D",
+        display: "block",
       },
     },
     MuiGrid: {
@@ -42,6 +50,12 @@ export const theme = createMuiTheme({
       root: {
         color: "#323A48",
         fontWeight: "bold",
+      },
+    },
+    MuiFormHelperText: {
+      root: {
+        backgroundColor: "#F1F1F1",
+        marginTop: "0px",
       },
     },
     MuiStep: {
@@ -89,7 +103,7 @@ export const theme = createMuiTheme({
     secondary: {
       // Blue
       main: "#00758D",
-      light: "#60d1E0",
+      light: "#018da6",
     },
     error: {
       main: "#b2292e",

@@ -4,10 +4,9 @@ import { createStyles, Theme } from "@material-ui/core";
 import { NavLink, Route, Switch, useLocation } from "react-router-dom";
 import Henvendelser from "./Henvendelser";
 import Storage from "./Storage";
-import ReadyToPickUp from "./ReadyToPickUp";
 import Transit from "./Transit";
-import RegisterFound from "./RegisterFound";
 import PickUp from "./PickUp";
+import RegisterFound from "./registerFound/RegisterFound";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

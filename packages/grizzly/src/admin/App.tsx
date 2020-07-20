@@ -12,7 +12,7 @@ import Header from "../components/header";
 import Paper from "@material-ui/core/Paper";
 import ReadyToPickUp from "./ReadyToPickUp";
 import Transit from "./Transit";
-import RegisterFound from "./RegisterFound";
+import RegisterFound from "./registerFound/RegisterFound";
 
 const useStyles = makeStyles({
   root: {

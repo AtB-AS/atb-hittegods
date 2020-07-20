@@ -10,22 +10,21 @@ import { useTableStyles } from "./styles";
 import { useHistory } from "react-router";
 import TransitItem from "./TransitItem";
 import moment from "moment";
+import { HTTPError } from "./Errors";
+import DataLoadingContainer from "../DataLoadingContainer";
 
-type Items = {
+type TransitItem = {
   id: number;
+  name: string;
   subcategory: string;
   description: string;
   matchCount: number;
   newMatchCount: number;
-  name: string;
-  phone: string;
-  email: string;
-  brand: string;
-  status: string;
   color: string;
-  date: string;
+  brand: string;
   line: string;
-  foundids: number[];
+  phone: number;
+  date: Date;
 };
 
 type Props = {
@@ -38,10 +37,11 @@ type Props = {
 
 function Transit(props: Props) {
   const classes = useTableStyles();
-  const [items, setItems] = useState<Items[]>([]);
+  const [transitItems, setTransitItems] = useState<TransitItem[]>([]);
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const history = useHistory();
+  const [notFound, setNotFound] = useState<string | undefined>(undefined);
 
   const params = {
     status: "På vei",
@@ -52,95 +52,87 @@ function Transit(props: Props) {
     .join("&");
 
   const removeItem = (id: number) => {
-    const keepItems: Array<Items> = [];
-    items.forEach((item) => {
-      if (item.id !== id) {
-        keepItems.push(item);
-      }
+    const newItem = transitItems.filter((transitItem) => {
+      return transitItem.id !== id;
     });
-    setItems(keepItems);
+    setTransitItems(newItem);
   };
 
   useEffect(() => {
     setLoading(true);
     fetch("/api/admin/found?" + queryString)
       .then((response) => {
-        if (response.status === 401) {
-          //Unauthorized
-        } else {
+        if (response.ok) {
           return response.json();
+        } else {
+          throw new HTTPError("HTTPError", response.status);
         }
       })
       .then((jsonData) => {
-        setItems(jsonData.data.items);
+        setTransitItems(jsonData.data.items);
         setLoading(false);
       })
-      .catch(() => {
+      .catch((e) => {
+        setLoading(false);
         setError(true);
       });
   }, []);
-
-  if (error) {
-    return <p>Noe gikk galt</p>;
-  }
-
-  if (isLoading) {
-    return <p>Laster...</p>;
-  }
 
   function clickedRowItem(id: number) {
     history.push("/admin/påVei/" + id);
   }
 
   return (
-    <div className={classes.root}>
-      <div className={classes.leftCol}>
-        <TableContainer className={classes.container}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow className={classes.thRow}>
-                <TableCell className={classes.th}>Id</TableCell>
-                <TableCell className={classes.th}>Underkategori</TableCell>
-                <TableCell className={classes.th}>Beskrivelse</TableCell>
-                <TableCell className={classes.th}>Telefon</TableCell>
-                <TableCell className={classes.th}>Dato</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {items.map((item, index) => {
-                return (
-                  <TableRow
-                    hover
-                    onClick={(event) => clickedRowItem(item.id)}
-                    className={
-                      `${item.id}` === props.match.params?.id
-                        ? classes.activeRow
-                        : classes.row
-                    }
-                  >
-                    <TableCell>{item.id}</TableCell>
-                    <TableCell>{item.subcategory}</TableCell>
-                    <TableCell>{item.description}</TableCell>
-                    <TableCell>{item.phone}</TableCell>
-                    <TableCell>
-                      {moment(item?.date).format("DD.MM.yy")}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+    <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
+      <div className={classes.root}>
+        <div className={classes.leftCol}>
+          <TableContainer className={classes.container}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow className={classes.thRow}>
+                  <TableCell className={classes.th}>Id</TableCell>
+                  <TableCell className={classes.th}>Underkategori</TableCell>
+                  <TableCell className={classes.th}>Beskrivelse</TableCell>
+                  <TableCell className={classes.th}>Telefon</TableCell>
+                  <TableCell className={classes.th}>Dato</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {transitItems.map((item, index) => {
+                  return (
+                    <TableRow
+                      hover
+                      onClick={(event) => clickedRowItem(item.id)}
+                      className={
+                        `${item.id}` === props.match.params?.id
+                          ? classes.activeRow
+                          : classes.row
+                      }
+                    >
+                      <TableCell>{item.id}</TableCell>
+                      <TableCell>{item.subcategory}</TableCell>
+                      <TableCell>{item.description}</TableCell>
+                      <TableCell>{item.phone}</TableCell>
+                      <TableCell>
+                        {moment(item?.date).format("DD.MM.yy")}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+        <div className={classes.rightCol}>
+          <Route
+            path="/admin/påVei/:id"
+            render={(routeProps) => (
+              <TransitItem {...routeProps} removeItem={removeItem} />
+            )}
+          />
+        </div>
       </div>
-      <div className={classes.rightCol}>
-        <Route
-          path="/admin/påVei/:id"
-          render={(routeProps) => (
-            <TransitItem {...routeProps} removeItem={removeItem} />
-          )}
-        />
-      </div>
-    </div>
+    </DataLoadingContainer>
   );
 }
 

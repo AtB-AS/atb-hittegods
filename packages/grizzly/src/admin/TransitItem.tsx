@@ -5,6 +5,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
 import { useHistory } from "react-router";
 import DataLoadingContainer from "../DataLoadingContainer";
+import { HTTPError } from "./Errors";
 
 const useStyles = makeStyles({
   root: {
@@ -51,44 +52,47 @@ function TransitItem(props: Props) {
   const [item, setItem] = useState<Items | null>(null);
   const [isLoading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState(false);
-  const [match, setMatch] = useState<number[]>([]);
   const styles = useStyles();
   const history = useHistory();
-  const [notFound, setNotFound] = useState(false);
+  const [notFound, setNotFound] = useState<string | undefined>(undefined);
   const [edit, setEdit] = useState(false);
   const [editValue, setEditValue] = useState("");
-  const parameters = {
-    id: props.match.params.id,
-  };
 
   useEffect(() => {
     setLoading(true);
+    setNotFound(undefined);
     fetch("/api/admin/found/" + props.match.params.id)
       .then((response) => {
         if (response.ok) {
           return response.json();
-        }
-        if (response.status === 404) {
-          setNotFound(true);
-          throw new Error("Finnes ikke");
+        } else {
+          throw new HTTPError("HTTPError", response.status);
         }
       })
       .then((jsonData) => {
         setItem(jsonData.data);
         setEditValue(jsonData.data.description);
         if (jsonData.data.status !== "På vei") {
-          setNotFound(true);
+          setNotFound("true");
         }
         setLoading(false);
       })
       .catch((e) => {
-        console.log(e);
-        setError(true);
+        setLoading(false);
+        if (e.name === "HTTPError") {
+          if (e.status === 404) {
+            setNotFound("Finner ikke gjenstanden");
+          } else {
+            setError(true);
+          }
+        } else {
+          setError(true);
+        }
       });
   }, [props.match.params.id]);
 
   const storageClickHandler = () => {
-    if (props.match.params.id != undefined) {
+    if (props.match.params.id !== undefined) {
       fetch("/api/admin/found/" + props.match.params.id, {
         body: JSON.stringify({
           status: "Funnet",
@@ -106,20 +110,32 @@ function TransitItem(props: Props) {
           "Content-Type": "application/json",
         },
         method: "PUT",
-      }).then((response) => {
-        if (response.status === 401) {
-        } else if (response.status === 200) {
-          console.log(props);
-          props.removeItem(parseInt(props.match.params.id));
-          history.replace("/admin/påVei");
-        }
-      });
+      })
+        .then((response) => {
+          if (response.ok) {
+            props.removeItem(parseInt(props.match.params.id));
+            history.replace("/admin/påVei");
+          } else {
+            throw new HTTPError("HTTPError", response.status);
+          }
+        })
+        .catch((e) => {
+          if (e.name === "HTTPError") {
+            if (e.status === 404) {
+              //TODO 404 popup message
+            } else {
+              //TODO standard error
+            }
+          } else {
+            //TODO standart error
+          }
+        });
     }
   };
 
   const editClickHandler = () => {
     if (edit) {
-      if (props.match.params.id != undefined) {
+      if (props.match.params.id !== undefined) {
         fetch("/api/admin/found/" + props.match.params.id, {
           body: JSON.stringify({
             status: "Funnet",
@@ -137,13 +153,26 @@ function TransitItem(props: Props) {
             "Content-Type": "application/json",
           },
           method: "PUT",
-        }).then((response) => {
-          if (response.status === 401) {
-          } else if (response.status === 200) {
-            props.removeItem(parseInt(props.match.params.id));
-            history.replace("/admin/påVei");
-          }
-        });
+        })
+          .then((response) => {
+            if (response.ok) {
+              props.removeItem(parseInt(props.match.params.id));
+              history.replace("/admin/påVei");
+            } else {
+              throw new HTTPError("HTTPError", response.status);
+            }
+          })
+          .catch((e) => {
+            if (e.name === "HTTPError") {
+              if (e.status === 404) {
+                //TODO 404 popup message
+              } else {
+                //TODO standard error
+              }
+            } else {
+              //TODO standart error
+            }
+          });
       }
     } else {
       setEdit(true);

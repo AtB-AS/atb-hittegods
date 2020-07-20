@@ -7,7 +7,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import { Button } from "@material-ui/core";
 import React from "react";
-import { log } from "util";
+import { HTTPError } from "./Errors";
 
 type Props = {
   foundItem: FoundMatch;
@@ -51,8 +51,6 @@ function MatchDetails(props: Props) {
   const { id } = useParams();
   const history = useHistory();
 
-  //TODO Better code for network calls catching errors etc
-
   const confirmMatch = () => {
     props.setLoading(true);
     registerMatch({
@@ -60,67 +58,64 @@ function MatchDetails(props: Props) {
       foundid: props.foundItem.id,
     })
       .then((response) => {
-        if (response.status === 409) {
-          //TODO
-          throw new Error("Conflict");
-        } else if (response.status === 200) {
+        if (response.ok) {
           const lostPossibleMatchePromise = getPossibleMatches({ lostid: id });
           const foundPossibleMatchesPromise = getPossibleMatches({
             foundid: props.foundItem.id,
           });
-
-          Promise.all([lostPossibleMatchePromise, foundPossibleMatchesPromise])
-            .then((data) => {
-              const tempPromises: Promise<PossibleMatchResponse>[] = [];
-              data.forEach((response) => {
-                tempPromises.push(response.json());
-              });
-              Promise.all(tempPromises)
-                .then((data) => {
-                  const lostPromise = updateLostStatus(id);
-                  const foundPromise = updateFoundStatus(props.foundItem.id);
-                  const promises2: Promise<Response>[] = [
-                    lostPromise,
-                    foundPromise,
-                  ];
-                  const ids: number[] = [];
-                  data.map((item) => {
-                    console.log(item);
-                    item.data.forEach((match) => {
-                      if (!ids.includes(match.id)) {
-                        ids.push(match.id);
-                      }
-                    });
-                  });
-                  ids.forEach((id) => {
-                    promises2.push(deletePossibleMatch(id));
-                  });
-                  Promise.all(promises2)
-                    .then((data) => {
-                      props.removeItem(id);
-                      history.replace("/admin/henvendelser");
-                      props.setLoading(false);
-                    })
-                    .catch((e) => {
-                      console.log(e);
-                      props.setLoading(false);
-                    });
-                })
-                .catch((e) => {
-                  console.log(e);
-                  props.setLoading(false);
-                });
-            })
-            .catch((e) => {
-              console.log(e);
-              props.setLoading(false);
-            });
+          return Promise.all([
+            lostPossibleMatchePromise,
+            foundPossibleMatchesPromise,
+          ]);
+        } else {
+          throw new HTTPError("HTTPError", response.status);
         }
       })
-      //TODO
-      .catch((e) => {
-        console.log(e);
+      .then((responses) => {
+        const jsonPromises: Promise<PossibleMatchResponse>[] = [];
+        responses.forEach((response) => {
+          jsonPromises.push(response.json());
+        });
+        return Promise.all(jsonPromises);
+      })
+      .then((jsonDataList) => {
+        const lostPromise = updateLostStatus(id);
+        const foundPromise = updateFoundStatus(props.foundItem.id);
+        const responsePromises: Promise<Response>[] = [
+          lostPromise,
+          foundPromise,
+        ];
+        const ids: number[] = [];
+        jsonDataList.map((jsonData) => {
+          jsonData.data.forEach((match) => {
+            if (!ids.includes(match.id)) {
+              ids.push(match.id);
+            }
+          });
+        });
+        ids.forEach((id) => {
+          responsePromises.push(deletePossibleMatch(id));
+        });
+        return Promise.all(responsePromises);
+      })
+      .then((responses) => {
+        props.removeItem(parseInt(id));
+        history.replace("/admin/henvendelser");
         props.setLoading(false);
+      })
+      .catch((e) => {
+        props.setLoading(false);
+        if ((e.name = "HTTPError")) {
+          if (e.status === 409) {
+            //TODO 409 popup
+          } else if (e.status === 404) {
+            //TODO 404 error
+          } else {
+            //TODO standart error popup
+          }
+        } else {
+          //TODO standart error popup
+        }
       });
   };
 
@@ -217,7 +212,6 @@ function MatchDetails(props: Props) {
                 <TableCell>Beskrivelse: </TableCell>
                 <TableCell colSpan={3}>{props.foundItem.description}</TableCell>
               </TableRow>
-              <TableRow></TableRow>
             </TableBody>
           </TableContainer>
         </Table>

@@ -5,6 +5,8 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
 import { useHistory } from "react-router";
 import { HenvendelseType } from "./Henvendelse";
+import DataLoadingContainer from "../DataLoadingContainer";
+import { HTTPError } from "./Errors";
 
 const useStyles = makeStyles({
   root: {
@@ -58,18 +60,13 @@ function PickUpItem(props: Props) {
   const [isLoading, setLoading] = useState<boolean>(true);
   const [henvendelse, setHenvendelse] = useState<HenvendelseType | null>(null);
   const [error, setError] = useState(false);
-  const [match, setMatch] = useState<number[]>([]);
   const styles = useStyles();
   const history = useHistory();
-  const [notFound, setNotFound] = useState(false);
-  const parameters = {
-    id: props.match.params.id,
-  };
-  console.log("REMOVE ITEM");
-  console.log(props.removeItem);
+  const [notFound, setNotFound] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     setLoading(true);
+    setNotFound(undefined);
     getMatches()
       .then((response) => {
         if (response.ok) {
@@ -107,7 +104,6 @@ function PickUpItem(props: Props) {
                   .json()
                   .then((jsonData) => {
                     setHenvendelse(jsonData.data);
-                    console.log(jsonData.data);
                   })
                   .catch((e) => {
                     setLoading(false);
@@ -124,9 +120,73 @@ function PickUpItem(props: Props) {
       .catch((e) => setLoading(false));
   }, [props.match.params.id]);
 
-  if (error) {
-    return <p>Noe gikk galt :(</p>;
-  }
+  useEffect(() => {
+    setLoading(true);
+    setNotFound(undefined);
+    getMatches()
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new HTTPError("HTTPError", response.status);
+        }
+      })
+      .then((jsonData) => {
+        const lostid = lostIdFromFoundId(
+          parseInt(props.match.params.id),
+          jsonData.data.matches
+        );
+        const responsePromises = [];
+        responsePromises.push(
+          fetch("/api/admin/found/" + props.match.params.id)
+        );
+        if (lostid !== undefined) {
+          responsePromises.push(getLost(lostid));
+        }
+        return Promise.all(responsePromises);
+      })
+      .then((responses) => {
+        const foundResponse = responses[0];
+        if (foundResponse.ok) {
+          foundResponse
+            .json()
+            .then((jsonData) => {
+              setItem(jsonData.data);
+              setLoading(false);
+            })
+            .catch();
+        } else {
+          throw new HTTPError("HTTPError", foundResponse.status);
+        }
+        if (responses.length === 2) {
+          const lostResponse = responses[1];
+          if (lostResponse.ok) {
+            lostResponse
+              .json()
+              .then((jsonData) => {
+                setHenvendelse(jsonData.data);
+              })
+              .catch((e) => {
+                setHenvendelse(null);
+              });
+          }
+        } else {
+          setHenvendelse(null);
+        }
+      })
+      .catch((e) => {
+        setLoading(false);
+        if (e.name === "HTTPError") {
+          if (e.status === 404) {
+            setNotFound("Vi finner ikke denne gjenstanden");
+          } else {
+            setError(true);
+          }
+        } else {
+          setError(true);
+        }
+      });
+  }, [props.match.params.id]);
 
   const getMatches = () => {
     return fetch("/api/admin/match");
@@ -136,7 +196,6 @@ function PickUpItem(props: Props) {
     foundid: number,
     matches: ConfirmedMatch[]
   ): number | undefined => {
-    console.log(matches);
     const match = matches.find((match) => match.foundid === foundid);
     if (match !== undefined) {
       return match.lostid;
@@ -297,65 +356,67 @@ function PickUpItem(props: Props) {
   }
 
   return (
-    <div className={styles.root}>
-      <Box p={3} mt={4} className={styles.card}>
-        <Grid container>
-          <Grid item md={12}>
-            <h2>
-              {item?.subcategory} - {item?.brand}
-            </h2>
-            <p>{item?.description}</p>
+    <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
+      <div className={styles.root}>
+        <Box p={3} mt={4} className={styles.card}>
+          <Grid container>
+            <Grid item md={12}>
+              <h2>
+                {item?.subcategory} - {item?.brand}
+              </h2>
+              <p>{item?.description}</p>
+            </Grid>
+            <Grid item md={8}>
+              <h3 className="h4">På gjenstanden</h3>
+              <dl>
+                <dt>Navn:</dt>
+                <dd>{item?.name}</dd>
+                <dt>Telefon:</dt>
+                <dd>{item?.phone}</dd>
+                <dt>E-post:</dt>
+                <dd>{item?.email}</dd>
+              </dl>
+            </Grid>
+            <Grid item md={4}>
+              <h3 className="h4">Detaljer</h3>
+              <dl>
+                <dt>Dato:</dt>
+                <dd>{moment(item?.date).format("DD.MM.yy")}</dd>
+                <dt>Linje:</dt>
+                <dd>{item?.line}</dd>
+                <dt>Farge:</dt>
+                <dd>{item?.color}</dd>
+              </dl>
+            </Grid>
           </Grid>
-          <Grid item md={8}>
-            <h3 className="h4">På gjenstanden</h3>
-            <dl>
-              <dt>Navn:</dt>
-              <dd>{item?.name}</dd>
-              <dt>Telefon:</dt>
-              <dd>{item?.phone}</dd>
-              <dt>E-post:</dt>
-              <dd>{item?.email}</dd>
-            </dl>
+          <Grid item justify="space-between">
+            <Button
+              variant="contained"
+              color="primary"
+              className="editButton"
+              onClick={(event) => {
+                returnToStorageClickHandler();
+              }}
+            >
+              Send tilbake til lager
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              className="storageButton"
+              onClick={(event) => {
+                deliverClickHandler();
+              }}
+            >
+              Lever ut
+            </Button>
           </Grid>
-          <Grid item md={4}>
-            <h3 className="h4">Detaljer</h3>
-            <dl>
-              <dt>Dato:</dt>
-              <dd>{moment(item?.date).format("DD.MM.yy")}</dd>
-              <dt>Linje:</dt>
-              <dd>{item?.line}</dd>
-              <dt>Farge:</dt>
-              <dd>{item?.color}</dd>
-            </dl>
-          </Grid>
-        </Grid>
-        <Grid item justify="space-between">
-          <Button
-            variant="contained"
-            color="primary"
-            className="editButton"
-            onClick={(event) => {
-              returnToStorageClickHandler();
-            }}
-          >
-            Send tilbake til lager
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            className="storageButton"
-            onClick={(event) => {
-              deliverClickHandler();
-            }}
-          >
-            Lever ut
-          </Button>
-        </Grid>
-      </Box>
-      <Box p={3} mt={4} className={styles.card}>
-        {henvendelseComponent}
-      </Box>
-    </div>
+        </Box>
+        <Box p={3} mt={4} className={styles.card}>
+          {henvendelseComponent}
+        </Box>
+      </div>
+    </DataLoadingContainer>
   );
 }
 

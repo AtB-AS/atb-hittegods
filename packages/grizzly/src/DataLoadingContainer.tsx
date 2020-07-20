@@ -14,7 +14,7 @@ export const useStyles = makeStyles({
 type Props = {
   loading: boolean;
   error: boolean;
-  notFound?: boolean;
+  notFound?: string;
 };
 
 const DataLoadingContainer: React.FC<Props> = ({
@@ -35,12 +35,7 @@ const DataLoadingContainer: React.FC<Props> = ({
     return <div>Noe gikk galt</div>;
   }
   if (notFound) {
-    return (
-      <p>
-        Ooops, her er det ikke noe innhold. Bruk menyen for å navigere tilbake
-        til oversikten
-      </p>
-    );
+    return <p>{notFound}</p>;
   }
   return <>{children}</>;
 };

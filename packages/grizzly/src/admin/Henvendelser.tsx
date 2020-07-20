@@ -21,6 +21,8 @@ import { useTableStyles } from "./styles";
 import { searchHenvendelse, HenvendelseType } from "./utils";
 import SearchIcon from "@material-ui/icons/Search";
 import DataLoadingContainer from "../DataLoadingContainer";
+import { HTTPError } from "./Errors";
+import { type } from "os";
 
 type Props = {
   match: {
@@ -53,7 +55,7 @@ function Henvendelser(props: Props) {
   const searchClasses = useStyles();
   const history = useHistory();
   const [henvendelser, setHenvendelser] = useState<HenvendelseType[]>([]);
-  const [isloading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [orderBy, setOrderBy] = useState<string>("desc");
   const [collumnName, setCollumnName] = useState("id");
@@ -95,19 +97,24 @@ function Henvendelser(props: Props) {
   useEffect(() => {
     setLoading(true);
     fetch("/api/admin/lost?" + queryString)
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new HTTPError("HTTPError", response.status);
+        }
+      })
       .then((jsonData) => {
-        console.log(jsonData);
         const lostData = jsonData.data.items;
         if (orderBy === "desc") {
           setHenvendelser(lostData.sort(compare).reverse());
         } else {
           setHenvendelser(lostData.sort(compare));
         }
-
         setLoading(false);
       })
-      .catch(() => {
+      .catch((e) => {
+        setLoading(false);
         setError(true);
       });
   }, []);
@@ -146,17 +153,14 @@ function Henvendelser(props: Props) {
   }
 
   const removeItem = (id: number) => {
-    const keepItems: Array<HenvendelseType> = [];
-    henvendelser.forEach((item) => {
-      if (item.id != id) {
-        keepItems.push(item);
-      }
+    const newHenvendelser = henvendelser.filter((henvendelse) => {
+      return henvendelse.id !== id;
     });
-    setHenvendelser(keepItems);
+    setHenvendelser(newHenvendelser);
   };
 
   return (
-    <DataLoadingContainer loading={isloading} error={error}>
+    <DataLoadingContainer loading={isLoading} error={error}>
       <div className={classes.root}>
         <div className={classes.leftCol}>
           <InputBase

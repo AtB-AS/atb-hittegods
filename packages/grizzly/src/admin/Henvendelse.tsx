@@ -5,6 +5,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
 import Matches from "./Matches";
 import DataLoadingContainer from "../DataLoadingContainer";
+import { HTTPError } from "./Errors";
 
 const useStyles = makeStyles({
   root: {
@@ -56,17 +57,20 @@ export type Match = {
 function Henvendelse(props: Props) {
   const [henvendelse, setHenvendelse] = useState<HenvendelseType | null>(null);
   const [isLoading, setLoading] = useState<boolean>(true);
+  const [notFound, setNotFound] = useState<string | undefined>(undefined);
   const [error, setError] = useState(false);
   const [match, setMatch] = useState<Match[]>([]);
   const styles = useStyles();
 
   useEffect(() => {
     setLoading(true);
+    setNotFound(undefined);
     fetch("/api/admin/lost/" + props.match.params.id)
       .then((response) => {
-        if (response.status === 401) {
-        } else {
+        if (response.ok) {
           return response.json();
+        } else {
+          throw new HTTPError("HTTPError", response.status);
         }
       })
       .then((jsonData) => {
@@ -74,13 +78,22 @@ function Henvendelse(props: Props) {
         setMatch(jsonData.data.matches);
         setLoading(false);
       })
-      .catch(() => {
-        setError(true);
+      .catch((e) => {
+        setLoading(false);
+        if (e.name === "HTTPError") {
+          if (e.status === 404) {
+            setNotFound("Denne henvendelsen finnes ikke");
+          } else {
+            setError(true);
+          }
+        } else {
+          setError(true);
+        }
       });
   }, [props.match.params.id]);
 
   return (
-    <DataLoadingContainer loading={isLoading} error={error}>
+    <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
       <div className={styles.root}>
         <Box p={3} mt={4} className={styles.card}>
           <Grid container>

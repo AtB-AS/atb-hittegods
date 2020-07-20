@@ -43,21 +43,30 @@ function Matches(props: Props) {
   const [foundItems, setFoundItems] = useState<Found[]>([]);
 
   useEffect(() => {
+    setLoading(true);
     // fetch info on all the matches
-    const promises: Promise<Response>[] = [];
+    const responsePromises: Promise<Response>[] = [];
     props.matches.forEach((match) => {
-      promises.push(fetch("/api/admin/found/" + match.foundid));
+      responsePromises.push(fetch("/api/admin/found/" + match.foundid));
     });
-    Promise.all(promises).then((data) => {
-      const promises2: Promise<MatchResponse>[] = [];
-      data.forEach((response) => {
-        promises2.push(response.json());
-      });
-      Promise.all(promises2).then((data) => {
-        setFoundItems(data.map((item) => item.data));
+    Promise.all(responsePromises)
+      .then((responses) => {
+        const jsonPromises: Promise<MatchResponse>[] = [];
+        responses.forEach((response) => {
+          if (response.ok) {
+            jsonPromises.push(response.json());
+          }
+        });
+        return Promise.all(jsonPromises);
+      })
+      .then((jsonDataList) => {
+        setFoundItems(jsonDataList.map((jsonData) => jsonData.data));
         setLoading(false);
+      })
+      .catch((e) => {
+        setLoading(false);
+        setError(true);
       });
-    });
   }, []);
 
   const matchByFoundId = (foundid: number): Match | undefined => {

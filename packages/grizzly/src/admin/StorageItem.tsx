@@ -3,8 +3,8 @@ import { Box, Grid } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
-import { useHistory } from "react-router";
 import DataLoadingContainer from "../DataLoadingContainer";
+import { HTTPError } from "./Errors";
 
 const useStyles = makeStyles({
   root: {
@@ -51,36 +51,38 @@ function StorageItem(props: Props) {
   const [item, setItem] = useState<Items | null>(null);
   const [isLoading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState(false);
-  const [match, setMatch] = useState<number[]>([]);
   const styles = useStyles();
-  const history = useHistory();
-  const [notFound, setNotFound] = useState(false);
-  const parameters = {
-    id: props.match.params.id,
-  };
+  const [notFound, setNotFound] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     setLoading(true);
+    setNotFound(undefined);
     fetch("/api/admin/found/" + props.match.params.id)
       .then((response) => {
         if (response.ok) {
           return response.json();
-        }
-        if (response.status === 404) {
-          setNotFound(true);
-          throw new Error("Finnes ikke");
+        } else {
+          throw new HTTPError("HTTPError", response.status);
         }
       })
       .then((jsonData) => {
         setItem(jsonData.data);
-        if (jsonData.data.status != "Funnet") {
-          setNotFound(true);
+        if (jsonData.data.status !== "Funnet") {
+          setNotFound("Finner ikke gjenstanden");
         }
         setLoading(false);
       })
       .catch((e) => {
-        console.log(e);
-        setError(true);
+        setLoading(false);
+        if (e.name === "HTTPError") {
+          if (e.status === 404) {
+            setNotFound("Finner ikke gjenstanden");
+          } else {
+            setError(true);
+          }
+        } else {
+          setError(true);
+        }
       });
   }, [props.match.params.id]);
 

@@ -65,6 +65,8 @@ function PickUpItem(props: Props) {
   const parameters = {
     id: props.match.params.id,
   };
+  console.log("REMOVE ITEM");
+  console.log(props.removeItem);
 
   useEffect(() => {
     setLoading(true);
@@ -170,9 +172,13 @@ function PickUpItem(props: Props) {
       .then((response) => {
         if (response.status === 401) {
         } else if (response.status === 200) {
+          console.log("Item removed");
           setLoading(false);
+          console.log("loading false");
           props.removeItem(parseInt(props.match.params.id));
+          console.log("1111111111111111111");
           history.replace("/admin/tilUtlevering");
+          console.log(2222222222222222222222);
         }
       })
       .catch((e) => {

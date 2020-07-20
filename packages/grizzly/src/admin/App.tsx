@@ -12,7 +12,9 @@ import Header from "../components/header";
 import Paper from "@material-ui/core/Paper";
 import ReadyToPickUp from "./ReadyToPickUp";
 import Transit from "./Transit";
-import RegisterFound from "./registerFound/RegisterFound";
+import RegisterStorage from "./register/RegisterStorage";
+import RegisterTransit from "./register/RegisterTransit";
+import RegisterItem from "./register/RegisterItem";
 
 const useStyles = makeStyles({
   root: {
@@ -83,9 +85,14 @@ function App() {
             <Route path="/admin/tilUtlevering">
               <ReadyToPickUp />
             </Route>
-            <Route path="/admin/påVei" component={Transit} />
+            <Route path="/admin/påVei" component={Transit}>
+              <RegisterTransit
+                status={"På vei"}
+                path={"/admin/påVei/registrer"}
+              />
+            </Route>
             <Route path="/admin/registrereFunn">
-              <RegisterFound />
+              <RegisterStorage status={"Funnet"} path={"/admin/påVei"} />
             </Route>
           </Switch>
         </Grid>

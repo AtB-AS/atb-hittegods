@@ -21,6 +21,7 @@ import { useTableStyles } from "./styles";
 import { searchHenvendelse, HenvendelseType } from "./utils";
 import SearchIcon from "@material-ui/icons/Search";
 import DataLoadingContainer from "../DataLoadingContainer";
+import Button from "@material-ui/core/Button";
 
 type Props = {
   match: {
@@ -233,6 +234,12 @@ function Henvendelser(props: Props) {
           </TableContainer>
         </div>
         <div className={classes.rightCol}>
+          <Button
+            variant="contained"
+            href="https://hittegods.azurewebsites.net/"
+          >
+            Registrer henvendelser
+          </Button>
           <Route
             path="/admin/henvendelser/:id"
             render={(routeProps) => (

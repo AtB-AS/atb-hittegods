@@ -5,8 +5,9 @@ import { NavLink, Route, Switch, useLocation } from "react-router-dom";
 import Henvendelser from "./Henvendelser";
 import Storage from "./Storage";
 import Transit from "./Transit";
+import RegisterStorage from "./register/RegisterStorage";
+import RegisterTransit from "./register/RegisterTransit";
 import PickUp from "./PickUp";
-import RegisterFound from "./registerFound/RegisterFound";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -110,9 +111,10 @@ function Layout() {
       <main className={styles.main}>
         <Switch>
           <Route path="/admin/henvendelser/:id?" component={Henvendelser} />
-          <Route path="/admin/lager/registrere" component={RegisterFound} />
+          <Route path="/admin/lager/registrere" component={RegisterStorage} />
           <Route path="/admin/lager/:id?" exact component={Storage} />
           <Route path="/admin/tilUtlevering/:id?" component={PickUp} />
+          <Route path="/admin/påVei/registrer" component={RegisterTransit} />
           <Route path="/admin/påVei" component={Transit} />
         </Switch>
       </main>

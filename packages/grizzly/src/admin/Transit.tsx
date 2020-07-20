@@ -10,6 +10,7 @@ import { useTableStyles } from "./styles";
 import { useHistory } from "react-router";
 import TransitItem from "./TransitItem";
 import moment from "moment";
+import Button from "@material-ui/core/Button";
 
 type Items = {
   id: number;
@@ -133,6 +134,9 @@ function Transit(props: Props) {
         </TableContainer>
       </div>
       <div className={classes.rightCol}>
+        <Button href="/admin/påVei/registrer" variant="contained">
+          Registrer funnet gjenstand
+        </Button>
         <Route
           path="/admin/påVei/:id"
           render={(routeProps) => (

@@ -298,7 +298,7 @@ function Storage(props: Props) {
           </TableContainer>
         </div>
         <div className={classes.rightCol}>
-          <Button href="/admin/lager/registrere">
+          <Button href="/admin/lager/registrere" variant="contained">
             Registrer funnet gjenstand
           </Button>
           <Route path="/admin/lager/:id" component={StorageItem} />

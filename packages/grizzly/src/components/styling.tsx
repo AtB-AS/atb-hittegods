@@ -25,6 +25,10 @@ export const theme = createMuiTheme({
           borderColor: "#00758D",
           boxShadow: "none",
         },
+        "&:active": {
+          outline: "none",
+          boxShadow: "none",
+        },
         text: {
           color: "#00758D",
         },
@@ -32,6 +36,16 @@ export const theme = createMuiTheme({
       contained: {
         borderBottom: "solid 3px #00758D",
         display: "block",
+        boxShadow: "0",
+        "&:hover": {
+          boxShadow: "0",
+          backgroundColor: "#00758D",
+          borderBottom: "solid 3px #323A48",
+        },
+        "&:active": {
+          outline: "none",
+          boxShadow: "none",
+        },
       },
     },
     MuiGrid: {

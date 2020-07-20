@@ -17,6 +17,13 @@ const useStyles = makeStyles({
   button: {
     color: theme.palette.primary.main,
     padding: "12px 16px 10px",
+    "&:active": {
+      border: "none",
+      borderColor: "red",
+    },
+    "&:focus": {
+      outline: "none",
+    },
   },
 });
 

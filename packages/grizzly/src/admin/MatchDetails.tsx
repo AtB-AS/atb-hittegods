@@ -181,7 +181,6 @@ function MatchDetails(props: Props) {
     });
   };
   let confirmButton;
-  console.log(props.foundItem.status);
   if (props.foundItem.status === "Funnet") {
     confirmButton = (
       <Button onClick={() => confirmMatch()}>Bekreft match</Button>

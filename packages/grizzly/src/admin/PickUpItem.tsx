@@ -172,18 +172,78 @@ function PickUpItem(props: Props) {
       .then((response) => {
         if (response.status === 401) {
         } else if (response.status === 200) {
-          console.log("Item removed");
           setLoading(false);
-          console.log("loading false");
           props.removeItem(parseInt(props.match.params.id));
-          console.log("1111111111111111111");
           history.replace("/admin/tilUtlevering");
-          console.log(2222222222222222222222);
         }
       })
       .catch((e) => {
         setLoading(false);
       });
+    if (henvendelse != null) {
+      fetch("/api/admin/lost/" + henvendelse.id + "/status", {
+        method: "put",
+        body: JSON.stringify({ status: "Utlevert" }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+    }
+  };
+
+  const returnToStorageClickHandler = () => {
+    setLoading(true);
+    fetch("/api/admin/found/" + props.match.params.id, {
+      body: JSON.stringify({
+        status: "Funnet",
+        subCategory: item?.subcategory,
+        category: item?.category,
+        description: item?.description,
+        name: item?.name,
+        phone: item?.phone,
+        email: item?.email,
+        brand: item?.brand,
+        color: item?.color,
+        line: item?.line,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "PUT",
+    })
+      .then((response) => {
+        if (response.status === 401) {
+        } else if (response.status === 200) {
+          setLoading(false);
+          props.removeItem(parseInt(props.match.params.id));
+          history.replace("/admin/tilUtlevering");
+          fetch(
+            "https://hittegods-matchmaker.azurewebsites.net/found/" +
+              props.match.params.id
+          );
+        }
+      })
+      .catch((e) => {
+        setLoading(false);
+      });
+    if (henvendelse != null) {
+      fetch("/api/admin/lost/" + henvendelse.id + "/status", {
+        method: "put",
+        body: JSON.stringify({ status: "Mistet" }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }).then((response) => {
+        if (response.ok) {
+          fetch(
+            "https://hittegods-matchmaker.azurewebsites.net/lost/" +
+              henvendelse.id
+          );
+        }
+      });
+    }
   };
 
   if (isLoading) {
@@ -274,7 +334,9 @@ function PickUpItem(props: Props) {
             variant="contained"
             color="primary"
             className="editButton"
-            onClick={(event) => {}}
+            onClick={(event) => {
+              returnToStorageClickHandler();
+            }}
           >
             Send tilbake til lager
           </Button>

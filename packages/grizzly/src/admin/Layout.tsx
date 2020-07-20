@@ -7,6 +7,7 @@ import Storage from "./Storage";
 import ReadyToPickUp from "./ReadyToPickUp";
 import Transit from "./Transit";
 import RegisterFound from "./RegisterFound";
+import PickUp from "./PickUp";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -112,7 +113,7 @@ function Layout() {
           <Route path="/admin/henvendelser/:id?" component={Henvendelser} />
           <Route path="/admin/lager/registrere" component={RegisterFound} />
           <Route path="/admin/lager/:id?" exact component={Storage} />
-          <Route path="/admin/tilUtlevering" component={ReadyToPickUp} />
+          <Route path="/admin/tilUtlevering/:id?" component={PickUp} />
           <Route path="/admin/påVei" component={Transit} />
         </Switch>
       </main>

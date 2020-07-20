@@ -124,15 +124,6 @@ function Henvendelse(props: Props) {
           </Grid>
         </Grid>
       </Box>
-      <Box p={2} className={styles.card} mt={4}>
-        <Matches
-          matches={match}
-          hendvendelsesid={parseInt(props.match.params.id)}
-          removeItem={props.removeItem}
-          setLoading={setLoading}
-          decrementNewMatch={props.decrementNewMatch}
-        />
-      </Box>
     </div>
   );
 }

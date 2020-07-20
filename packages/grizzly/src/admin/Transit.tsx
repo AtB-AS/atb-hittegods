@@ -54,7 +54,7 @@ function Transit(props: Props) {
   const removeItem = (id: number) => {
     const keepItems: Array<Items> = [];
     items.forEach((item) => {
-      if (item.id != id) {
+      if (item.id !== id) {
         keepItems.push(item);
       }
     });

@@ -19,6 +19,7 @@ import Radio from "@material-ui/core/Radio";
 import FormControl from "@material-ui/core/FormControl";
 import ColorSelect from "./ColorSelect";
 import InputLabel from "@material-ui/core/InputLabel";
+import NextBtn from "./components/NextBtn";
 
 type Props = {
   onCharacteristicsSelect: (characteristics: Characteristics) => void;
@@ -39,6 +40,9 @@ const useStyles = makeStyles((theme: Theme) =>
     textfield: {
       display: "flex",
     },
+    button: {
+      float: "right",
+    },
   })
 );
 
@@ -56,7 +60,7 @@ function Characteristics(props: Props, characteristics: Characteristics) {
     <div>
       <Box mt={4} mb={4}>
         {/* Med underkategori: <h5>Beskriv din(e) {props.subCategory}</h5>*/}
-        <h4>Kan du beskrive det du har mistet?</h4>
+        <h2 className="h4">Kan du beskrive det du har mistet?</h2>
       </Box>
 
       <Box>
@@ -91,14 +95,9 @@ function Characteristics(props: Props, characteristics: Characteristics) {
             />
           </Grid>
           <Grid item xs={12}>
-            <Button
-              color="primary"
-              variant="contained"
-              type="submit"
-              onClick={onSubmit}
-            >
-              Neste
-            </Button>
+            <div className={styles.button}>
+              <NextBtn onClick={onSubmit} />
+            </div>
           </Grid>
         </Grid>
       </Box>

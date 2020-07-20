@@ -57,7 +57,7 @@ function MissingDate(props: Props) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h4>Hvilken dag var det?</h4>
+        <h2 className="h4">Hvilken dag var det?</h2>
         <p>Er du usikker, velg den du tror er nærmest.</p>
       </Box>
       <form noValidate>
@@ -84,6 +84,7 @@ function MissingDate(props: Props) {
           <Grid item xs={12}>
             <InputLabel htmlFor="line">Eller velg dato:</InputLabel>
             <TextField
+              placeholder="dd.mm.2020"
               type="date"
               className={classes.textField}
               InputLabelProps={{
@@ -106,18 +107,11 @@ function MissingDate(props: Props) {
           <Grid item>
             <BackBtn onClick={onBackBtnClick} />
           </Grid>
-          <Grid item>
-            <NextBtn onClick={onSubmitDatepicker} />
-          </Grid>
 
           {status && (
-            <Button
-              type="submit"
-              variant="contained"
-              onClick={onSubmitDatepicker}
-            >
-              Neste
-            </Button>
+            <Grid item>
+              <NextBtn onClick={onSubmitDatepicker} />
+            </Grid>
           )}
         </Grid>
       </form>

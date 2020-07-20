@@ -23,6 +23,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
 import { type } from "os";
+import Button from "@material-ui/core/Button";
 
 type Props = {
   match: {
@@ -159,6 +160,18 @@ function Henvendelser(props: Props) {
     setHenvendelser(newHenvendelser);
   };
 
+  function formatDescription(desc: string | undefined) {
+    if (typeof desc === "string") {
+      if (desc.length > 16) {
+        return desc.slice(0, 16) + "...";
+      } else {
+        return desc;
+      }
+    } else {
+      return "";
+    }
+  }
+
   return (
     <DataLoadingContainer loading={isLoading} error={error}>
       <div className={classes.root}>
@@ -223,7 +236,9 @@ function Henvendelser(props: Props) {
                         <TableCell>{item.name}</TableCell>
                         <TableCell>{item.phone}</TableCell>
                         <TableCell>{item.subcategory}</TableCell>
-                        <TableCell>{item.description}</TableCell>
+                        <TableCell>
+                          {formatDescription(item.description)}
+                        </TableCell>
                         <TableCell align="center">{item.matchCount}</TableCell>
                         <TableCell align="center">
                           {item.newMatchCount}
@@ -237,6 +252,12 @@ function Henvendelser(props: Props) {
           </TableContainer>
         </div>
         <div className={classes.rightCol}>
+          <Button
+            variant="contained"
+            href="https://hittegods.azurewebsites.net/"
+          >
+            Registrer henvendelser
+          </Button>
           <Route
             path="/admin/henvendelser/:id"
             render={(routeProps) => (

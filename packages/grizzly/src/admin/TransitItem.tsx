@@ -237,41 +237,83 @@ function TransitItem(props: Props) {
     );
   }
 
-  return (
-    <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
-      <div className={styles.root}>
-        <Box p={3} mt={4} className={styles.card}>
-          <Grid container>
-            <Grid item md={12}>
-              <h2>
-                {item?.subcategory} - {item?.brand}
-              </h2>
-              {description}
-            </Grid>
-            <Grid item md={8}>
-              <h3 className="h4">På gjenstanden</h3>
+  function ContactInfo() {
+    if (item?.name != "" || item?.phone != "" || item?.email != "") {
+      return (<div>
+        <Box >
+          <Grid container spacing={1}>
+            <Grid item md={4}>
               <dl>
                 <dt>Navn:</dt>
                 <dd>{item?.name}</dd>
+              </dl>
+            </Grid>
+            <Grid item md={4}>
+              <dl>
                 <dt>Telefon:</dt>
                 <dd>{item?.phone}</dd>
+              </dl>
+            </Grid>
+            <Grid item md={4}>
+              <dl>
                 <dt>E-post:</dt>
                 <dd>{item?.email}</dd>
               </dl>
             </Grid>
-            <Grid item md={4}>
-              <h3 className="h4">Detaljer</h3>
-              <dl>
-                <dt>Dato:</dt>
-                <dd>{moment(item?.date).format("DD.MM.yy")}</dd>
-                <dt>Linje:</dt>
-                <dd>{item?.line}</dd>
-                <dt>Farge:</dt>
-                <dd>{item?.color}</dd>
-              </dl>
-            </Grid>
-            {buttons}
           </Grid>
+        </Box>
+      </div>)
+
+    } else {
+      return (
+          <div>
+            <Grid item md={12}>
+              Ingen kontaktinfo funnet
+            </Grid>
+          </div>
+      )
+    }
+  }
+
+
+  return (
+    <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
+      <div className={styles.root}>
+        <Box p={3} mt={4} className={styles.card}>
+          <div>
+            <h2>
+              {item?.subcategory} - {item?.brand}
+            </h2>
+          </div>
+          <Box >
+            <Grid container>
+              <Grid item md={12}>
+                <dt>Full beskrivelse:</dt>
+                <dd>{description}</dd>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Dato funnet:</dt>
+                  <dd>{moment(item?.date).format("DD.MM.yy")}</dd>
+                </dl>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Linje:</dt>
+                  <dd>{item?.line}</dd>
+                </dl>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Farge:</dt>
+                  <dd>{item?.color}</dd>
+                </dl>
+              </Grid>
+            </Grid>
+          </Box>
+          <h3 className="h4">Kontaktinfo:</h3>
+          <ContactInfo/>
+          <Grid>{buttons}</Grid>
         </Box>
       </div>
     </DataLoadingContainer>

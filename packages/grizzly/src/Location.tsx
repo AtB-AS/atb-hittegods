@@ -26,8 +26,10 @@ type LineObj = {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    textfield: {
-      display: "flex",
+    overrides: {
+      root: {
+        padding: "10px 16px 12px",
+      },
     },
   })
 );
@@ -61,15 +63,14 @@ function Location(props: Props) {
   };
 
   function unknownLineButtonHandler() {
-    setLine("");
-    props.onLocationSelect(line);
+    props.onLocationSelect("");
   }
 
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h4>Husker du hvilken linje du tok? </h4>
-        <p>Om du er usikker, går det også fint. </p>
+        <h2 className="h4">Husker du hvilken linje du tok? </h2>
+        <p>Er du er usikker, går det også fint. </p>
       </Box>
       <DataLoadingContainer loading={isloading} error={error}>
         <Box>
@@ -78,21 +79,21 @@ function Location(props: Props) {
               <Grid item xs={12}>
                 <InputLabel htmlFor="line">Velg linje</InputLabel>
                 <Autocomplete
-                  placeholder="Linjenummer"
                   options={lines}
                   getOptionLabel={(item) => item.line + " " + item.description}
-                  style={{ width: "100%" }}
                   defaultValue={lines.find((l) => l.line === line)}
                   onChange={(event, value) => {
                     console.log("Sett veri onchange", value?.line);
                     if (value?.line) {
                       // @ts-ignore
+
                       props.onLocationSelect(value.line);
                       setLine(value.line);
                     }
                   }}
                   renderInput={(params) => (
                     <TextField
+                      placeholder="Linjenummer"
                       {...params}
                       variant="standard"
                       name="line"

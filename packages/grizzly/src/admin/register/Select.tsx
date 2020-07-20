@@ -8,6 +8,8 @@ export type Props = {
   name: string;
   Options: string[];
   onChange: (value: string | null) => void;
+  inputRef?: (inputValue: any) => void;
+  errorMessage?: string;
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -29,10 +31,14 @@ function Select(props: Props) {
       className={classes.TextField}
       renderInput={(params) => (
         <TextField
+          name={props.name}
           placeholder="Vennligst velg"
           {...params}
           variant="outlined"
           id={id}
+          inputRef={props.inputRef}
+          error={!!props.errorMessage}
+          helperText={props.errorMessage}
         />
       )}
       onChange={(evt, value) => props.onChange(value)}

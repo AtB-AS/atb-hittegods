@@ -6,6 +6,7 @@ import moment from "moment";
 import Matches from "./Matches";
 import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
+import { type } from "os";
 
 const useStyles = makeStyles({
   root: {
@@ -96,36 +97,60 @@ function Henvendelse(props: Props) {
     <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
       <div className={styles.root}>
         <Box p={3} mt={4} className={styles.card}>
-          <Grid container>
-            <Grid item md={12}>
-              <h2>
-                {henvendelse?.subcategory} - {henvendelse?.brand}
-              </h2>
-              <p>{henvendelse?.description}</p>
+          <div>
+            <h2>
+              {henvendelse?.subcategory} - {henvendelse?.brand}
+            </h2>
+          </div>
+          <Box>
+            <Grid container>
+              <Grid item md={12}>
+                <dt>Full beskrivelse:</dt>
+                <dd>{henvendelse?.description}</dd>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Dato mistet:</dt>
+                  <dd>{moment(henvendelse?.date).format("DD.MM.yy")}</dd>
+                </dl>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Linje:</dt>
+                  <dd>{henvendelse?.line}</dd>
+                </dl>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Farge:</dt>
+                  <dd>{henvendelse?.color}</dd>
+                </dl>
+              </Grid>
             </Grid>
-            <Grid item md={8}>
-              <h3 className="h4">Innsender</h3>
-              <dl>
-                <dt>Navn:</dt>
-                <dd>{henvendelse?.name}</dd>
-                <dt>Telefon:</dt>
-                <dd>{henvendelse?.phone}</dd>
-                <dt>E-post:</dt>
-                <dd>{henvendelse?.email}</dd>
-              </dl>
+          </Box>
+          <h3 className="h4">Innsender:</h3>
+          <Box>
+            <Grid container>
+              <Grid item md={12}>
+                <dl>
+                  <dt>Navn:</dt>
+                  <dd>{henvendelse?.name}</dd>
+                </dl>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Telefon:</dt>
+                  <dd>{henvendelse?.phone}</dd>
+                </dl>
+              </Grid>
+              <Grid item md={8}>
+                <dl>
+                  <dt>E-post:</dt>
+                  <dd>{henvendelse?.email}</dd>
+                </dl>
+              </Grid>
             </Grid>
-            <Grid item md={4}>
-              <h3 className="h4">Detaljer</h3>
-              <dl>
-                <dt>Dato:</dt>
-                <dd>{moment(henvendelse?.date).format("DD.MM.yy")}</dd>
-                <dt>Linje:</dt>
-                <dd>{henvendelse?.line}</dd>
-                <dt>Farge:</dt>
-                <dd>{henvendelse?.color}</dd>
-              </dl>
-            </Grid>
-          </Grid>
+          </Box>
         </Box>
         <Box p={2} className={styles.card} mt={4}>
           <Matches

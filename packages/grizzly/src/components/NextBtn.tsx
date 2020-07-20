@@ -21,7 +21,7 @@ const useStyles = makeStyles({
   },
 });
 
-function NextBtn(props: Props) {
+const NextBtn: React.FC<Props> = (props) => {
   const style = useStyles();
 
   return (
@@ -31,9 +31,9 @@ function NextBtn(props: Props) {
       type="submit"
       className={style.button}
     >
-      Gå videre <ArrowForwardIosIcon />
+      {props.children || "Gå videre"} <ArrowForwardIosIcon />
     </Button>
   );
-}
+};
 
 export default NextBtn;

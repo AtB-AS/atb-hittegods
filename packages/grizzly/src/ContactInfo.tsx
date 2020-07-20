@@ -1,22 +1,35 @@
-import React from "react";
-import { Box, createStyles, Grid, Theme } from "@material-ui/core";
+import React, { useState } from "react";
+import {
+  Box,
+  createStyles,
+  Grid,
+  Theme,
+  Checkbox,
+  FormControlLabel,
+  FormControl,
+  FormHelperText,
+  Dialog,
+} from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import { useForm, SubmitHandler } from "react-hook-form";
 import InputLabel from "@material-ui/core/InputLabel";
+import BackBtn from "./components/BackBtn";
+import NextBtn from "./components/NextBtn";
 
 type Props = {
-  onContactInfoSelect: (contactInfo: ContactInfo) => void;
+  onContactInfoSelect: (contactInfo: ContactInfoType) => void;
   name: string;
   phoneNumber: string;
   email: string;
 };
 
-type ContactInfo = {
+export type ContactInfoType = {
   name: string;
   phoneNumber: string;
   email: string;
+  terms: boolean;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -24,18 +37,39 @@ const useStyles = makeStyles((theme: Theme) =>
     textfield: {
       display: "flex",
     },
+    fieldsetterms: {
+      backgroundColor: "transparent",
+    },
+    labelterms: {
+      marginBottom: 0,
+    },
+    termdialog: {
+      padding: theme.spacing(2),
+    },
+    rightAlign: {
+      display: "flex",
+      justifyContent: "flex-end",
+    },
   })
 );
 
-function ContactInfo(props: Props, contactInfo: ContactInfo) {
+function ContactInfo(props: Props, contactInfo: ContactInfoType) {
   const styles = useStyles();
-  const { register, handleSubmit, errors } = useForm<Props>();
+  const [showTerms, setShowTerms] = useState(false);
+  const { register, handleSubmit, errors } = useForm<ContactInfoType>();
+  const handleClickOpen = () => {
+    setShowTerms(true);
+  };
+  const handleClose = () => {
+    setShowTerms(false);
+  };
 
-  const onSubmit: SubmitHandler<Props> = (data) => {
+  const onSubmit: SubmitHandler<ContactInfoType> = (data) => {
     props.onContactInfoSelect({
       name: data.name,
       phoneNumber: formatPhonenumber(data.phoneNumber),
       email: data.email,
+      terms: true,
     });
   };
 
@@ -51,7 +85,7 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h4>Hvordan kan vi kontakte deg?</h4>
+        <h2 className="h4">Hvordan kan vi kontakte deg?</h2>
       </Box>
 
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -97,7 +131,6 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
               error={!!errors.phoneNumber}
               variant="standard"
               inputRef={register({
-                required: "Husk å legge til ditt telefonnummer",
                 minLength: {
                   value: 8,
                   message: "Telefonnummeret må bestå av minst 8 tall",
@@ -129,13 +162,75 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
               //TODO InputProps not working -> https://material-ui.com/components/text-fields/ or https://codesandbox.io/s/6v444wnvp3?file=/src/FormattedInput.js
             />
           </Grid>
+          <Grid item>
+            <FormControl
+              error={!!errors.terms?.message}
+              component="fieldset"
+              className={styles.fieldsetterms}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="terms"
+                    inputRef={register({
+                      required: "Denne må være krysset av",
+                    })}
+                  />
+                }
+                className={styles.labelterms}
+                label={
+                  <span>
+                    Jeg godkjenner{" "}
+                    <a
+                      href=""
+                      onClick={(event) => {
+                        event.preventDefault();
+                        handleClickOpen();
+                      }}
+                    >
+                      bruksvilkårene
+                    </a>
+                  </span>
+                }
+              />
+              {errors.terms?.message && (
+                <FormHelperText>{errors.terms?.message}</FormHelperText>
+              )}
+            </FormControl>
+          </Grid>
           <Grid item xs={12}>
-            <Button color="primary" variant="contained" type="submit">
-              Neste
-            </Button>
+            <Box className={styles.rightAlign}>
+              <NextBtn onClick={() => {}}>Send inn</NextBtn>
+            </Box>
           </Grid>
         </Grid>
       </form>
+      <Dialog
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={showTerms}
+      >
+        <Box className={styles.termdialog}>
+          <h4>Vilkår for bruk</h4>
+          <p>
+            Ved å sende inn godkjenner jeg at AtB kan bruke kontaktinfoen min
+            til å kontakte meg angående mitt hittegods. Det er nødvendig for oss
+            å lagre denne informasjonen for at vi skal kunne kontakte deg hvis
+            vi finner det du har mistet. Dette innebærer: Tidsrammen for
+            lagringen er basert på hittegodsloven som tilsier at vi skal lagre
+            hittegods i 3 måneder.
+          </p>
+          <p>- Lagring av e-post, navn og telefonnummer i 3 måneder.</p>
+          <p>
+            Ved lagring av kontaktinfo i 3 måneder er vi sikre på å kunne
+            kontakte deg dersom vi finner gjenstanden din. Kontaktinfoen vil
+            ikke forlate AtB, og vi vil ikke dele den med noen utenfor vår
+            organisasjon. Vil du slette din data før det har gått 3 måneder, kan
+            du sende mail til hittegods@atb.no.
+          </p>
+          <BackBtn onClick={handleClose} />
+        </Box>
+      </Dialog>
     </div>
   );
 }

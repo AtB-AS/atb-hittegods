@@ -12,6 +12,7 @@ import TransitItem from "./TransitItem";
 import moment from "moment";
 import { HTTPError } from "./Errors";
 import DataLoadingContainer from "../DataLoadingContainer";
+import Button from "@material-ui/core/Button";
 
 type TransitItem = {
   id: number;
@@ -82,6 +83,18 @@ function Transit(props: Props) {
     history.push("/admin/påVei/" + id);
   }
 
+  function formatDescription(desc: string | undefined) {
+    if (typeof desc === "string") {
+      if (desc.length > 16) {
+        return desc.slice(0, 16) + "...";
+      } else {
+        return desc;
+      }
+    } else {
+      return "";
+    }
+  }
+
   return (
     <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
       <div className={classes.root}>
@@ -124,6 +137,9 @@ function Transit(props: Props) {
           </TableContainer>
         </div>
         <div className={classes.rightCol}>
+          <Button href="/admin/påVei/registrer" variant="contained">
+            Registrer funnet gjenstand
+          </Button>
           <Route
             path="/admin/påVei/:id"
             render={(routeProps) => (

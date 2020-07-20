@@ -198,6 +198,20 @@ function Storage(props: Props) {
     });
   }
 
+  function formatDescription(desc:string|undefined) {
+    if(typeof(desc)==="string") {
+      if (desc.length > 16) {
+        return desc.slice(0, 16) + "..."
+      } else {
+        return desc
+      }
+    }
+    else {
+      return ""
+    }
+  }
+
+
   return (
     <DataLoadingContainer loading={isLoading} error={error}>
       {storageItems.length === 0 && <p>Ingen henvendelser registrert</p>}
@@ -287,7 +301,7 @@ function Storage(props: Props) {
                     >
                       <TableCell>{item.id}</TableCell>
                       <TableCell>{item.subcategory}</TableCell>
-                      <TableCell>{item.description}</TableCell>
+                      <TableCell>{formatDescription(item.description)}</TableCell>
                       <TableCell>{item.phone}</TableCell>
                       <TableCell>
                         {moment(item?.date).format("DD.MM.yy")}
@@ -300,7 +314,7 @@ function Storage(props: Props) {
           </TableContainer>
         </div>
         <div className={classes.rightCol}>
-          <Button href="/admin/lager/registrere">
+          <Button href="/admin/lager/registrere" variant="contained">
             Registrer funnet gjenstand
           </Button>
           <Route path="/admin/lager/:id" component={StorageItem} />

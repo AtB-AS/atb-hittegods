@@ -136,8 +136,8 @@ function ColorSelect(props: Props) {
               style={{
                 borderColor: color.primary,
                 backgroundColor: color.primary,
-                paddingTop: "6px",
-                margin: "4px 8px",
+                padding: "20px",
+                margin: "5px",
               }}
               key={color.label}
               //icon={<AddIcon/>}
@@ -159,8 +159,8 @@ function ColorSelect(props: Props) {
                 style={{
                   borderColor: color.primary,
                   backgroundColor: color.primary,
-                  paddingTop: "6px",
-                  margin: "4px 8px",
+                  padding: "20px",
+                  margin: "5px",
                 }}
                 key={color.label}
                 label={

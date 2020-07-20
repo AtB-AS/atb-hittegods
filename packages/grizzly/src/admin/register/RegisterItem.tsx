@@ -6,18 +6,13 @@ import { Box, Grid, Typography } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { categoryData, subCatStrings } from "../../components/subCategoryData";
-
+import { useForm } from "react-hook-form";
 import { colorData } from "../../components/colorConstant";
-
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 
 import RegAutoSelect from "./Select";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -54,7 +49,12 @@ type LineObj = {
   description: string;
 };
 
-function RegisterFound() {
+type Props = {
+  status: string;
+  pathToComp: string;
+};
+
+function RegisterFound(props: Props) {
   const [mainCat, setMainCat] = useState("");
   const [subCat, setSubCat] = useState("");
   const [color, setColor] = useState("");
@@ -67,6 +67,8 @@ function RegisterFound() {
   const [open, setOpen] = React.useState(false);
   const [error, setError] = useState(false);
   const [lines, setLines] = useState<LineObj[]>([]);
+  const [itemIdRegistered, setItemIdRegistered] = useState(false);
+
   const classes = useStyles();
   const catData = categoryData;
   const theme = useTheme();
@@ -85,26 +87,7 @@ function RegisterFound() {
       });
   }, []);
 
-  const handleClickOpen = (event: any) => {
-    event.preventDefault();
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleCloseSend = () => {
-    sendForm();
-    setOpen(false);
-    window.location.assign("/admin/lager/");
-  };
-
-  const handleCloseSendNew = () => {
-    sendForm();
-    setOpen(false);
-    window.location.reload(false);
-  };
+  const { register, handleSubmit, errors } = useForm();
 
   const sendForm = () => {
     return fetch("/api/admin/found", {
@@ -118,30 +101,50 @@ function RegisterFound() {
         color: color,
         line: line,
         brand: brand,
-        status: "Funnet",
+        status: props.status,
         description: desc,
       }),
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-    }).catch(() => {
-      setError(true);
-    });
+    })
+      .then((response) => response.json())
+      .then((regData) => {
+        setItemIdRegistered(regData.data.foundid);
+      })
+      .catch(() => {
+        setError(true);
+      });
   };
 
-  function getSubCatData(mainCat: string) {
+  function getSubCatData(mainCat: string): string[] {
     if (mainCat) {
-      return categoryData.find((mainCatName) => mainCatName.name === mainCat)!
-        .subCategories;
+      return categoryData
+        .find((mainCatName) => mainCatName.name === mainCat)!
+        .subCategories.map((subCat) => {
+          return subCat.name;
+        });
     } else {
-      return [{ name: "velg hovedkategori", imgUrl: "yes" }];
+      return ["velg hovedkategori"];
     }
+  }
+
+  if (itemIdRegistered) {
+    return (
+      <div>
+        <h1>Gjenstand er nå registrert</h1>
+        <Link to={`${props.pathToComp}/${itemIdRegistered}`}>
+          <Button>Gå til registrert gjenstand</Button>
+        </Link>
+        <Button>Registrer ny gjenstand</Button>
+      </div>
+    );
   }
 
   return (
     <Grid container>
-      <form className={classes.formContainer}>
+      <form className={classes.formContainer} onSubmit={handleSubmit(sendForm)}>
         <h2>Registrer funn</h2>
         <Box mt={2} mb={2}>
           <InputLabel htmlFor="mainCategory" className={classes.label}>
@@ -152,6 +155,10 @@ function RegisterFound() {
             name={"category"}
             Options={catData.map((catName) => catName.name)}
             onChange={(value) => setMainCat(value ?? "")}
+            inputRef={register({
+              required: "Dette feltet må du fylle inn",
+            })}
+            errorMessage={errors.category?.message}
           />
         </Box>
         <Box mt={2} mb={2}>
@@ -161,10 +168,14 @@ function RegisterFound() {
           <RegAutoSelect
             id="subCategory"
             name={"subCategory"}
-            Options={getSubCatData(mainCat).map(
-              (subCatName) => subCatName.name
-            )}
+            Options={getSubCatData(mainCat).map((subCatName) => {
+              return subCatName;
+            })}
             onChange={(value) => setSubCat(value ?? "")}
+            inputRef={register({
+              required: "Dette feltet må du fylle inn",
+            })}
+            errorMessage={errors.subCategory?.message}
           />
         </Box>
         <Box mt={2} mb={2}>
@@ -178,6 +189,10 @@ function RegisterFound() {
               (colorName: { label: string }) => colorName.label
             )}
             onChange={(value) => setColor(value ?? "")}
+            inputRef={register({
+              required: "Dette feltet må du fylle inn",
+            })}
+            errorMessage={errors.color?.message}
           />
         </Box>
         <Box mt={2} mb={2}>
@@ -189,6 +204,10 @@ function RegisterFound() {
             name={"line"}
             Options={lines.map((lineName) => lineName.line)}
             onChange={(value) => setLine(value ?? "")}
+            inputRef={register({
+              required: "Dette feltet må du fylle inn",
+            })}
+            errorMessage={errors.line?.message}
           />
         </Box>
 
@@ -204,6 +223,11 @@ function RegisterFound() {
             placeholder="Vennligst fyll ut"
             variant="outlined"
             onChange={(event) => setBrand(event.target.value)}
+            inputRef={register({
+              required: "Dette feltet må du fylle inn",
+            })}
+            error={!!errors.brand?.message}
+            helperText={errors.brand?.message}
           />
         </Box>
         <Box mt={2} mb={2}>
@@ -218,6 +242,11 @@ function RegisterFound() {
             placeholder="Vennligst fyll ut"
             variant="outlined"
             onChange={(event) => setDesc(event.target.value)}
+            inputRef={register({
+              required: "Dette feltet må du fylle inn",
+            })}
+            error={!!errors.description?.message}
+            helperText={errors.description?.message}
           />
         </Box>
         <Box mt={2} mb={2}>
@@ -259,47 +288,16 @@ function RegisterFound() {
             name="email"
             placeholder="Vennligst fyll ut"
             variant="outlined"
+            inputProps={{ minLength: 2, maxLength: 40 }}
             onChange={(event) => setEmail(event.target.value)}
           />
         </Box>
 
         <Box mt={2} mb={2}>
-          <Button
-            color="primary"
-            variant="contained"
-            type="submit"
-            onClick={handleClickOpen}
-          >
+          <Button color="primary" variant="contained" type="submit">
             Registrer
           </Button>
         </Box>
-        <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
-          <DialogTitle className={classes.dialogbox}>
-            {"Registrert gjenstand:"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText className={classes.dialogContent}>
-              <h4>Sammendrag :</h4>
-              <p>Kategori : {mainCat}</p>
-              <p>Subkategori : {subCat}</p>
-              <p>Farge : {color}</p>
-              <p>Linje : {line}</p>
-              <p>Merke : {brand}</p>
-              <p>Beskrivelse : {desc}</p>
-              <p>Navn : {name}</p>
-              <p>Telefon : {tlf}</p>
-              <p>Email : {email}</p>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseSend} color="primary" autoFocus>
-              Ok
-            </Button>
-            <Button onClick={handleCloseSendNew} color="primary" autoFocus>
-              Ny registrering
-            </Button>
-          </DialogActions>
-        </Dialog>
       </form>
     </Grid>
   );

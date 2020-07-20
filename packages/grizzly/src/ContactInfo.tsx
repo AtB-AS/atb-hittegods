@@ -85,7 +85,7 @@ function ContactInfo(props: Props, contactInfo: ContactInfoType) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h4>Hvordan kan vi kontakte deg?</h4>
+        <h2 className="h4">Hvordan kan vi kontakte deg?</h2>
       </Box>
 
       <form onSubmit={handleSubmit(onSubmit)}>

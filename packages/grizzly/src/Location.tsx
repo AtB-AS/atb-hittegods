@@ -69,7 +69,7 @@ function Location(props: Props) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2>Husker du hvilken linje du tok? </h2>
+        <h2 className="h4">Husker du hvilken linje du tok? </h2>
         <p>Er du er usikker, går det også fint. </p>
       </Box>
       <DataLoadingContainer loading={isloading} error={error}>

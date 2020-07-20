@@ -57,7 +57,7 @@ function MissingDate(props: Props) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h4>Hvilken dag var det?</h4>
+        <h2 className="h4">Hvilken dag var det?</h2>
         <p>Er du usikker, velg den du tror er nærmest.</p>
       </Box>
       <form noValidate>

@@ -78,7 +78,7 @@ function Confirmation(props: Props) {
   return (
     <div>
       <Box mt={4} mb={6}>
-        <h2>Vi er på saken!</h2>
+        <h2 className="h4">Vi er på saken!</h2>
         <p className={styles.lead}>
           Vi skal lete for deg, men det kan ta litt tid før vi får det inn.
         </p>

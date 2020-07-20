@@ -130,12 +130,15 @@ function RegisterFound() {
     });
   };
 
-  function getSubCatData(mainCat: string) {
+  function getSubCatData(mainCat: string): string[] {
     if (mainCat) {
-      return categoryData.find((mainCatName) => mainCatName.name === mainCat)!
-        .subCategories;
+      return categoryData
+        .find((mainCatName) => mainCatName.name === mainCat)!
+        .subCategories.map((subCat) => {
+          return subCat.name;
+        });
     } else {
-      return [{ name: "velg hovedkategori", imgUrl: "yes" }];
+      return ["Velg hovedkategori"];
     }
   }
 
@@ -161,9 +164,7 @@ function RegisterFound() {
           <RegAutoSelect
             id="subCategory"
             name={"subCategory"}
-            Options={getSubCatData(mainCat).map(
-              (subCatName) => subCatName.name
-            )}
+            Options={getSubCatData(mainCat).map((subCatName) => subCatName)}
             onChange={(value) => setSubCat(value ?? "")}
           />
         </Box>

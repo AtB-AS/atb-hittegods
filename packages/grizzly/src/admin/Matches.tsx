@@ -77,10 +77,10 @@ function Matches(props: Props) {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Navn</TableCell>
+              <TableCell>ID</TableCell>
               <TableCell>Underkategori</TableCell>
               <TableCell>Merke</TableCell>
-              <TableCell>Linje</TableCell>
+              <TableCell>Beskrivelse</TableCell>
             </TableRow>
           </TableHead>
           {matches.map((item) => (

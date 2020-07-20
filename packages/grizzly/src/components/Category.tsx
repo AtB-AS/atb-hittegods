@@ -6,6 +6,7 @@ import Purse from "../components/icons/veske.svg";
 import SvgIcon from "@material-ui/core/SvgIcon";
 import VeskeImg from "./img/VeskeImg";
 import SekkImg from "./img/SekkImg";
+import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 
 type Props = {
   title: string;
@@ -18,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: "grid",
-      gridTemplateColumns: "max-content 1fr",
+      gridTemplateColumns: "max-content 7fr 1fr",
       gridColumnGap: "10px",
       alignItems: "center",
       height: "100%",
@@ -63,6 +64,10 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "30px",
       height: "auto",
     },
+    arrow: {
+      alignSelf: "center",
+      color: theme.palette.primary.main,
+    },
   })
 );
 
@@ -88,6 +93,9 @@ function Category(props: Props) {
         <Box component="div" display={{ xs: "none", sm: "block" }}>
           <p>{props.description}</p>
         </Box>
+      </span>
+      <span className={styles.arrow}>
+        <ArrowForwardIosIcon />
       </span>
     </a>
   );

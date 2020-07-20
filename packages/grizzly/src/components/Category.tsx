@@ -10,7 +10,7 @@ import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 
 type Props = {
   title: string;
-  description: string;
+  description?: string;
   icon?: any;
   onClick: () => void;
 };
@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "30px",
       height: "auto",
     },
-    arrow: {
+    arrowIcon: {
       alignSelf: "center",
       color: theme.palette.primary.main,
     },
@@ -94,7 +94,7 @@ function Category(props: Props) {
           <p>{props.description}</p>
         </Box>
       </span>
-      <span className={styles.arrow}>
+      <span className={styles.arrowIcon}>
         <ArrowForwardIosIcon />
       </span>
     </a>

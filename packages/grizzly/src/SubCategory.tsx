@@ -7,7 +7,7 @@ import Category from "./components/Category";
 
 type Props = {
   onSubCategorySelect: (category: string) => void;
-  description: string;
+  description?: string;
   getMainCat: string;
   icon?: any;
 };
@@ -38,7 +38,6 @@ function SubCategory(props: Props) {
                 title={subCat.name}
                 onClick={() => props.onSubCategorySelect(subCat.name)}
                 icon={subCat.icon}
-                description=""
               />
             );
           })}

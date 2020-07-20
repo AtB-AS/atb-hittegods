@@ -19,12 +19,14 @@ import Radio from "@material-ui/core/Radio";
 import FormControl from "@material-ui/core/FormControl";
 import ColorSelect from "./ColorSelect";
 import InputLabel from "@material-ui/core/InputLabel";
+import NextBtn from "./components/NextBtn";
 
 type Props = {
   onCharacteristicsSelect: (characteristics: Characteristics) => void;
   color: string;
   brand: string;
   description: string;
+  subCategory: string;
 };
 
 type Characteristics = {
@@ -38,6 +40,9 @@ const useStyles = makeStyles((theme: Theme) =>
     textfield: {
       display: "flex",
     },
+    button: {
+      float: "right",
+    },
   })
 );
 
@@ -50,20 +55,18 @@ function Characteristics(props: Props, characteristics: Characteristics) {
   function onSubmit() {
     props.onCharacteristicsSelect({ color, brand, description });
   }
-
+  //TODO Legge til ID i colorselect-
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2>Har gjenstanden din noen kjennetegn?</h2>
-        <p>
-          Fyll ut så godt du kan. Vi vil uansett gjøre det vi kan for å finne
-          gjenstanden din.
-        </p>
+        {/* Med underkategori: <h5>Beskriv din(e) {props.subCategory}</h5>*/}
+        <h4>Kan du beskrive det du har mistet?</h4>
       </Box>
 
       <Box>
         <Grid container spacing={3}>
           <Grid item xs={12}>
+            <InputLabel htmlFor="color">Hvilken farge passer best?</InputLabel>
             <ColorSelect onColorSelect={setColor} />
           </Grid>
           <Grid item xs={12}>
@@ -79,26 +82,22 @@ function Characteristics(props: Props, characteristics: Characteristics) {
             />
           </Grid>
           <Grid item xs={12}>
-            <InputLabel htmlFor="description">Beskrivelse</InputLabel>
+            <InputLabel htmlFor="description">Kjennetegn</InputLabel>
             <TextField
               name="description"
               multiline={true}
               className={styles.textfield}
               type="text"
+              helperText="Er det noe unikt med gjenstanden din?"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
               variant="standard"
             />
           </Grid>
           <Grid item xs={12}>
-            <Button
-              color="primary"
-              variant="contained"
-              type="submit"
-              onClick={onSubmit}
-            >
-              Neste
-            </Button>
+            <div className={styles.button}>
+              <NextBtn onClick={onSubmit} />
+            </div>
           </Grid>
         </Grid>
       </Box>

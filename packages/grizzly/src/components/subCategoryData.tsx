@@ -1,3 +1,4 @@
+import React from "react";
 import LueIcon from "../components/icons/Lue.svg";
 import ClothingIcon from "../components/icons/sweater.svg";
 import PhoneIcon from "../components/icons/Mobil.svg";
@@ -17,6 +18,21 @@ import Bag from "../components/icons/sekk.svg";
 
 import Purse from "../components/icons/veske.svg";
 
+import SekkImg from "./img/SekkImg";
+import VeskeImg from "./img/VeskeImg";
+import AnnetImg from "./img/AnnetImg";
+import BankkortImg from "./img/BankkortImg";
+import GenserImg from "./img/GenserImg";
+import HanskeImg from "./img/HanskerImg";
+import HovedBaggasjeImg from "./img/HovedBaggasjeImg";
+import KabelImg from "./img/KabelImg";
+import LommebokImg from "./img/LommebokImg";
+import LueImg from "./img/LueImg";
+import MobilImg from "./img/MobilImg";
+import NokkelImg from "./img/NokkelImg";
+import PcImg from "./img/PcImg";
+import TrillekoffertImg from "./img/TrillekoffertImg";
+
 //Name of main categories
 export const mainCategory = {
   CLOTHING: "Klær",
@@ -29,7 +45,7 @@ export const mainCategory = {
 export const subCatStrings = {
   JACKETS: "Overdeler",
   HATS: "Hodeplagg",
-  GLOVES: "Hansker",
+  GLOVES: "Hansker og votter",
   BAGS: "Sekk og Bag",
   LUGGAGE: "Bagasje",
   HANDBAGS: "Veske",
@@ -46,55 +62,145 @@ export const subCatStrings = {
 type subCatProps = {
   subCatName: string;
   imgsrc: string;
+  icon: any;
 };
 
 export const categoryData = [
   {
     name: mainCategory.CLOTHING,
+    description: "Jakker, hodeplagg, hansker og votter og annet",
     imgUrl: ClothingIcon,
+    icon: GenserImg,
     subCategories: [
       {
         name: subCatStrings.GLOVES,
         imgUrl: Gloves,
+        icon: HanskeImg,
+        description: "",
       },
-      { name: subCatStrings.JACKETS, imgUrl: ClothingIcon },
-      { name: subCatStrings.HATS, imgUrl: LueIcon },
-      { name: subCatStrings.OTHER, imgUrl: Other },
+      {
+        name: subCatStrings.JACKETS,
+        imgUrl: ClothingIcon,
+        icon: GenserImg,
+        description: "",
+      },
+      {
+        name: subCatStrings.HATS,
+        imgUrl: LueIcon,
+        icon: LueImg,
+        description: "",
+      },
+      {
+        name: subCatStrings.OTHER,
+        imgUrl: Other,
+        icon: AnnetImg,
+        description: "",
+      },
     ],
   },
   {
     name: mainCategory.BAGS,
+    description: "Baggasje, sekk og bagg, veske og annet",
     imgUrl: LuggageIcon,
+    icon: HovedBaggasjeImg,
     subCategories: [
-      { name: subCatStrings.BAGS, imgUrl: Bag },
-      { name: subCatStrings.HANDBAGS, imgUrl: Purse },
-      { name: subCatStrings.LUGGAGE, imgUrl: LuggageIcon },
-      { name: subCatStrings.OTHER, imgUrl: Other },
+      { name: subCatStrings.BAGS, imgUrl: Bag, icon: SekkImg, description: "" },
+      {
+        name: subCatStrings.HANDBAGS,
+        imgUrl: Purse,
+        icon: VeskeImg,
+        description: "",
+      },
+      {
+        name: subCatStrings.LUGGAGE,
+        imgUrl: LuggageIcon,
+        icon: HovedBaggasjeImg,
+        description: "",
+      },
+      {
+        name: subCatStrings.OTHER,
+        imgUrl: Other,
+        icon: AnnetImg,
+        description: "",
+      },
     ],
   },
   {
     name: mainCategory.ELECTRONICS,
+    description: "Mobil, PC, ladere og ledinger og annet",
     imgUrl: PhoneIcon,
+    icon: MobilImg,
     subCategories: [
-      { name: subCatStrings.PHONES, imgUrl: PhoneIcon },
-      { name: subCatStrings.PC_TABLETS, imgUrl: Computer },
-      { name: subCatStrings.CHARGERS, imgUrl: Cable },
-      { name: subCatStrings.OTHER, imgUrl: Other },
+      {
+        name: subCatStrings.PHONES,
+        imgUrl: PhoneIcon,
+        icon: MobilImg,
+        description: "",
+      },
+      {
+        name: subCatStrings.PC_TABLETS,
+        imgUrl: Computer,
+        icon: PcImg,
+        description: "",
+      },
+      {
+        name: subCatStrings.CHARGERS,
+        imgUrl: Cable,
+        icon: KabelImg,
+        description: "",
+      },
+      {
+        name: subCatStrings.OTHER,
+        imgUrl: Other,
+        icon: AnnetImg,
+        description: "",
+      },
     ],
   },
   {
     name: mainCategory.PERSONAL_EFFECTS,
+    description: "Lommebok, bankkort, nøkler og annet",
     imgUrl: WalletIcon,
+    icon: LommebokImg,
     subCategories: [
-      { name: subCatStrings.ID_CARDS, imgUrl: CreditCard },
-      { name: subCatStrings.KEYS, imgUrl: Key },
-      { name: subCatStrings.WALLETS, imgUrl: WalletIcon },
-      { name: subCatStrings.OTHER, imgUrl: Other },
+      {
+        name: subCatStrings.ID_CARDS,
+        imgUrl: CreditCard,
+        icon: BankkortImg,
+        description: "",
+      },
+      {
+        name: subCatStrings.KEYS,
+        imgUrl: Key,
+        icon: NokkelImg,
+        description: "",
+      },
+      {
+        name: subCatStrings.WALLETS,
+        imgUrl: WalletIcon,
+        icon: LommebokImg,
+        description: "",
+      },
+      {
+        name: subCatStrings.OTHER,
+        imgUrl: Other,
+        icon: AnnetImg,
+        description: "",
+      },
     ],
   },
   {
     name: mainCategory.OTHER,
     imgUrl: Other,
-    subCategories: [{ name: subCatStrings.OTHER, imgUrl: Other }],
+    description: "Annet",
+    icon: AnnetImg,
+    subCategories: [
+      {
+        name: subCatStrings.OTHER,
+        imgUrl: Other,
+        icon: AnnetImg,
+        description: "",
+      },
+    ],
   },
 ];

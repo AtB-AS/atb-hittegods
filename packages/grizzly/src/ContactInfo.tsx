@@ -51,7 +51,7 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2>Kontaktinformasjon</h2>
+        <h4>Hvordan kan vi kontakte deg?</h4>
       </Box>
 
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -92,7 +92,8 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
               name="phoneNumber"
               id="phoneNumber"
               defaultValue={props.phoneNumber}
-              helperText={errors.phoneNumber?.message}
+              helperText="for eksempel 90020300"
+              //helperText={errors.phoneNumber?.message}
               error={!!errors.phoneNumber}
               variant="standard"
               inputRef={register({
@@ -117,7 +118,8 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
               name="email"
               id="email"
               defaultValue={props.email}
-              helperText={errors.email?.message}
+              helperText="Vil vil sende deg epost om vi finner noe"
+              //helperText={errors.email?.message}
               error={!!errors.email}
               variant="standard"
               inputRef={register({
@@ -129,7 +131,7 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
           </Grid>
           <Grid item xs={12}>
             <Button color="primary" variant="contained" type="submit">
-              Neste
+              Send inn
             </Button>
           </Grid>
         </Grid>

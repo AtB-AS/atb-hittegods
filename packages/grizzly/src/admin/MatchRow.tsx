@@ -4,40 +4,43 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import Collapse from "@material-ui/core/Collapse";
 import MatchDetails from "./MatchDetails";
+import { Match } from "./Henvendelse";
+import { Found } from "./Matches";
 import {Box, Grid} from "@material-ui/core";
 
 type Props = {
-  item: FoundMatch;
+  foundItem: Found;
   removeItem: (id: number) => void;
   setLoading: (loading: boolean) => void;
+  decrementNewMatch: (id: number) => void;
+  match?: Match;
+  hendvendelsesid: number;
 };
-
-type FoundMatch = {
-  id: number;
-  name: string;
-  phone: string;
-  email: string;
-  category: string;
-  subcategory: string;
-  color: string;
-  status: string;
-  line: string;
-  date: string;
-  brand: string;
-  description: string;
-};
-
 
 const MatchRow = (props: Props) => {
   const [isClicked, setClicked] = useState(false);
 
-  function clickedRowItem(id: number) {
-    if (isClicked === false) {
+  function clickedRowItem(foundId: number) {
+    if (!isClicked) {
       setClicked(true);
     } else {
       setClicked(false);
     }
-    console.log(isClicked);
+    if (props.match != null) {
+      if (props.match.new) {
+        props.match.new = false;
+        props.decrementNewMatch(props.hendvendelsesid);
+        fetch("/api/admin/possibleMatch/" + props.match.matchid + "/new", {
+          body: JSON.stringify({
+            new: false,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "PUT",
+        }).catch();
+      }
+    }
   }
 
   function formatDate(date:string){
@@ -59,26 +62,23 @@ const MatchRow = (props: Props) => {
 
   return (
     <TableBody>
-      <TableRow hover onClick={(event) => clickedRowItem(props.item.id)}>
-        <TableCell>{props.item.id}</TableCell>
-        <TableCell>{props.item.subcategory}</TableCell>
-        <TableCell>{props.item.brand}</TableCell>
-        <TableCell>{formatDescription(props.item.description)}</TableCell>
-
+      <TableRow hover onClick={(event) => clickedRowItem(props.foundItem.id)}>
+        <TableCell>{props.foundItem.id}</TableCell>
+        <TableCell>{props.foundItem.subcategory}</TableCell>
+        <TableCell>{props.foundItem.brand}</TableCell>
+        <TableCell>{formatDescription(props.foundItem.description)}</TableCell>
       </TableRow>
-
-
-        <TableRow>
-          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
-            <Collapse in={isClicked} timeout="auto" unmountOnExit>
-              <MatchDetails
-                item={props.item}
-                removeItem={props.removeItem}
-                setLoading={props.setLoading}
-              />
-            </Collapse>
-          </TableCell>
-        </TableRow>
+      <TableRow>
+        <TableCell colSpan={4}>
+          <Collapse in={isClicked} timeout="auto" unmountOnExit>
+            <MatchDetails
+              foundItem={props.foundItem}
+              removeItem={props.removeItem}
+              setLoading={props.setLoading}
+            />
+          </Collapse>
+        </TableCell>
+      </TableRow>
     </TableBody>
   );
 };

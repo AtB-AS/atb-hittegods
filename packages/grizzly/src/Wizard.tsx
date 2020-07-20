@@ -321,12 +321,14 @@ export default function Wizard() {
             {status === 1 && (
               <MainCategory
                 category={category}
+                description=""
                 onCategorySelect={onCategorySelect}
               />
             )}
             {status === 2 && (
               <SubCategory
                 getMainCat={category}
+                description=""
                 onSubCategorySelect={onSubCategorySelected}
               />
             )}
@@ -336,6 +338,7 @@ export default function Wizard() {
                 brand={characteristics.brand}
                 description={characteristics.description}
                 onCharacteristicsSelect={onCharacteristicsDone}
+                subCategory={subCategory}
               />
             )}
           </Route>

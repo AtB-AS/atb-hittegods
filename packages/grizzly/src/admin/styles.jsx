@@ -7,6 +7,7 @@ export const useTableStyles = makeStyles({
     display: "grid",
     gridTemplateColumns: "60% 1fr",
     fontSize: "18px",
+    height: "100%",
   },
   container: {
     height: "calc(100vh - 140px)",

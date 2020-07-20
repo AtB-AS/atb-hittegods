@@ -4,6 +4,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
 import { useHistory } from "react-router";
+import DataLoadingContainer from "../DataLoadingContainer";
 
 const useStyles = makeStyles({
   root: {
@@ -83,47 +84,30 @@ function StorageItem(props: Props) {
       });
   }, [props.match.params.id]);
 
-  if (error) {
-    return <p>Noe gikk galt :(</p>;
-  }
-
-  if (isLoading) {
-    return (
-      <div className={styles.loading}>
-        <CircularProgress />
-      </div>
-    );
-  }
-
-  if (notFound) {
-    return <p>Beklager denne gjenstaden finnes ikke</p>;
-  }
-
-
   function ContactInfo() {
     if (item?.name != "" || item?.phone != "" || item?.email != "") {
       return (<div>
         <Box >
-        <Grid container spacing={1}>
-          <Grid item md={4}>
-            <dl>
-              <dt>Navn:</dt>
-              <dd>{item?.name}</dd>
-            </dl>
+          <Grid container spacing={1}>
+            <Grid item md={4}>
+              <dl>
+                <dt>Navn:</dt>
+                <dd>{item?.name}</dd>
+              </dl>
+            </Grid>
+            <Grid item md={4}>
+              <dl>
+                <dt>Telefon:</dt>
+                <dd>{item?.phone}</dd>
+              </dl>
+            </Grid>
+            <Grid item md={4}>
+              <dl>
+                <dt>E-post:</dt>
+                <dd>{item?.email}</dd>
+              </dl>
+            </Grid>
           </Grid>
-          <Grid item md={4}>
-            <dl>
-              <dt>Telefon:</dt>
-              <dd>{item?.phone}</dd>
-            </dl>
-          </Grid>
-          <Grid item md={4}>
-            <dl>
-              <dt>E-post:</dt>
-              <dd>{item?.email}</dd>
-            </dl>
-          </Grid>
-        </Grid>
         </Box>
       </div>)
 
@@ -139,43 +123,45 @@ function StorageItem(props: Props) {
   }
 
   return (
-    <div className={styles.root}>
-      <Box p={3} mt={4} className={styles.card}>
-        <div>
-          <h2>
-            {item?.subcategory} - {item?.brand}
-          </h2>
-        </div>
-        <Box >
-          <Grid container>
-            <Grid item md={12}>
-              <dt>Full beskrivelse:</dt>
-              <dd>{item?.description}</dd>
+    <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
+      <div className={styles.root}>
+        <Box p={3} mt={4} className={styles.card}>
+          <div>
+            <h2>
+              {item?.subcategory} - {item?.brand}
+            </h2>
+          </div>
+          <Box >
+            <Grid container>
+              <Grid item md={12}>
+                <dt>Full beskrivelse:</dt>
+                <dd>{item?.description}</dd>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Dato funnet:</dt>
+                  <dd>{moment(item?.date).format("DD.MM.yy")}</dd>
+                </dl>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Linje:</dt>
+                  <dd>{item?.line}</dd>
+                </dl>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Farge:</dt>
+                  <dd>{item?.color}</dd>
+                </dl>
+              </Grid>
             </Grid>
-            <Grid item md={4}>
-              <dl>
-                <dt>Dato funnet:</dt>
-                <dd>{moment(item?.date).format("DD.MM.yy")}</dd>
-              </dl>
-            </Grid>
-            <Grid item md={4}>
-              <dl>
-                <dt>Linje:</dt>
-                <dd>{item?.line}</dd>
-              </dl>
-            </Grid>
-            <Grid item md={4}>
-              <dl>
-                <dt>Farge:</dt>
-                <dd>{item?.color}</dd>
-              </dl>
-            </Grid>
-          </Grid>
-        </Box>
-        <h3 className="h4">Kontaktinfo:</h3>
+          </Box>
+          <h3 className="h4">Kontaktinfo:</h3>
           <ContactInfo/>
-      </Box>
-    </div>
+        </Box>
+      </div>
+    </DataLoadingContainer>
   );
 }
 

@@ -12,6 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import InputLabel from "@material-ui/core/InputLabel";
+import DataLoadingContainer from "./DataLoadingContainer";
 
 type Props = {
   onLocationSelect: (location: string) => void;
@@ -25,8 +26,10 @@ type LineObj = {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    textfield: {
-      display: "flex",
+    overrides: {
+      root: {
+        padding: "10px 16px 12px",
+      },
     },
   })
 );
@@ -60,49 +63,37 @@ function Location(props: Props) {
   };
 
   function unknownLineButtonHandler() {
-    setLine("");
-    props.onLocationSelect(line);
-  }
-
-  if (error) {
-    return <p>Kunne ikke laste inn linjer.</p>;
-  }
-
-  if (isloading) {
-    return <p>Laster...</p>;
+    props.onLocationSelect("");
   }
 
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2>Hvor </h2>
-        <p>
-          Hvis du ikke vet hvilken linje du mistet gjenstanden kan du trykke på
-          "usikker".{" "}
-        </p>
+        <h2>Husker du hvilken linje du tok? </h2>
+        <p>Er du er usikker, går det også fint. </p>
       </Box>
-      <div>
+      <DataLoadingContainer loading={isloading} error={error}>
         <Box>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <InputLabel htmlFor="line">Velg linje</InputLabel>
                 <Autocomplete
-                  placeholder="Velg linje"
                   options={lines}
                   getOptionLabel={(item) => item.line + " " + item.description}
-                  style={{ width: "100%" }}
                   defaultValue={lines.find((l) => l.line === line)}
                   onChange={(event, value) => {
                     console.log("Sett veri onchange", value?.line);
                     if (value?.line) {
                       // @ts-ignore
+
                       props.onLocationSelect(value.line);
                       setLine(value.line);
                     }
                   }}
                   renderInput={(params) => (
                     <TextField
+                      placeholder="Linjenummer"
                       {...params}
                       variant="standard"
                       name="line"
@@ -110,14 +101,16 @@ function Location(props: Props) {
                     />
                   )}
                 />
-                <Button variant="contained" onClick={unknownLineButtonHandler}>
-                  Husker ikke
+              </Grid>
+              <Grid item xs={12}>
+                <Button variant="outlined" onClick={unknownLineButtonHandler}>
+                  Usikker
                 </Button>
               </Grid>
             </Grid>
           </form>
         </Box>
-      </div>
+      </DataLoadingContainer>
     </div>
   );
 }

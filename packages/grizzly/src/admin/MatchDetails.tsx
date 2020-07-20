@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 });
 
 type Props = {
-  item: FoundMatch;
+  foundItem: FoundMatch;
   removeItem: (id: number) => void;
   setLoading: (loading: boolean) => void;
 };
@@ -74,7 +74,7 @@ function MatchDetails(props: Props) {
     props.setLoading(true);
     registerMatch({
       lostid: id,
-      foundid: props.item.id,
+      foundid: props.foundItem.id,
     })
       .then((response) => {
         if (response.status === 409) {
@@ -83,7 +83,7 @@ function MatchDetails(props: Props) {
         } else if (response.status === 200) {
           const lostPossibleMatchePromise = getPossibleMatches({ lostid: id });
           const foundPossibleMatchesPromise = getPossibleMatches({
-            foundid: props.item.id,
+            foundid: props.foundItem.id,
           });
 
           Promise.all([lostPossibleMatchePromise, foundPossibleMatchesPromise])
@@ -95,7 +95,7 @@ function MatchDetails(props: Props) {
               Promise.all(tempPromises)
                 .then((data) => {
                   const lostPromise = updateLostStatus(id);
-                  const foundPromise = updateFoundStatus(props.item.id);
+                  const foundPromise = updateFoundStatus(props.foundItem.id);
                   const promises2: Promise<Response>[] = [
                     lostPromise,
                     foundPromise,
@@ -168,15 +168,15 @@ function MatchDetails(props: Props) {
       method: "put",
       body: JSON.stringify({
         status: "Til utlevering",
-        name: props.item.name,
-        phone: props.item.phone,
-        email: props.item.email,
-        category: props.item.category,
-        subCategory: props.item.subcategory,
-        color: props.item.color,
-        brand: props.item.brand,
-        description: props.item.description,
-        line: props.item.line,
+        name: props.foundItem.name,
+        phone: props.foundItem.phone,
+        email: props.foundItem.email,
+        category: props.foundItem.category,
+        subCategory: props.foundItem.subcategory,
+        color: props.foundItem.color,
+        brand: props.foundItem.brand,
+        description: props.foundItem.description,
+        line: props.foundItem.line,
       }),
       headers: {
         Accept: "application/json",
@@ -198,8 +198,7 @@ function MatchDetails(props: Props) {
     });
   };
   let confirmButton;
-  console.log(props.item.status);
-  if (props.item.status === "Funnet") {
+  if (props.foundItem.status === "Funnet") {
     confirmButton = (
       <Button
           variant="contained"
@@ -218,7 +217,7 @@ function MatchDetails(props: Props) {
   }
 
   function ContactInfo() {
-    if (props.item.name!="" || props.item.phone!="" || props.item.email!=""){
+    if (props.foundItem.name!="" || props.foundItem.phone!="" || props.foundItem.email!=""){
       return(<div>
         <Grid container spacing={1}>
           <Grid item md={12}>
@@ -227,19 +226,19 @@ function MatchDetails(props: Props) {
         <Grid item md={4}>
         <dl>
           <dt>Navn:</dt>
-          <dd>{props.item.name}</dd>
+          <dd>{props.foundItem.name}</dd>
         </dl>
         </Grid>
         <Grid item md={4}>
           <dl>
             <dt>Telefon:</dt>
-            <dd>{props.item.phone}</dd>
+            <dd>{props.foundItem.phone}</dd>
           </dl>
         </Grid>
         <Grid item md={4}>
           <dl>
             <dt>E-post:</dt>
-            <dd>{props.item.email}</dd>
+            <dd>{props.foundItem.email}</dd>
           </dl>
         </Grid>
         </Grid>
@@ -262,38 +261,38 @@ function MatchDetails(props: Props) {
   return (
       <div>
         <Box p={2} mt={1} mb={0} className={styles.card}>
-        <Grid container spacing={1}>
-          <h3 className="h4">{props.item.subcategory} - {props.item.brand}</h3>
-          <Grid item md={12}>
-            <dt>Full beskrivelse:</dt>
-            <dd>{props.item.description}</dd>
+          <Grid container spacing={1}>
+            <h3 className="h4">{props.foundItem.subcategory} - {props.foundItem.brand}</h3>
+            <Grid item md={12}>
+              <dt>Full beskrivelse:</dt>
+              <dd>{props.foundItem.description}</dd>
+            </Grid>
+            <Grid item md={4}>
+              <dl>
+                <dt>Dato funnet:</dt>
+                <dd>{moment(props.foundItem.date).format("DD.MM.yy")}</dd>
+              </dl>
+            </Grid>
+            <Grid item md={4}>
+              <dl>
+                <dt>Linje:</dt>
+                <dd>{props.foundItem.line}</dd>
+              </dl>
+            </Grid>
+            <Grid item md={4}>
+              <dl>
+                <dt>Farge:</dt>
+                <dd>{props.foundItem.color}</dd>
+              </dl>
+            </Grid>
           </Grid>
-          <Grid item md={4}>
-            <dl>
-              <dt>Dato funnet:</dt>
-              <dd>{moment(props.item.date).format("DD.MM.yy")}</dd>
-            </dl>
-          </Grid>
-          <Grid item md={4}>
-            <dl>
-              <dt>Linje:</dt>
-              <dd>{props.item.line}</dd>
-            </dl>
-          </Grid>
-          <Grid item md={4}>
-            <dl>
-              <dt>Farge:</dt>
-              <dd>{props.item.color}</dd>
-            </dl>
-          </Grid>
-        </Grid>
 
           <ContactInfo/>
 
-      </Box>
-      <Box mb={1}>
-        {confirmButton}
-      </Box>
+        </Box>
+        <Box mb={1}>
+          {confirmButton}
+        </Box>
       </div>
   );
 }

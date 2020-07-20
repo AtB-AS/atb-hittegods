@@ -21,8 +21,8 @@ import SearchIcon from "@material-ui/icons/Search";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import moment from "moment";
 import TextField from "@material-ui/core/TextField";
-import DataLoadingContainer from "../DataLoadingContainer";
-import Button from "@material-ui/core/Button";
+import PickUpItem from "./PickUpItem";
+import Henvendelse from "./Henvendelse";
 
 type StorageItems = {
   id: number;
@@ -72,13 +72,10 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "20%",
       color: "#000000",
     },
-    box: {
-      color: "#000000",
-    },
   })
 );
 
-function Storage(props: Props) {
+function PickUp(props: Props) {
   const classes = useTableStyles();
   const [storageItems, setStorageItems] = useState<StorageItems[]>([]);
   const [error, setError] = useState(false);
@@ -92,7 +89,7 @@ function Storage(props: Props) {
   const [fromDate, setFromDate] = useState("");
 
   const params = {
-    status: "Funnet",
+    status: "Til utlevering",
   };
 
   const queryString = Object.entries(params)
@@ -125,7 +122,19 @@ function Storage(props: Props) {
   }, [orderBy, columnName]);
 
   function clickedRowItem(id: number) {
-    history.push("/admin/lager/" + id);
+    history.push("/admin/tilUtlevering/" + id);
+  }
+
+  if (error) {
+    return <p>Noe gikk galt</p>;
+  }
+
+  if (isLoading) {
+    return <p>Laster...</p>;
+  }
+
+  if (storageItems.length === 0) {
+    return <p>Ingen henvendelser registrert</p>;
   }
 
   function searchStorage(storageToSearch: StorageItems[], query: string) {
@@ -196,130 +205,125 @@ function Storage(props: Props) {
     });
   }
 
-  function formatDescription(desc:string|undefined) {
-    if(typeof(desc)==="string") {
-      if (desc.length > 16) {
-        return desc.slice(0, 16) + "..."
-      } else {
-        return desc
-      }
-    }
-    else {
-      return ""
-    }
-  }
-
+  const removeItem = (id: number) => {
+    console.log(id);
+    const newStorageItems = storageItems.filter((item) => item.id !== id);
+    console.table(storageItems);
+    console.table(newStorageItems);
+    setStorageItems(newStorageItems);
+  };
+  console.log("remove item");
+  console.log(removeItem);
 
   return (
-    <DataLoadingContainer loading={isLoading} error={error}>
-      {storageItems.length === 0 && <p>Ingen henvendelser registrert</p>}
-      <div className={classes.root}>
-        <div className={classes.leftCol}>
-          <Box mt={2} mb={2} display="flex" className={searchClasses.box}>
-            <InputBase
-              className={searchClasses.input}
-              placeholder="Søk på lagerbeholdning"
-              onChange={(event) => {
-                setSearchValue(event.target.value);
-              }}
-              inputProps={{ "aria-label": "Søk på lagerbeholdning" }}
-            />
-            <IconButton
-              type="submit"
-              className={searchClasses.iconButton}
-              aria-label="search"
-            >
-              <SearchIcon />
-            </IconButton>
+    <div className={classes.root}>
+      <div className={classes.leftCol}>
+        <Box mt={2} mb={2}>
+          <InputBase
+            className={searchClasses.input}
+            placeholder="Søk på lagerbeholdning"
+            onChange={(event) => {
+              setSearchValue(event.target.value);
+            }}
+            inputProps={{ "aria-label": "Søk på lagerbeholdning" }}
+          />
+          <IconButton
+            type="submit"
+            className={searchClasses.iconButton}
+            aria-label="search"
+          >
+            <SearchIcon />
+          </IconButton>
 
-            <TextField
-              label="Fra dato"
-              type="date"
-              className={searchClasses.textField}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={fromDate}
-              inputProps={{
-                min: ((d) => new Date(d.setDate(d.getDate() - 90)))(new Date())
-                  .toJSON()
-                  .split("T")[0],
-                max: toDate || new Date().toJSON().split("T")[0],
-              }}
-              onChange={(event) => {
-                setFromDate(event.target.value);
-              }}
-            />
-            <TextField
-              label="Til dato"
-              type="date"
-              className={searchClasses.textField}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={toDate}
-              inputProps={{
-                min: fromDate,
-                max: new Date().toJSON().split("T")[0],
-              }}
-              onChange={(event) => {
-                setToDate(event.target.value);
-              }}
-            />
-          </Box>
-          <TableContainer className={classes.container}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  <StorageColumn columnName={"id"} labelName={"Id"} />
-                  <StorageColumn
-                    columnName={"subcategory"}
-                    labelName={"Underkategori"}
-                  />
-                  <StorageColumn
-                    columnName={"description"}
-                    labelName={"Beskrivelse"}
-                  />
-                  <StorageColumn columnName={"phone"} labelName={"Telefon"} />
-                  <StorageColumn columnName={"date"} labelName={"Dato"} />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {searchStorage(storageItems, searchValue).map((item) => {
-                  return (
-                    <TableRow
-                      hover
-                      className={
-                        `${item.id}` === props.match.params?.id
-                          ? classes.activeRow
-                          : classes.row
-                      }
-                      onClick={(event) => clickedRowItem(item.id)}
-                      key={item.id}
-                    >
-                      <TableCell>{item.id}</TableCell>
-                      <TableCell>{item.subcategory}</TableCell>
-                      <TableCell>{formatDescription(item.description)}</TableCell>
-                      <TableCell>{item.phone}</TableCell>
-                      <TableCell>
-                        {moment(item?.date).format("DD.MM.yy")}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-        <div className={classes.rightCol}>
-          <Button href="/admin/lager/registrere">
-            Registrer funnet gjenstand
-          </Button>
-          <Route path="/admin/lager/:id" component={StorageItem} />
-        </div>
+          <TextField
+            label="Fra dato"
+            type="date"
+            className={searchClasses.textField}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            value={fromDate}
+            inputProps={{
+              min: ((d) => new Date(d.setDate(d.getDate() - 90)))(new Date())
+                .toJSON()
+                .split("T")[0],
+              max: toDate || new Date().toJSON().split("T")[0],
+            }}
+            onChange={(event) => {
+              setFromDate(event.target.value);
+            }}
+          />
+          <TextField
+            label="Til dato"
+            type="date"
+            className={searchClasses.textField}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            value={toDate}
+            inputProps={{
+              min: fromDate,
+              max: new Date().toJSON().split("T")[0],
+            }}
+            onChange={(event) => {
+              setToDate(event.target.value);
+            }}
+          />
+        </Box>
+        <TableContainer className={classes.container}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                <StorageColumn columnName={"id"} labelName={"Id"} />
+                <StorageColumn
+                  columnName={"subcategory"}
+                  labelName={"Underkategori"}
+                />
+                <StorageColumn
+                  columnName={"description"}
+                  labelName={"Beskrivelse"}
+                />
+                <StorageColumn columnName={"phone"} labelName={"Telefon"} />
+                <StorageColumn columnName={"date"} labelName={"Dato"} />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {searchStorage(storageItems, searchValue).map((item) => {
+                return (
+                  <TableRow
+                    hover
+                    className={
+                      `${item.id}` === props.match.params?.id
+                        ? classes.activeRow
+                        : classes.row
+                    }
+                    onClick={(event) => clickedRowItem(item.id)}
+                    key={item.id}
+                  >
+                    <TableCell>{item.id}</TableCell>
+                    <TableCell>{item.subcategory}</TableCell>
+                    <TableCell>{item.description}</TableCell>
+                    <TableCell>{item.phone}</TableCell>
+                    <TableCell>
+                      {moment(item?.date).format("DD.MM.yy")}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
-    </DataLoadingContainer>
+      <div className={classes.rightCol}>
+        <Route
+          path="/admin/tilUtlevering/:id"
+          render={(routeProps) => (
+            <PickUpItem {...routeProps} removeItem={removeItem} />
+          )}
+        />
+      </div>
+    </div>
   );
 }
 
-export default Storage;
+export default PickUp;

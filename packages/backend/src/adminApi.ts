@@ -45,6 +45,12 @@ import {
 import https = require("https");
 import { dbError, getMatches, RemoveDuplicates, compare } from "./util";
 
+type Match = {
+  matchid: number;
+  foundid: number;
+  new: boolean;
+};
+
 export default async (
   { app }: { app: express.Application },
   { client }: { client: pg.Client }
@@ -75,13 +81,17 @@ export default async (
                     queryResult.rows,
                     "lostid"
                   );
-                  const foundids: any = {};
+                  const matchList: any = {};
                   queryResult.rows.forEach((row) => {
-                    if (foundids[row.lostid] == undefined) {
-                      foundids[row.lostid] = [];
+                    if (matchList[row.lostid] == undefined) {
+                      matchList[row.lostid] = [];
                     }
                     if (row.foundid != null) {
-                      foundids[row.lostid].push(row.foundid);
+                      matchList[row.lostid].push({
+                        matchid: row.matchid,
+                        foundid: row.foundid,
+                        new: row.new,
+                      });
                     }
                   });
                   uniqueRows.sort(compare);
@@ -103,7 +113,7 @@ export default async (
                       description: uniqueRows[i].description,
                       matchCount: matches[uniqueRows[i].lostid][0],
                       newMatchCount: matches[uniqueRows[i].lostid][1],
-                      foundids: foundids[uniqueRows[i].lostid],
+                      matches: matchList[uniqueRows[i].lostid],
                     };
                     data.items.push(item);
                   }
@@ -146,13 +156,17 @@ export default async (
             if (queryResult.rowCount > 0) {
               const row = queryResult.rows[0];
               const matches: any = getMatches(queryResult.rows);
-              const foundids: any = {};
+              const matchList: any = {};
               queryResult.rows.forEach((row) => {
-                if (foundids[row.lostid] == undefined) {
-                  foundids[row.lostid] = [];
+                if (matchList[row.lostid] == undefined) {
+                  matchList[row.lostid] = [];
                 }
                 if (row.foundid != null) {
-                  foundids[row.lostid].push(row.foundid);
+                  matchList[row.lostid].push({
+                    matchid: row.matchid,
+                    foundid: row.foundid,
+                    new: row.new,
+                  });
                 }
               });
 
@@ -172,7 +186,7 @@ export default async (
                 description: row.description,
                 matchCount: matches[row.lostid][0],
                 newMatchCount: matches[row.lostid][1],
-                foundids: foundids[row.lostid],
+                matches: matchList[row.lostid],
               };
               res.json({ status: "success", data: item });
             } else {

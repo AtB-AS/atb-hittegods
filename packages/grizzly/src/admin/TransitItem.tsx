@@ -4,6 +4,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
 import { useHistory } from "react-router";
+import DataLoadingContainer from "../DataLoadingContainer";
 
 const useStyles = makeStyles({
   root: {
@@ -85,22 +86,6 @@ function TransitItem(props: Props) {
         setError(true);
       });
   }, [props.match.params.id]);
-
-  if (error) {
-    return <p>Noe gikk galt :(</p>;
-  }
-
-  if (isLoading) {
-    return (
-      <div className={styles.loading}>
-        <CircularProgress />
-      </div>
-    );
-  }
-
-  if (notFound) {
-    return <p>Beklager denne gjenstaden finnes ikke</p>;
-  }
 
   const storageClickHandler = () => {
     if (props.match.params.id != undefined) {
@@ -263,44 +248,46 @@ function TransitItem(props: Props) {
 
 
   return (
-    <div className={styles.root}>
-      <Box p={3} mt={4} className={styles.card}>
-        <div>
-          <h2>
-            {item?.subcategory} - {item?.brand}
-          </h2>
-        </div>
-        <Box >
-          <Grid container>
-            <Grid item md={12}>
-              <dt>Full beskrivelse:</dt>
-              <dd>{description}</dd>
+    <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
+      <div className={styles.root}>
+        <Box p={3} mt={4} className={styles.card}>
+          <div>
+            <h2>
+              {item?.subcategory} - {item?.brand}
+            </h2>
+          </div>
+          <Box >
+            <Grid container>
+              <Grid item md={12}>
+                <dt>Full beskrivelse:</dt>
+                <dd>{description}</dd>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Dato funnet:</dt>
+                  <dd>{moment(item?.date).format("DD.MM.yy")}</dd>
+                </dl>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Linje:</dt>
+                  <dd>{item?.line}</dd>
+                </dl>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Farge:</dt>
+                  <dd>{item?.color}</dd>
+                </dl>
+              </Grid>
             </Grid>
-            <Grid item md={4}>
-              <dl>
-                <dt>Dato funnet:</dt>
-                <dd>{moment(item?.date).format("DD.MM.yy")}</dd>
-              </dl>
-            </Grid>
-            <Grid item md={4}>
-              <dl>
-                <dt>Linje:</dt>
-                <dd>{item?.line}</dd>
-              </dl>
-            </Grid>
-            <Grid item md={4}>
-              <dl>
-                <dt>Farge:</dt>
-                <dd>{item?.color}</dd>
-              </dl>
-            </Grid>
-          </Grid>
+          </Box>
+          <h3 className="h4">Kontaktinfo:</h3>
+          <ContactInfo/>
+          <Grid>{buttons}</Grid>
         </Box>
-        <h3 className="h4">Kontaktinfo:</h3>
-        <ContactInfo/>
-        <Grid>{buttons}</Grid>
-      </Box>
-    </div>
+      </div>
+    </DataLoadingContainer>
   );
 }
 

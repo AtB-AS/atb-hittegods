@@ -8,6 +8,7 @@ import TextField from "@material-ui/core/TextField";
 import { Box } from "@material-ui/core";
 import NextBtn from "./components/NextBtn";
 import BackBtn from "./components/BackBtn";
+import InputLabel from "@material-ui/core/InputLabel";
 
 type Props = {
   onDateSelect: (date: string) => void;
@@ -56,7 +57,8 @@ function MissingDate(props: Props) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2>Hvilken dag var det?</h2>
+        <h4>Hvilken dag var det?</h4>
+        <p>Er du usikker, velg den du tror er nærmest.</p>
       </Box>
       <form noValidate>
         <Grid container spacing={3} justify="space-between">
@@ -80,6 +82,7 @@ function MissingDate(props: Props) {
           </Grid>
 
           <Grid item xs={12}>
+            <InputLabel htmlFor="line">Eller velg dato:</InputLabel>
             <TextField
               type="date"
               className={classes.textField}

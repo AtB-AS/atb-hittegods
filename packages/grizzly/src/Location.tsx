@@ -68,8 +68,8 @@ function Location(props: Props) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2>Husker du hvilken linje du tok? </h2>
-        <p>Om du ikker er helt sikkert går det fint. </p>
+        <h4>Husker du hvilken linje du tok? </h4>
+        <p>Om du er usikker, går det også fint. </p>
       </Box>
       <DataLoadingContainer loading={isloading} error={error}>
         <Box>
@@ -100,6 +100,8 @@ function Location(props: Props) {
                     />
                   )}
                 />
+              </Grid>
+              <Grid item xs={12}>
                 <Button variant="outlined" onClick={unknownLineButtonHandler}>
                   Usikker
                 </Button>

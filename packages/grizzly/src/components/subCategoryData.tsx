@@ -29,7 +29,7 @@ export const mainCategory = {
 export const subCatStrings = {
   JACKETS: "Overdeler",
   HATS: "Hodeplagg",
-  GLOVES: "Hansker",
+  GLOVES: "Hansker og votter",
   BAGS: "Sekk og Bag",
   LUGGAGE: "Bagasje",
   HANDBAGS: "Veske",

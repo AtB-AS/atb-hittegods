@@ -54,7 +54,7 @@ function SubCategory(props: Props) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2>Hvilken underkategori passer best? </h2>
+        <h4>Hvilken kategori passer best? </h4>
         <p>Om det ikke passer kan du velge "annet".</p>
       </Box>
       <Box mt={4}>

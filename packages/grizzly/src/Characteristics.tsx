@@ -25,6 +25,7 @@ type Props = {
   color: string;
   brand: string;
   description: string;
+  subCategory: string;
 };
 
 type Characteristics = {
@@ -54,11 +55,8 @@ function Characteristics(props: Props, characteristics: Characteristics) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2>Kan du beskrive det du har mistet?</h2>
-        <p>
-          Fyll ut så godt du kan. Vi vil uansett gjøre det vi kan for å finne
-          gjenstanden din.
-        </p>
+        {/* Med underkategori: <h5>Beskriv din(e) {props.subCategory}</h5>*/}
+        <h4>Kan du beskrive det du har mistet?</h4>
       </Box>
 
       <Box>

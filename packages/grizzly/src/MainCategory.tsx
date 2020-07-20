@@ -35,7 +35,7 @@ function MainCategory(props: Props) {
         <title>Hovedkategori - AtB</title>
       </Helmet>
       <Box mt={4} mb={4}>
-        <h2>Hvilken kategori passer best?</h2>
+        <h4>Hvilken kategori passer best?</h4>
         <p>Er du usikker kan du velge "annet".</p>
       </Box>
       <Box mt={4}>

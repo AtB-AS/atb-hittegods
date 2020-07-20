@@ -6,6 +6,7 @@ import Collapse from "@material-ui/core/Collapse";
 import MatchDetails from "./MatchDetails";
 import { Match } from "./Henvendelse";
 import { Found } from "./Matches";
+import {Box, Grid} from "@material-ui/core";
 
 type Props = {
   foundItem: Found;
@@ -42,13 +43,30 @@ const MatchRow = (props: Props) => {
     }
   }
 
+  function formatDate(date:string){
+    const formattedDay = date.slice(8,10)
+    const formattedMonth = date.slice(5,7)
+
+    return (formattedDay+'.'+formattedMonth)
+  }
+
+  function formatDescription(desc:string) {
+    if(desc.length>50){
+      return desc.slice(0,50)+"..."
+    }
+    else{
+      return desc
+    }
+  }
+
+
   return (
     <TableBody>
       <TableRow hover onClick={(event) => clickedRowItem(props.foundItem.id)}>
-        <TableCell>{props.foundItem.name}</TableCell>
+        <TableCell>{props.foundItem.id}</TableCell>
         <TableCell>{props.foundItem.subcategory}</TableCell>
         <TableCell>{props.foundItem.brand}</TableCell>
-        <TableCell>{props.foundItem.line}</TableCell>
+        <TableCell>{formatDescription(props.foundItem.description)}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell colSpan={4}>

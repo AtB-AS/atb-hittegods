@@ -5,9 +5,25 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
-import { Button } from "@material-ui/core";
+import {Box, Button, Grid} from "@material-ui/core";
 import React from "react";
 import { log } from "util";
+import moment from "moment";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+
+const useStyles = makeStyles({
+  root: {
+    padding: "20px 0 0 20px",
+    fontSize: "18px",
+  },
+  loading: {
+    textAlign: "center",
+    marginTop: "60px",
+  },
+  card: {
+    backgroundColor: "#fff",
+  },
+});
 
 type Props = {
   foundItem: FoundMatch;
@@ -50,6 +66,7 @@ type PossibleMatch = {
 function MatchDetails(props: Props) {
   const { id } = useParams();
   const history = useHistory();
+  const styles = useStyles();
 
   //TODO Better code for network calls catching errors etc
 
@@ -183,47 +200,100 @@ function MatchDetails(props: Props) {
   let confirmButton;
   if (props.foundItem.status === "Funnet") {
     confirmButton = (
-      <Button onClick={() => confirmMatch()}>Bekreft match</Button>
+      <Button
+          variant="contained"
+          color="primary"
+          className="editButton"
+          onClick={() => confirmMatch()}>Bekreft match</Button>
     );
   } else {
     confirmButton = (
-      <Button disabled={true}>Gjenstand er ikke bekreftet ankommet</Button>
+      <Button
+          variant="contained"
+          color="primary"
+          className="editButton"
+          disabled={true}>Gjenstand er ikke bekreftet ankommet</Button>
     );
   }
 
+  function ContactInfo() {
+    if (props.foundItem.name!="" || props.foundItem.phone!="" || props.foundItem.email!=""){
+      return(<div>
+        <Grid container spacing={1}>
+          <Grid item md={12}>
+            <h3 className="h4">Kontaktinfo:</h3>
+          </Grid>
+        <Grid item md={4}>
+        <dl>
+          <dt>Navn:</dt>
+          <dd>{props.foundItem.name}</dd>
+        </dl>
+        </Grid>
+        <Grid item md={4}>
+          <dl>
+            <dt>Telefon:</dt>
+            <dd>{props.foundItem.phone}</dd>
+          </dl>
+        </Grid>
+        <Grid item md={4}>
+          <dl>
+            <dt>E-post:</dt>
+            <dd>{props.foundItem.email}</dd>
+          </dl>
+        </Grid>
+        </Grid>
+        </div>)
+
+    }
+    else{
+      return(
+          <div>
+            <Grid item md={12}>
+              Ingen kontaktinfo funnet
+            </Grid>
+          </div>
+      )
+    }
+
+  }
+
+
   return (
-    <div>
-      <Paper>
-        <h6>
-          Detaljvisning for {props.foundItem.subcategory} -{" "}
-          {props.foundItem.brand}
-        </h6>
-        <Table size="small">
-          <TableContainer>
-            <TableBody>
-              <TableRow>
-                <TableCell>ID: </TableCell>
-                <TableCell>{props.foundItem.id}</TableCell>
-                <TableCell>Status: </TableCell>
-                <TableCell>{props.foundItem.status}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Farge: </TableCell>
-                <TableCell>{props.foundItem.color}</TableCell>
-                <TableCell>Registreringsdato: </TableCell>
-                <TableCell>{props.foundItem.date.slice(0, 10)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Beskrivelse: </TableCell>
-                <TableCell colSpan={3}>{props.foundItem.description}</TableCell>
-              </TableRow>
-              <TableRow></TableRow>
-            </TableBody>
-          </TableContainer>
-        </Table>
-        {confirmButton}
-      </Paper>
-    </div>
+      <div>
+        <Box p={2} mt={1} mb={0} className={styles.card}>
+          <Grid container spacing={1}>
+            <h3 className="h4">{props.foundItem.subcategory} - {props.foundItem.brand}</h3>
+            <Grid item md={12}>
+              <dt>Full beskrivelse:</dt>
+              <dd>{props.foundItem.description}</dd>
+            </Grid>
+            <Grid item md={4}>
+              <dl>
+                <dt>Dato funnet:</dt>
+                <dd>{moment(props.foundItem.date).format("DD.MM.yy")}</dd>
+              </dl>
+            </Grid>
+            <Grid item md={4}>
+              <dl>
+                <dt>Linje:</dt>
+                <dd>{props.foundItem.line}</dd>
+              </dl>
+            </Grid>
+            <Grid item md={4}>
+              <dl>
+                <dt>Farge:</dt>
+                <dd>{props.foundItem.color}</dd>
+              </dl>
+            </Grid>
+          </Grid>
+
+          <ContactInfo/>
+
+        </Box>
+        <Box mb={1}>
+          {confirmButton}
+        </Box>
+      </div>
   );
 }
 export default MatchDetails;

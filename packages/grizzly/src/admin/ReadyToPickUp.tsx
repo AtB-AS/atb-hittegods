@@ -12,9 +12,20 @@ function ReadyToPickUp() {
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+
+  const params = {
+    status: "Funnet",
+  };
+
+  const queryString = Object.entries(params)
+      .map(([key, val]) => `${key}=${val}`)
+      .join("&");
+
+
+
   useEffect(() => {
     setLoading(true);
-    fetch("api/admin/ReadyToPickUp")
+    fetch("/api/admin/found?" + queryString)
       .then((response) => {
         if (response.status === 401) {
           //unauthorized

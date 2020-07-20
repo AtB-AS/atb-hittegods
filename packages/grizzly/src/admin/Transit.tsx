@@ -93,6 +93,19 @@ function Transit(props: Props) {
     history.push("/admin/påVei/" + id);
   }
 
+  function formatDescription(desc:string|undefined) {
+    if(typeof(desc)==="string") {
+      if (desc.length > 16) {
+        return desc.slice(0, 16) + "..."
+      } else {
+        return desc
+      }
+    }
+    else {
+      return ""
+    }
+  }
+
   return (
     <div className={classes.root}>
       <div className={classes.leftCol}>
@@ -121,7 +134,7 @@ function Transit(props: Props) {
                   >
                     <TableCell>{item.id}</TableCell>
                     <TableCell>{item.subcategory}</TableCell>
-                    <TableCell>{item.description}</TableCell>
+                    <TableCell>{formatDescription(item.description)}</TableCell>
                     <TableCell>{item.phone}</TableCell>
                     <TableCell>
                       {moment(item?.date).format("DD.MM.yy")}

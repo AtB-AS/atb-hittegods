@@ -156,22 +156,36 @@ function Henvendelser(props: Props) {
     setHenvendelser(keepItems);
   };
 
+  function formatDescription(desc:string|undefined) {
+    if(typeof(desc)==="string") {
+      if (desc.length > 16) {
+        return desc.slice(0, 16) + "..."
+      } else {
+        return desc
+      }
+    }
+    else {
+      return ""
+    }
+  }
+
+
   return (
     <DataLoadingContainer loading={isloading} error={error}>
       <div className={classes.root}>
         <div className={classes.leftCol}>
           <InputBase
-            className={searchClasses.input}
-            placeholder="Søk på henvendelser"
-            onChange={(event) => {
-              setSearchValue(event.target.value);
-            }}
-            inputProps={{ "aria-label": "Søk på henvendelser" }}
+              className={searchClasses.input}
+              placeholder="Søk på henvendelser"
+              onChange={(event) => {
+                setSearchValue(event.target.value);
+              }}
+              inputProps={{ "aria-label": "Søk på henvendelser" }}
           />
           <IconButton
-            type="submit"
-            className={searchClasses.iconButton}
-            aria-label="search"
+              type="submit"
+              className={searchClasses.iconButton}
+              aria-label="search"
           >
             <SearchIcon />
           </IconButton>
@@ -181,53 +195,48 @@ function Henvendelser(props: Props) {
                 <TableRow className={classes.thRow}>
                   <HenvendelseColumn columnName={"id"} labelName={"Id"} />
                   <HenvendelseColumn columnName={"name"} labelName={"Navn"} />
+                  <HenvendelseColumn columnName={"phone"} labelName={"Telefon"} />
                   <HenvendelseColumn
-                    columnName={"phone"}
-                    labelName={"Telefon"}
+                      columnName={"subcategory"}
+                      labelName={"Underkategori"}
                   />
                   <HenvendelseColumn
-                    columnName={"subcategory"}
-                    labelName={"Underkategori"}
+                      columnName={"description"}
+                      labelName={"Beskrivelse"}
                   />
                   <HenvendelseColumn
-                    columnName={"description"}
-                    labelName={"Beskrivelse"}
+                      columnName={"matchCount"}
+                      labelName={"På lager"}
                   />
                   <HenvendelseColumn
-                    columnName={"matchCount"}
-                    labelName={"På lager"}
-                  />
-                  <HenvendelseColumn
-                    columnName={"newMatchCount"}
-                    labelName={"Nye funn"}
+                      columnName={"newMatchCount"}
+                      labelName={"Nye funn"}
                   />
                 </TableRow>
               </TableHead>
               <TableBody>
                 {searchHenvendelse(henvendelser, searchValue).map(
-                  (item, index) => {
-                    return (
-                      <TableRow
-                        hover
-                        onClick={(event) => clickedRowItem(item.id)}
-                        className={
-                          `${item.id}` === props.match.params?.id
-                            ? classes.activeRow
-                            : classes.row
-                        }
-                      >
-                        <TableCell>{item.id}</TableCell>
-                        <TableCell>{item.name}</TableCell>
-                        <TableCell>{item.phone}</TableCell>
-                        <TableCell>{item.subcategory}</TableCell>
-                        <TableCell>{item.description}</TableCell>
-                        <TableCell align="center">{item.matchCount}</TableCell>
-                        <TableCell align="center">
-                          {item.newMatchCount}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  }
+                    (item, index) => {
+                      return (
+                          <TableRow
+                              hover
+                              onClick={(event) => clickedRowItem(item.id)}
+                              className={
+                                `${item.id}` === props.match.params?.id
+                                    ? classes.activeRow
+                                    : classes.row
+                              }
+                          >
+                            <TableCell>{item.id}</TableCell>
+                            <TableCell>{item.name}</TableCell>
+                            <TableCell>{item.phone}</TableCell>
+                            <TableCell>{item.subcategory}</TableCell>
+                            <TableCell>{formatDescription(item.description)}</TableCell>
+                            <TableCell align="center">{item.matchCount}</TableCell>
+                            <TableCell align="center">{item.newMatchCount}</TableCell>
+                          </TableRow>
+                      );
+                    }
                 )}
               </TableBody>
             </Table>

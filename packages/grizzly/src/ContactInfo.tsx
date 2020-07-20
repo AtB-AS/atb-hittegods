@@ -131,7 +131,7 @@ function ContactInfo(props: Props, contactInfo: ContactInfo) {
           </Grid>
           <Grid item xs={12}>
             <Button color="primary" variant="contained" type="submit">
-              Neste
+              Send inn
             </Button>
           </Grid>
         </Grid>

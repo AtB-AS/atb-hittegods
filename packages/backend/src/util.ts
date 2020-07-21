@@ -1,4 +1,5 @@
 import { Response } from "express";
+import nodemailer from "nodemailer";
 
 export const compare = (a: any, b: any) => {
   if (a.lostid < b.lostid) {
@@ -46,5 +47,36 @@ export const dbError = (e: Error, res: Response): void => {
   res.status(500).json({
     status: "error",
     errorMessage: "Unknown database error",
+  });
+};
+
+export const sendEmail = (
+  to: string,
+  subject: string,
+  text: string,
+  html: string
+) => {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.GMAIL_USERNAME,
+      pass: process.env.GMAIL_PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.GMAIL_USERNAME,
+    to: to,
+    subject: subject,
+    text: text,
+    html: html,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
   });
 };

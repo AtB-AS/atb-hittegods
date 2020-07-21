@@ -21,7 +21,7 @@ import {
   updateLost,
 } from "./queries";
 import https = require("https");
-import { dbError } from "./util";
+import { dbError, sendEmail } from "./util";
 
 export default async (
   { app }: { app: express.Application },
@@ -135,6 +135,15 @@ export default async (
                   });
                 //TODO send confirmation email or sms
                 //TODO determine possible errors
+                if (body.email) {
+                  console.log("Sending email");
+                  sendEmail(
+                    body.email,
+                    "subject",
+                    "This is a text email",
+                    "<p>This is a test email</p>"
+                  );
+                }
               })
               .catch((e) => {
                 dbError(e, res);

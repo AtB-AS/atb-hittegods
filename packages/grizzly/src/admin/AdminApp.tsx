@@ -5,6 +5,7 @@ import Button from "@material-ui/core/Button";
 import { Box, createStyles, Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Layout from "./Layout";
+import {Helmet} from "react-helmet-async";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,6 +22,7 @@ function AdminApp() {
   const styles = useStyles();
   if (!authCtx?.user) {
     return (
+    <div>
       <LoginContainer>
         <Button
           size="large"
@@ -40,6 +42,10 @@ function AdminApp() {
           <p>Standard innlogging med din AtB bruker</p>
         </Box>
       </LoginContainer>
+      <Helmet>
+        <script src="//labelwriter.com/software/dls/sdk/js/DYMO.Label.Framework.latest.js"/>
+      </Helmet>
+    </div>
     );
   } else {
     return <Layout />;

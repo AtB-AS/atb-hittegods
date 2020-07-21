@@ -52,29 +52,31 @@ function Location(props: Props) {
     <div>
       <Box mt={4} mb={4}>
         <h2 className="h4">Husker du hvilken linje du tok? </h2>
-        <p>Er du er usikker, går det også fint. </p>
+        <p>Om du er usikker, går det også fint. </p>
       </Box>
       <DataLoadingContainer loading={isloading} error={error}>
         <Box>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <InputLabel htmlFor="line">Velg linje</InputLabel>
-                <Autocomplete
-                  options={lines}
-                  getOptionLabel={(item) => item.line + " " + item.description}
-                  defaultValue={lines.find((l) => l.line === line)}
-                  onChange={(event, value) => {
-                    console.log("Sett veri onchange", value?.line);
-                    if (value?.line) {
-                      // @ts-ignore
-
-                      props.onLocationSelect(value.line);
-                      setLine(value.line);
+              <Grow in timeout={400}>
+                <Grid item xs={12}>
+                  <InputLabel htmlFor="line">Linjenummer</InputLabel>
+                  <Autocomplete
+                    options={lines}
+                    getOptionLabel={(item) =>
+                      item.line + " " + item.description
                     }
-                  }}
-                  renderInput={(params) => (
-                    <Grow in>
+                    defaultValue={lines.find((l) => l.line === line)}
+                    onChange={(event, value) => {
+                      console.log("Sett veri onchange", value?.line);
+                      if (value?.line) {
+                        // @ts-ignore
+
+                        props.onLocationSelect(value.line);
+                        setLine(value.line);
+                      }
+                    }}
+                    renderInput={(params) => (
                       <TextField
                         placeholder="Linjenummer"
                         {...params}
@@ -82,12 +84,12 @@ function Location(props: Props) {
                         name="line"
                         id="line"
                       />
-                    </Grow>
-                  )}
-                />
-              </Grid>
+                    )}
+                  />
+                </Grid>
+              </Grow>
               <Grid item xs={12}>
-                <Grow in>
+                <Grow in timeout={600}>
                   <Button variant="outlined" onClick={unknownLineButtonHandler}>
                     Usikker
                   </Button>

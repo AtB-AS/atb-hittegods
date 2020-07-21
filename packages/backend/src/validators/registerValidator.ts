@@ -19,6 +19,7 @@ export const registerPostValidator = Joi.object({
   date: Joi.date().required(),
   to: Joi.string(),
   from: Joi.string(),
+  terms: Joi.bool(),
 });
 
 export const registerPutValidator = Joi.object({

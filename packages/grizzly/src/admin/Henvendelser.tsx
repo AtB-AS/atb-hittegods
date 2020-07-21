@@ -249,10 +249,7 @@ function Henvendelser(props: Props) {
           </TableContainer>
         </div>
         <div className={classes.rightCol}>
-          <Button
-            variant="contained"
-            href="https://hittegods.azurewebsites.net/"
-          >
+          <Button variant="contained" href="/" target="_blank">
             Registrer henvendelser
           </Button>
           <Route

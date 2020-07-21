@@ -22,6 +22,9 @@ import SearchIcon from "@material-ui/icons/Search";
 import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
 import Button from "@material-ui/core/Button";
+import { theme } from "../components/styling";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
 
 type Props = {
   match: {
@@ -41,10 +44,22 @@ const useStyles = makeStyles((theme: Theme) =>
     input: {
       marginLeft: theme.spacing(1),
       flex: 1,
-      width: "90%",
+      width: "50%",
     },
     iconButton: {
       padding: 10,
+    },
+    button: {
+      color: theme.palette.background.paper,
+      backgroundColor: theme.palette.secondary.light,
+      padding: "12px 16px 10px",
+      float: "right",
+      "&:hover": {
+        color: theme.palette.background.paper,
+      },
+    },
+    gridItem: {
+      display: "grid",
     },
   })
 );
@@ -173,21 +188,41 @@ function Henvendelser(props: Props) {
     <DataLoadingContainer loading={isLoading} error={error}>
       <div className={classes.root}>
         <div className={classes.leftCol}>
-          <InputBase
-            className={searchClasses.input}
-            placeholder="Søk på henvendelser"
-            onChange={(event) => {
-              setSearchValue(event.target.value);
-            }}
-            inputProps={{ "aria-label": "Søk på henvendelser" }}
-          />
-          <IconButton
-            type="submit"
-            className={searchClasses.iconButton}
-            aria-label="search"
-          >
-            <SearchIcon />
-          </IconButton>
+          <Box mb={1}>
+            <Grid container>
+              <Grid item md={9}>
+                <Box>
+                  <InputBase
+                    className={searchClasses.input}
+                    placeholder="Søk på henvendelser"
+                    onChange={(event) => {
+                      setSearchValue(event.target.value);
+                    }}
+                    inputProps={{ "aria-label": "Søk på henvendelser" }}
+                  />
+                  <IconButton
+                    type="submit"
+                    className={searchClasses.iconButton}
+                    aria-label="search"
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                </Box>
+              </Grid>
+
+              <Grid item md={3}>
+                <Button
+                  className={searchClasses.button}
+                  variant="contained"
+                  href="/"
+                  target="_blank"
+                >
+                  Ny henvendelse
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+
           <TableContainer className={classes.container}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
@@ -249,9 +284,6 @@ function Henvendelser(props: Props) {
           </TableContainer>
         </div>
         <div className={classes.rightCol}>
-          <Button variant="contained" href="/" target="_blank">
-            Registrer henvendelser
-          </Button>
           <Route
             path="/admin/henvendelser/:id"
             render={(routeProps) => (

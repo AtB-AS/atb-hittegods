@@ -4,10 +4,6 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import { theme } from "./styling";
 import { Button } from "@material-ui/core";
 
-type Props = {
-  onClick: () => void;
-};
-
 const useStyles = makeStyles({
   imgIcon: {
     position: "relative",
@@ -21,19 +17,11 @@ const useStyles = makeStyles({
   },
 });
 
-const NextBtn: React.FC<Props> = (props) => {
+const NextBtn: React.FC = (props) => {
   const style = useStyles();
 
   return (
-    <Button
-      onClick={(evt) => {
-        evt.preventDefault();
-        props.onClick();
-      }}
-      variant="contained"
-      type="submit"
-      className={style.button}
-    >
+    <Button variant="contained" type="submit" className={style.button}>
       {props.children || "Gå videre"} <ArrowForwardIosIcon />
     </Button>
   );

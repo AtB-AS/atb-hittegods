@@ -41,7 +41,6 @@ function MissingDate(props: Props) {
     let date: string;
     // @ts-ignore
     date = new Date().toJSON().split("T")[0];
-    console.log(date);
     props.onDateSelect(date);
   }
 
@@ -63,7 +62,12 @@ function MissingDate(props: Props) {
         <h2 className="h4">Hvilken dag var det?</h2>
         <p>Er du usikker, velg den du tror er nærmest.</p>
       </Box>
-      <form noValidate>
+      <form
+        onSubmit={(evt) => {
+          evt.preventDefault();
+          onSubmitDatepicker();
+        }}
+      >
         <Grid container spacing={3} justify="space-between">
           <Grow in>
             <Grid item xs={6}>
@@ -123,7 +127,7 @@ function MissingDate(props: Props) {
             <Zoom in>
               <Grid item xs={12}>
                 <Box className={classes.rightAlign}>
-                  <NextBtn onClick={onSubmitDatepicker} />
+                  <NextBtn />
                 </Box>
               </Grid>
             </Zoom>

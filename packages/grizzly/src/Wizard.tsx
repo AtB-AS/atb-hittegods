@@ -204,8 +204,6 @@ export default function Wizard() {
       ...characteristics,
       line,
       date,
-      from: "TODO", // TODO: Foreløpig påkrevd i database
-      to: "TODO", // TODO: Foreløpig påkrevd i database
       ...contInfo,
     };
     setContInfo(contInfo);

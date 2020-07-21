@@ -1,5 +1,5 @@
 export const selectLostByRefnum = `
-select name, email, phone, description, brand, date, time, "from", "to",
+select name, email, phone, description, brand, date, time, 
 refnr, status, category, subcategory, line, color
 from lost
 join status on (status.statusid = lost.statusid)
@@ -10,17 +10,17 @@ join color on (color.colorid = lost.colorid)
 where refnr=$1`;
 
 export const insertNewLost = `
-insert into lost (name, email, phone, description, brand, date, time, "from", "to",
+insert into lost (name, email, phone, description, brand, date, time,
 lineid, colorid, catid, subcatid, statusid, refnr)
 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-$11, $12, $13, $14, $15)
+$11, $12, $13)
 returning *`;
 
 export const updateLost = `
 update lost
-set description=$1, brand=$2, date=$3, "from"=$4, "to"=$5, lineid=$6,
-colorid=$7, catid=$8, subcatid=$9
-where refnr=$10
+set description=$1, brand=$2, date=$3, lineid=$4,
+colorid=$5, catid=$6, subcatid=$7
+where refnr=$8
 `;
 
 export const updateStatusUserDelete = `

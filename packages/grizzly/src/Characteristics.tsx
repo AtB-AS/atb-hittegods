@@ -50,7 +50,12 @@ function Characteristics(props: Props, characteristics: Characteristics) {
   }
   //TODO Legge til ID i colorselect-
   return (
-    <div>
+    <form
+      onSubmit={(evt) => {
+        evt.preventDefault();
+        onSubmit();
+      }}
+    >
       <Box mt={4} mb={4}>
         {/* Med underkategori: <h5>Beskriv din(e) {props.subCategory}</h5>*/}
         <h2 className="h4">Kan du beskrive det du har mistet?</h2>
@@ -101,13 +106,13 @@ function Characteristics(props: Props, characteristics: Characteristics) {
           <Zoom in>
             <Grid item xs={12}>
               <div className={styles.button}>
-                <NextBtn onClick={onSubmit} />
+                <NextBtn />
               </div>
             </Grid>
           </Zoom>
         </Grid>
       </Box>
-    </div>
+    </form>
   );
 }
 

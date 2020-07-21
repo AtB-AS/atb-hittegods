@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, Button } from "@material-ui/core";
+import { Box, Grid, Button, Grow } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -74,20 +74,24 @@ function Location(props: Props) {
                     }
                   }}
                   renderInput={(params) => (
-                    <TextField
-                      placeholder="Linjenummer"
-                      {...params}
-                      variant="standard"
-                      name="line"
-                      id="line"
-                    />
+                    <Grow in>
+                      <TextField
+                        placeholder="Linjenummer"
+                        {...params}
+                        variant="standard"
+                        name="line"
+                        id="line"
+                      />
+                    </Grow>
                   )}
                 />
               </Grid>
               <Grid item xs={12}>
-                <Button variant="outlined" onClick={unknownLineButtonHandler}>
-                  Usikker
-                </Button>
+                <Grow in>
+                  <Button variant="outlined" onClick={unknownLineButtonHandler}>
+                    Usikker
+                  </Button>
+                </Grow>
               </Grid>
             </Grid>
           </form>

@@ -8,6 +8,7 @@ import TextField from "@material-ui/core/TextField";
 import { Box } from "@material-ui/core";
 import NextBtn from "./components/NextBtn";
 import InputLabel from "@material-ui/core/InputLabel";
+import Zoom from "@material-ui/core/Zoom";
 
 type Props = {
   onDateSelect: (date: string) => void;
@@ -107,11 +108,13 @@ function MissingDate(props: Props) {
           </Grid>
 
           {status && (
-            <Grid item xs={12}>
-              <Box className={classes.rightAlign}>
-                <NextBtn onClick={onSubmitDatepicker} />
-              </Box>
-            </Grid>
+              <Zoom in>
+                <Grid item xs={12}>
+                  <Box className={classes.rightAlign}>
+                    <NextBtn onClick={onSubmitDatepicker} />
+                  </Box>
+                </Grid>
+              </Zoom>
           )}
         </Grid>
       </form>

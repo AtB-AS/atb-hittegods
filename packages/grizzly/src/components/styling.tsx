@@ -37,8 +37,8 @@ export const theme = createMuiTheme({
         display: "block",
         boxShadow: "0",
         "&:hover": {
-          boxShadow: "0",
-          backgroundColor: "#00758D",
+          boxShadow: "none !important",
+          backgroundColor: "#00758D !important",
           borderBottom: "solid 3px #323A48",
         },
         "&:active": {

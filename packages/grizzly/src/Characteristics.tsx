@@ -46,6 +46,9 @@ function Characteristics(props: Props, characteristics: Characteristics) {
       <Box mt={4} mb={4}>
         {/* Med underkategori: <h5>Beskriv din(e) {props.subCategory}</h5>*/}
         <h2 className="h4">Kan du beskrive det du har mistet?</h2>
+        <p>
+          Valgt gjenstand:<b> {props.subCategory}</b>
+        </p>
       </Box>
 
       <Box>

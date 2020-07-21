@@ -134,7 +134,7 @@ function ColorSelect(props: Props) {
               style={{
                 borderColor: color.primary,
                 backgroundColor: color.primary,
-                padding: "20px",
+                padding: "20px 20px 16px",
                 margin: "5px",
               }}
               key={color.label}

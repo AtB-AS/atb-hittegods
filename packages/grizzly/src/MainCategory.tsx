@@ -24,10 +24,10 @@ function MainCategory(props: Props) {
       <Box mt={4} mb={4}>
         <h2 className="h4">Hvilken kategori passer best?</h2>
         <p>
-          Er du usikker kan du velge <i>annet</i>.
+          Om du er usikker kan du velge <i>annet</i>.
         </p>
       </Box>
-      <Grow in>
+      <Grow in timeout={300}>
         <Box mt={4}>
           <Categories>
             {catData.map((mainCat) => {

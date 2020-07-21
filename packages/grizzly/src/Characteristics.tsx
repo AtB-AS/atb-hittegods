@@ -65,7 +65,7 @@ function Characteristics(props: Props, characteristics: Characteristics) {
       </Box>
       <Box>
         <Grid container spacing={3}>
-          <Grow in>
+          <Grow in timeout={300}>
             <Grid item xs={12}>
               <InputLabel htmlFor="color">
                 Hvilken farge passer best?
@@ -74,7 +74,7 @@ function Characteristics(props: Props, characteristics: Characteristics) {
             </Grid>
           </Grow>
 
-          <Grow in>
+          <Grow in timeout={400}>
             <Grid item xs={12}>
               <InputLabel htmlFor="brand">Merke</InputLabel>
               <TextField
@@ -88,7 +88,7 @@ function Characteristics(props: Props, characteristics: Characteristics) {
               />
             </Grid>
           </Grow>
-          <Grow in>
+          <Grow in timeout={600}>
             <Grid item xs={12}>
               <InputLabel htmlFor="description">Kjennetegn</InputLabel>
               <TextField
@@ -103,13 +103,13 @@ function Characteristics(props: Props, characteristics: Characteristics) {
               />
             </Grid>
           </Grow>
-          <Zoom in>
+          <Grow in timeout={800}>
             <Grid item xs={12}>
               <div className={styles.button}>
                 <NextBtn />
               </div>
             </Grid>
-          </Zoom>
+          </Grow>
         </Grid>
       </Box>
     </form>

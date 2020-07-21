@@ -69,7 +69,7 @@ function MissingDate(props: Props) {
         }}
       >
         <Grid container spacing={3} justify="space-between">
-          <Grow in>
+          <Grow in timeout={300}>
             <Grid item xs={6}>
               <Box mt={3}>
                 <Button
@@ -82,7 +82,7 @@ function MissingDate(props: Props) {
               </Box>
             </Grid>
           </Grow>
-          <Grow in>
+          <Grow in timeout={400}>
             <Grid item xs={6}>
               <Box mt={3}>
                 <Button
@@ -96,9 +96,9 @@ function MissingDate(props: Props) {
             </Grid>
           </Grow>
 
-          <Grow in>
+          <Grow in timeout={600}>
             <Grid item xs={12}>
-              <InputLabel htmlFor="line">Eller velg dato:</InputLabel>
+              <InputLabel htmlFor="line">Velg dato</InputLabel>
               <TextField
                 placeholder="dd.mm.åååå"
                 type="date"

@@ -103,15 +103,6 @@ function MissingDate(props: Props) {
             />
           </Grid>
 
-          <Grid item>
-            <BackBtn
-              onClick={() => {
-                console.log(`go back`);
-                window.history.back();
-              }}
-            />
-          </Grid>
-
           {status && (
             <Grid item>
               <NextBtn onClick={onSubmitDatepicker} />

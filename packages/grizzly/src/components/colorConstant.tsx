@@ -35,12 +35,12 @@ export const colorData: Colors = {
     { label: colorStrings.WHITE, primary: "white", secondary: "#323A48" },
     {
       label: colorStrings.GOLD,
-      primary: "#FFC107",
+      primary: "linear-gradient(270deg,  #FFE082 30%, #FFC107 70%)",
       secondary: "#323A48",
     },
     {
       label: colorStrings.SILVER,
-      primary: "#CFD8DC",
+      primary: "linear-gradient(270deg,  #ECEFF1 30%, #CFD8DC 70%)",
       secondary: "#323A48",
     },
     { label: colorStrings.PINK, primary: "#FF4081", secondary: "white" },

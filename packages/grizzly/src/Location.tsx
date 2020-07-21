@@ -17,7 +17,7 @@ type LineObj = {
 };
 
 function Location(props: Props) {
-  const { register, handleSubmit, watch, errors } = useForm<Props>();
+  const { handleSubmit } = useForm<Props>();
   const [lines, setLines] = useState<LineObj[]>([]);
   const [error, setError] = useState(false);
   const [isloading, setLoading] = useState(true);

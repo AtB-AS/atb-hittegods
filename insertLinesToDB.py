@@ -7,7 +7,13 @@ connection = psycopg2.connect(user = "hittegods@hittegods-db",
                                   database = "postgres")
 
 cursor = connection.cursor()
-
+"""expects csv file of this format:
+Rutenr,Beskrivelse,Operatør
+1,Ranheim - Strindheim - sentrum - Tiller - Heimdal - Kattem,Vy Buss
+2,Strindheim- Lade- sentrum- Lund,Vy Buss
+3,Lohove- Sentrum- Hallset,Tide
+9,St. Olavs gate - Lian,Gråkallbanen
+"""
 with open("data.csv", encoding='utf-8') as file:
     spamreader = csv.reader(file, )
     for row in spamreader:

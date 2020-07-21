@@ -1,6 +1,7 @@
 import express, { query, Request, Response } from "express";
 import pg = require("pg");
 import { isAuthenticated } from "./auth/utils";
+import fetch from "node-fetch";
 import {
   foundGetValidator,
   foundIdGetValidator,
@@ -42,7 +43,6 @@ import {
   updateLostStatusById,
   updatePossibleMatchNewById,
 } from "./queries";
-import https = require("https");
 import {
   dbError,
   getMatches,
@@ -502,21 +502,11 @@ export default async (
                 console.log(
                   "Notify new found to hittegods-matchmaker : " + url
                 );
-                https
-                  .get(url, (httpsRes) => {
-                    httpsRes.setEncoding("utf8");
-                    let body = "";
-                    httpsRes.on("data", (data) => {
-                      body += data;
-                      console.log("Response from matchmaker : " + data);
-                    });
-                    httpsRes.on("end", () => {
-                      console.log("hittegods-matchmaker : " + body);
-                    });
+                fetch(url)
+                  .then((response) => {
+                    console.log("Hittegods-matchmaker: ", response.ok);
                   })
-                  .on("error", (error) => {
-                    console.log("matchmaker error : " + error);
-                  });
+                  .catch();
                 //TODO send confirmation email or sms
                 //TODO determine possible errors
               })

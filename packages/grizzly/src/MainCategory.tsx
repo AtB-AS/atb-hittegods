@@ -1,7 +1,7 @@
 import React from "react";
 import { categoryData } from "./components/subCategoryData";
 import Box from "@material-ui/core/Box";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import Categories from "./components/Categories";
 import Category from "./components/Category";
 
@@ -31,6 +31,7 @@ function MainCategory(props: Props) {
           {catData.map((mainCat) => {
             return (
               <Category
+                key={mainCat.name}
                 title={mainCat.name}
                 description={mainCat.description}
                 onClick={() => props.onCategorySelect(mainCat.name)}

@@ -91,15 +91,13 @@ function Storage(props: Props) {
   const [toDate, setToDate] = useState("");
   const [fromDate, setFromDate] = useState("");
 
-  const params = {
-    status: "Funnet",
-  };
-
-  const queryString = Object.entries(params)
-    .map(([key, val]) => `${key}=${val}`)
-    .join("&");
-
   useEffect(() => {
+    const params = {
+      status: "Funnet",
+    };
+    const queryString = Object.entries(params)
+      .map(([key, val]) => `${key}=${val}`)
+      .join("&");
     setLoading(true);
     fetch("/api/admin/found?" + queryString)
       .then((response) => response.json())
@@ -198,19 +196,17 @@ function Storage(props: Props) {
     });
   }
 
-  function formatDescription(desc:string|undefined) {
-    if(typeof(desc)==="string") {
+  function formatDescription(desc: string | undefined) {
+    if (typeof desc === "string") {
       if (desc.length > 16) {
-        return desc.slice(0, 16) + "..."
+        return desc.slice(0, 16) + "...";
       } else {
-        return desc
+        return desc;
       }
-    }
-    else {
-      return ""
+    } else {
+      return "";
     }
   }
-
 
   return (
     <DataLoadingContainer loading={isLoading} error={error}>
@@ -301,7 +297,9 @@ function Storage(props: Props) {
                     >
                       <TableCell>{item.id}</TableCell>
                       <TableCell>{item.subcategory}</TableCell>
-                      <TableCell>{formatDescription(item.description)}</TableCell>
+                      <TableCell>
+                        {formatDescription(item.description)}
+                      </TableCell>
                       <TableCell>{item.phone}</TableCell>
                       <TableCell>
                         {moment(item?.date).format("DD.MM.yy")}

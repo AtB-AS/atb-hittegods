@@ -88,15 +88,14 @@ function PickUp(props: Props) {
   const [toDate, setToDate] = useState("");
   const [fromDate, setFromDate] = useState("");
 
-  const params = {
-    status: "Til utlevering",
-  };
-
-  const queryString = Object.entries(params)
-    .map(([key, val]) => `${key}=${val}`)
-    .join("&");
-
   useEffect(() => {
+    const params = {
+      status: "Til utlevering",
+    };
+
+    const queryString = Object.entries(params)
+      .map(([key, val]) => `${key}=${val}`)
+      .join("&");
     fetch("/api/admin/found?" + queryString)
       .then((response) => {
         if (response.ok) {

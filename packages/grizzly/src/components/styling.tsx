@@ -1,5 +1,4 @@
 import { createMuiTheme } from "@material-ui/core/styles";
-import shadows from "@material-ui/core/styles/shadows";
 
 export const theme = createMuiTheme({
   overrides: {

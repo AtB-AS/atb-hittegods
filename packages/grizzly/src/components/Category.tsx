@@ -2,10 +2,6 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { createStyles, Theme } from "@material-ui/core";
 import Box from "@material-ui/core/Box";
-import Purse from "../components/icons/veske.svg";
-import SvgIcon from "@material-ui/core/SvgIcon";
-import VeskeImg from "./img/VeskeImg";
-import SekkImg from "./img/SekkImg";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 
 type Props = {

@@ -1,22 +1,7 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Collapse,
-  createStyles,
-  Grid,
-  Theme,
-  Fab,
-  Paper,
-  Chip,
-} from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+import { Box, createStyles, Grid, Theme } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Radio from "@material-ui/core/Radio";
-import FormControl from "@material-ui/core/FormControl";
 import ColorSelect from "./ColorSelect";
 import InputLabel from "@material-ui/core/InputLabel";
 import NextBtn from "./components/NextBtn";

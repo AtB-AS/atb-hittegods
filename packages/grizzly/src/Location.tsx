@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Container,
-  createStyles,
-  Grid,
-  Theme,
-  Button,
-} from "@material-ui/core";
+import { Box, Grid, Button } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
-import { makeStyles } from "@material-ui/core/styles";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -24,18 +16,7 @@ type LineObj = {
   description: string;
 };
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    overrides: {
-      root: {
-        padding: "10px 16px 12px",
-      },
-    },
-  })
-);
-
 function Location(props: Props) {
-  const styles = useStyles();
   const { register, handleSubmit, watch, errors } = useForm<Props>();
   const [lines, setLines] = useState<LineObj[]>([]);
   const [error, setError] = useState(false);

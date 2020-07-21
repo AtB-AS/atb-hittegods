@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Grid, TextField } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
 import { useHistory } from "react-router";
 import DataLoadingContainer from "../DataLoadingContainer";
@@ -239,42 +238,42 @@ function TransitItem(props: Props) {
 
   function ContactInfo() {
     if (item?.name != "" || item?.phone != "" || item?.email != "") {
-      return (<div>
-        <Box >
-          <Grid container spacing={1}>
-            <Grid item md={4}>
-              <dl>
-                <dt>Navn:</dt>
-                <dd>{item?.name}</dd>
-              </dl>
+      return (
+        <div>
+          <Box>
+            <Grid container spacing={1}>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Navn:</dt>
+                  <dd>{item?.name}</dd>
+                </dl>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Telefon:</dt>
+                  <dd>{item?.phone}</dd>
+                </dl>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>E-post:</dt>
+                  <dd>{item?.email}</dd>
+                </dl>
+              </Grid>
             </Grid>
-            <Grid item md={4}>
-              <dl>
-                <dt>Telefon:</dt>
-                <dd>{item?.phone}</dd>
-              </dl>
-            </Grid>
-            <Grid item md={4}>
-              <dl>
-                <dt>E-post:</dt>
-                <dd>{item?.email}</dd>
-              </dl>
-            </Grid>
-          </Grid>
-        </Box>
-      </div>)
-
+          </Box>
+        </div>
+      );
     } else {
       return (
-          <div>
-            <Grid item md={12}>
-              Ingen kontaktinfo funnet
-            </Grid>
-          </div>
-      )
+        <div>
+          <Grid item md={12}>
+            Ingen kontaktinfo funnet
+          </Grid>
+        </div>
+      );
     }
   }
-
 
   return (
     <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
@@ -285,7 +284,7 @@ function TransitItem(props: Props) {
               {item?.subcategory} - {item?.brand}
             </h2>
           </div>
-          <Box >
+          <Box>
             <Grid container>
               <Grid item md={12}>
                 <dt>Full beskrivelse:</dt>
@@ -312,7 +311,7 @@ function TransitItem(props: Props) {
             </Grid>
           </Box>
           <h3 className="h4">Kontaktinfo:</h3>
-          <ContactInfo/>
+          <ContactInfo />
           <Grid>{buttons}</Grid>
         </Box>
       </div>

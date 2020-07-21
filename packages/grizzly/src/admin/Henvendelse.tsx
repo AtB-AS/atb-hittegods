@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Box, Grid } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
 import Matches from "./Matches";
 import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
-import { type } from "os";
 
 const useStyles = makeStyles({
   root: {

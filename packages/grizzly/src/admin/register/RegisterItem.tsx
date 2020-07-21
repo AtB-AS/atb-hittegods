@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 
-import { Box, Grid, Typography } from "@material-ui/core";
+import { Box, Grid } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { categoryData, subCatStrings } from "../../components/subCategoryData";
+import { categoryData } from "../../components/subCategoryData";
 import { useForm } from "react-hook-form";
 import { colorData } from "../../components/colorConstant";
 import useMediaQuery from "@material-ui/core/useMediaQuery";

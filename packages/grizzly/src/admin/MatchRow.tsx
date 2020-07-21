@@ -6,7 +6,6 @@ import Collapse from "@material-ui/core/Collapse";
 import MatchDetails from "./MatchDetails";
 import { Match } from "./Henvendelse";
 import { Found } from "./Matches";
-import {Box, Grid} from "@material-ui/core";
 
 type Props = {
   foundItem: Found;
@@ -43,22 +42,20 @@ const MatchRow = (props: Props) => {
     }
   }
 
-  function formatDate(date:string){
-    const formattedDay = date.slice(8,10)
-    const formattedMonth = date.slice(5,7)
+  function formatDate(date: string) {
+    const formattedDay = date.slice(8, 10);
+    const formattedMonth = date.slice(5, 7);
 
-    return (formattedDay+'.'+formattedMonth)
+    return formattedDay + "." + formattedMonth;
   }
 
-  function formatDescription(desc:string) {
-    if(desc.length>50){
-      return desc.slice(0,50)+"..."
-    }
-    else{
-      return desc
+  function formatDescription(desc: string) {
+    if (desc.length > 50) {
+      return desc.slice(0, 50) + "...";
+    } else {
+      return desc;
     }
   }
-
 
   return (
     <TableBody>

@@ -1,6 +1,5 @@
 import React from "react";
 import { useAuth } from "./context/authContext";
-import App from "./App";
 import LoginContainer from "./LoginContainer";
 import Button from "@material-ui/core/Button";
 import { Box, createStyles, Theme } from "@material-ui/core";

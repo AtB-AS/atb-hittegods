@@ -16,13 +16,11 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import { useHistory } from "react-router";
 import Henvendelse from "./Henvendelse";
 import { Route } from "react-router-dom";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { useTableStyles } from "./styles";
 import { searchHenvendelse, HenvendelseType } from "./utils";
 import SearchIcon from "@material-ui/icons/Search";
 import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
-import { type } from "os";
 import Button from "@material-ui/core/Button";
 
 type Props = {
@@ -78,10 +76,6 @@ function Henvendelser(props: Props) {
     }
   }, [orderBy, collumnName]);
 
-  const queryString = Object.entries(params)
-    .map(([key, val]) => `${key}=${val}`)
-    .join("&");
-
   const decrementNewMatch = (lostid: number): void => {
     const updatedHenvendelser = henvendelser.map((henvendelse) => {
       if (henvendelse.id === lostid) {
@@ -96,6 +90,9 @@ function Henvendelser(props: Props) {
   };
 
   useEffect(() => {
+    const queryString = Object.entries(params)
+      .map(([key, val]) => `${key}=${val}`)
+      .join("&");
     setLoading(true);
     fetch("/api/admin/lost?" + queryString)
       .then((response) => {

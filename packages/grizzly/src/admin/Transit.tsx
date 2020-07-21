@@ -44,14 +44,6 @@ function Transit(props: Props) {
   const history = useHistory();
   const [notFound, setNotFound] = useState<string | undefined>(undefined);
 
-  const params = {
-    status: "På vei",
-  };
-
-  const queryString = Object.entries(params)
-    .map(([key, val]) => `${key}=${val}`)
-    .join("&");
-
   const removeItem = (id: number) => {
     const newItem = transitItems.filter((transitItem) => {
       return transitItem.id !== id;
@@ -60,6 +52,13 @@ function Transit(props: Props) {
   };
 
   useEffect(() => {
+    const params = {
+      status: "På vei",
+    };
+
+    const queryString = Object.entries(params)
+      .map(([key, val]) => `${key}=${val}`)
+      .join("&");
     setLoading(true);
     fetch("/api/admin/found?" + queryString)
       .then((response) => {

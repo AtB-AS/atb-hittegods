@@ -35,6 +35,7 @@ function SubCategory(props: Props) {
           {subCatData.map((subCat) => {
             return (
               <Category
+                key={subCat.name}
                 title={subCat.name}
                 onClick={() => props.onSubCategorySelect(subCat.name)}
                 icon={subCat.icon}

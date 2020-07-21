@@ -7,7 +7,6 @@ import {
 } from "@material-ui/core/styles";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
-import StepButton from "@material-ui/core/StepButton";
 import MainCategory from "./MainCategory";
 import SubCategory from "./SubCategory";
 import Characteristics from "./Characteristics";
@@ -87,15 +86,11 @@ export default function Wizard() {
 
   useEffect(() => {
     addToBrowserHistory({ activeStep: WIZARD_STEP.LINE });
-    return setupNavigationListener();
-  }, []);
-
-  function setupNavigationListener() {
     window.addEventListener("popstate", onNavigation);
     return () => {
       window.removeEventListener("popstate", onNavigation);
     };
-  }
+  }, []);
 
   function addToBrowserHistory(data: object) {
     // eslint-disable-next-line no-restricted-globals

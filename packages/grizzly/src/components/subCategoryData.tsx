@@ -1,4 +1,3 @@
-import React from "react";
 import LueIcon from "../components/icons/Lue.svg";
 import ClothingIcon from "../components/icons/sweater.svg";
 import PhoneIcon from "../components/icons/Mobil.svg";
@@ -31,7 +30,6 @@ import LueImg from "./img/LueImg";
 import MobilImg from "./img/MobilImg";
 import NokkelImg from "./img/NokkelImg";
 import PcImg from "./img/PcImg";
-import TrillekoffertImg from "./img/TrillekoffertImg";
 
 //Name of main categories
 export const mainCategory = {

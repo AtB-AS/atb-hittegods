@@ -6,11 +6,9 @@ import {
   createStyles,
   Fab,
   Grid,
-  Paper,
   Theme,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import FormControl from "@material-ui/core/FormControl";
 import { makeStyles } from "@material-ui/core/styles";
 import { colorData } from "./components/colorConstant";
 

@@ -214,9 +214,9 @@ function MatchDetails(props: Props) {
 
   function ContactInfo() {
     if (
-      props.foundItem.name != "" ||
-      props.foundItem.phone != "" ||
-      props.foundItem.email != ""
+      props.foundItem.name !== "" ||
+      props.foundItem.phone !== "" ||
+      props.foundItem.email !== ""
     ) {
       return (
         <div>

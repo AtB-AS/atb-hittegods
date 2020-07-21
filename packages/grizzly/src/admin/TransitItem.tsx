@@ -237,7 +237,7 @@ function TransitItem(props: Props) {
   }
 
   function ContactInfo() {
-    if (item?.name != "" || item?.phone != "" || item?.email != "") {
+    if (item?.name !== "" || item?.phone !== "" || item?.email !== "") {
       return (
         <div>
           <Box>

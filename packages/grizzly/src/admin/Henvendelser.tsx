@@ -22,7 +22,6 @@ import SearchIcon from "@material-ui/icons/Search";
 import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
 import Button from "@material-ui/core/Button";
-import { theme } from "../components/styling";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 

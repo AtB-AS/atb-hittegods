@@ -10,7 +10,6 @@ import RegisterTransit from "./register/RegisterTransit";
 import PickUp from "./PickUp";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import Logo from "../components/icons/logo";
 
 const useStyles = makeStyles((theme: Theme) =>

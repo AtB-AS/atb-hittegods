@@ -8,6 +8,10 @@ import Transit from "./Transit";
 import RegisterStorage from "./register/RegisterStorage";
 import RegisterTransit from "./register/RegisterTransit";
 import PickUp from "./PickUp";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
+import AccountBoxIcon from "@material-ui/icons/AccountBox";
+import Logo from "../components/icons/logo";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,10 +23,11 @@ const useStyles = makeStyles((theme: Theme) =>
     header: {
       gridColumn: "1 / 3",
       height: "80px",
-      justifyContent: "center",
+      justifyContent: "flex-start",
       alignItems: "center",
       display: "flex",
       color: "#fff",
+      paddingLeft: "50px",
       backgroundColor: "#00758d",
     },
     nav: {
@@ -46,18 +51,18 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     navItem: {
       margin: "5px 0 5px 0",
-      padding: "20px",
-      display: "block",
+      padding: "20px 42px 20px",
       fontSize: "18px",
-      color: "#000",
+      color: "#fff",
       "&:hover, &:active, &:focus": {
-        color: "#000",
-      },
-      "&.active, &:hover": {
-        display: "block",
         textDecoration: "none",
-        backgroundColor: "#f8f8f8",
+        fontWeight: "bold",
+        color: "#fff",
       },
+    },
+    icon: {
+      width: "50px",
+      height: "50px",
     },
   })
 );
@@ -95,19 +100,24 @@ function Layout() {
   return (
     <div className={styles.root}>
       <header className={styles.header}>
-        <h1>{getPageTitle()}</h1>
+        <Box>
+          <Grid container spacing={3}>
+            <nav>
+              <Logo className={styles.icon} />
+              {routes.map((route) => (
+                <NavLink
+                  key={route.path}
+                  className={styles.navItem}
+                  to={route.path}
+                >
+                  {route.title}
+                </NavLink>
+              ))}
+            </nav>
+          </Grid>
+        </Box>
       </header>
-      <nav className={styles.nav}>
-        <ul className={styles.linkList}>
-          {routes.map((route) => (
-            <li key={route.path} className={styles.linkListItem}>
-              <NavLink className={styles.navItem} to={route.path}>
-                {route.title}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-      </nav>
+
       <main className={styles.main}>
         <Switch>
           <Route path="/admin/henvendelser/:id?" component={Henvendelser} />

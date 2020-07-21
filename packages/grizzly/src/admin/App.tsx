@@ -1,14 +1,9 @@
 import React from "react";
 import { Grid } from "@material-ui/core";
-import { useHistory } from "react-router";
 import Henvendelser from "./Henvendelser";
-import Storage from "./Storage";
 import { Link, Route, Switch } from "react-router-dom";
-import Container from "@material-ui/core/Container";
-import Box from "@material-ui/core/Box";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { theme } from "../components/styling";
-import Header from "../components/header";
 import Paper from "@material-ui/core/Paper";
 import ReadyToPickUp from "./ReadyToPickUp";
 import Transit from "./Transit";

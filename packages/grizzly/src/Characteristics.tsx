@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Box, createStyles, Grid, Theme } from "@material-ui/core";
+import {
+  Box,
+  createStyles,
+  Fade,
+  Grid,
+  Grow,
+  Theme,
+  Zoom,
+} from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import ColorSelect from "./ColorSelect";
@@ -50,43 +58,53 @@ function Characteristics(props: Props, characteristics: Characteristics) {
           Valgt gjenstand:<b> {props.subCategory}</b>
         </p>
       </Box>
-
       <Box>
         <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <InputLabel htmlFor="color">Hvilken farge passer best?</InputLabel>
-            <ColorSelect onColorSelect={setColor} />
-          </Grid>
-          <Grid item xs={12}>
-            <InputLabel htmlFor="brand">Merke</InputLabel>
-            <TextField
-              className={styles.textfield}
-              type="text"
-              helperText="For eksempel Samsung, Stormberg, Patagonia"
-              value={brand}
-              onChange={(event) => setBrand(event.target.value)}
-              variant="standard"
-              id="brand"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <InputLabel htmlFor="description">Kjennetegn</InputLabel>
-            <TextField
-              name="description"
-              multiline={true}
-              className={styles.textfield}
-              type="text"
-              helperText="Er det noe unikt med gjenstanden din?"
-              value={description}
-              onChange={(event) => setDescription(event.target.value)}
-              variant="standard"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <div className={styles.button}>
-              <NextBtn onClick={onSubmit} />
-            </div>
-          </Grid>
+          <Grow in>
+            <Grid item xs={12}>
+              <InputLabel htmlFor="color">
+                Hvilken farge passer best?
+              </InputLabel>
+              <ColorSelect onColorSelect={setColor} />
+            </Grid>
+          </Grow>
+
+          <Grow in>
+            <Grid item xs={12}>
+              <InputLabel htmlFor="brand">Merke</InputLabel>
+              <TextField
+                className={styles.textfield}
+                type="text"
+                helperText="For eksempel Samsung, Stormberg, Patagonia"
+                value={brand}
+                onChange={(event) => setBrand(event.target.value)}
+                variant="standard"
+                id="brand"
+              />
+            </Grid>
+          </Grow>
+          <Grow in>
+            <Grid item xs={12}>
+              <InputLabel htmlFor="description">Kjennetegn</InputLabel>
+              <TextField
+                name="description"
+                multiline={true}
+                className={styles.textfield}
+                type="text"
+                helperText="Er det noe unikt med gjenstanden din?"
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+                variant="standard"
+              />
+            </Grid>
+          </Grow>
+          <Zoom in>
+            <Grid item xs={12}>
+              <div className={styles.button}>
+                <NextBtn onClick={onSubmit} />
+              </div>
+            </Grid>
+          </Zoom>
         </Grid>
       </Box>
     </div>

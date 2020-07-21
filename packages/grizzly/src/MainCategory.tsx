@@ -4,7 +4,7 @@ import Box from "@material-ui/core/Box";
 import { Helmet } from "react-helmet-async";
 import Categories from "./components/Categories";
 import Category from "./components/Category";
-import { Slide } from "@material-ui/core";
+import { Grow, Slide } from "@material-ui/core";
 
 type Props = {
   onCategorySelect: (category: string) => void;
@@ -27,22 +27,23 @@ function MainCategory(props: Props) {
           Er du usikker kan du velge <i>annet</i>.
         </p>
       </Box>
-
-      <Box mt={4}>
-        <Categories>
-          {catData.map((mainCat) => {
-            return (
-              <Category
-                key={mainCat.name}
-                title={mainCat.name}
-                description={mainCat.description}
-                onClick={() => props.onCategorySelect(mainCat.name)}
-                icon={mainCat.icon}
-              />
-            );
-          })}
-        </Categories>
-      </Box>
+      <Grow in>
+        <Box mt={4}>
+          <Categories>
+            {catData.map((mainCat) => {
+              return (
+                <Category
+                  key={mainCat.name}
+                  title={mainCat.name}
+                  description={mainCat.description}
+                  onClick={() => props.onCategorySelect(mainCat.name)}
+                  icon={mainCat.icon}
+                />
+              );
+            })}
+          </Categories>
+        </Box>
+      </Grow>
     </div>
   );
 }

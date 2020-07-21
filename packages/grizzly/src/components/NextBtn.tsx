@@ -26,7 +26,10 @@ const NextBtn: React.FC<Props> = (props) => {
 
   return (
     <Button
-      onClick={props.onClick}
+      onClick={(evt) => {
+        evt.preventDefault();
+        props.onClick();
+      }}
       variant="contained"
       type="submit"
       className={style.button}

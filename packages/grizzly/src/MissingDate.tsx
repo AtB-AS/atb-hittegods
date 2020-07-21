@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid } from "@material-ui/core";
+import { Grid, Grow } from "@material-ui/core";
 
 import Button from "@material-ui/core/Button";
 
@@ -65,47 +65,59 @@ function MissingDate(props: Props) {
       </Box>
       <form noValidate>
         <Grid container spacing={3} justify="space-between">
-          <Grid item xs={6}>
-            <Box mt={3}>
-              <Button variant="outlined" type="submit" onClick={onSubmitToday}>
-                I dag
-              </Button>
-            </Box>
-          </Grid>
-          <Grid item xs={6}>
-            <Box mt={3}>
-              <Button
-                variant="outlined"
-                type="submit"
-                onClick={onSubmitYesterday}
-              >
-                I går
-              </Button>
-            </Box>
-          </Grid>
+          <Grow in>
+            <Grid item xs={6}>
+              <Box mt={3}>
+                <Button
+                  variant="outlined"
+                  type="button"
+                  onClick={onSubmitToday}
+                >
+                  I dag
+                </Button>
+              </Box>
+            </Grid>
+          </Grow>
+          <Grow in>
+            <Grid item xs={6}>
+              <Box mt={3}>
+                <Button
+                  variant="outlined"
+                  type="button"
+                  onClick={onSubmitYesterday}
+                >
+                  I går
+                </Button>
+              </Box>
+            </Grid>
+          </Grow>
 
-          <Grid item xs={12}>
-            <InputLabel htmlFor="line">Eller velg dato:</InputLabel>
-            <TextField
-              placeholder="dd.mm.åååå"
-              type="date"
-              className={classes.textField}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={date}
-              inputProps={{
-                min: ((d) => new Date(d.setDate(d.getDate() - 90)))(new Date())
-                  .toJSON()
-                  .split("T")[0],
-                max: new Date().toJSON().split("T")[0],
-              }}
-              onChange={(event) => {
-                setDate(event.target.value);
-                setStatus(true);
-              }}
-            />
-          </Grid>
+          <Grow in>
+            <Grid item xs={12}>
+              <InputLabel htmlFor="line">Eller velg dato:</InputLabel>
+              <TextField
+                placeholder="dd.mm.åååå"
+                type="date"
+                className={classes.textField}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={date}
+                inputProps={{
+                  min: ((d) => new Date(d.setDate(d.getDate() - 90)))(
+                    new Date()
+                  )
+                    .toJSON()
+                    .split("T")[0],
+                  max: new Date().toJSON().split("T")[0],
+                }}
+                onChange={(event) => {
+                  setDate(event.target.value);
+                  setStatus(true);
+                }}
+              />
+            </Grid>
+          </Grow>
 
           {status && (
             <Zoom in>

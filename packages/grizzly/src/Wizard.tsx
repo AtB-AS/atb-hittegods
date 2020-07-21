@@ -140,35 +140,41 @@ export default function Wizard() {
 
   function onCategorySelect(cat: string) {
     setCategory(cat);
-    if (cat === "Annet") {
-      setWizardDetailsStep(WIZARD_DETAILS_STEP.CHARACTERISTICS);
-      setSubCategory("Annet");
-      addToBrowserHistory({
-        activeStep: WIZARD_STEP.DETAILS,
-        detailsStep: WIZARD_DETAILS_STEP.CHARACTERISTICS,
-      });
-    } else {
-      addToBrowserHistory({
-        activeStep: WIZARD_STEP.DETAILS,
-        detailsStep: WIZARD_DETAILS_STEP.SUB_CATEGORY,
-      });
-      setWizardDetailsStep(WIZARD_DETAILS_STEP.SUB_CATEGORY);
-    }
+    setTimeout(() => {
+      if (cat === "Annet") {
+        setWizardDetailsStep(WIZARD_DETAILS_STEP.CHARACTERISTICS);
+        setSubCategory("Annet");
+        addToBrowserHistory({
+          activeStep: WIZARD_STEP.DETAILS,
+          detailsStep: WIZARD_DETAILS_STEP.CHARACTERISTICS,
+        });
+      } else {
+        addToBrowserHistory({
+          activeStep: WIZARD_STEP.DETAILS,
+          detailsStep: WIZARD_DETAILS_STEP.SUB_CATEGORY,
+        });
+        setWizardDetailsStep(WIZARD_DETAILS_STEP.SUB_CATEGORY);
+      }
+    }, 100);
   }
 
   function onSubCategorySelected(subCat: string) {
     setSubCategory(subCat);
-    setWizardDetailsStep(WIZARD_DETAILS_STEP.CHARACTERISTICS);
-    addToBrowserHistory({
-      activeStep: WIZARD_STEP.DETAILS,
-      detailsStep: WIZARD_DETAILS_STEP.CHARACTERISTICS,
-    });
+    setTimeout(() => {
+      setWizardDetailsStep(WIZARD_DETAILS_STEP.CHARACTERISTICS);
+      addToBrowserHistory({
+        activeStep: WIZARD_STEP.DETAILS,
+        detailsStep: WIZARD_DETAILS_STEP.CHARACTERISTICS,
+      });
+    }, 200);
   }
 
   function onCharacteristicsDone(characteristics: Characteristics) {
     setCharacteristics(characteristics);
-    setActiveStep(activeStep + 1);
-    addToBrowserHistory({ activeStep: WIZARD_STEP.CONTACT_INFO });
+    setTimeout(() => {
+      setActiveStep(activeStep + 1);
+      addToBrowserHistory({ activeStep: WIZARD_STEP.CONTACT_INFO });
+    }, 300);
   }
 
   function setLocation(location: string) {
@@ -181,12 +187,14 @@ export default function Wizard() {
 
   function setDate(date: string) {
     setNewDate(date);
-    setActiveStep(activeStep + 1);
-    setWizardDetailsStep(WIZARD_DETAILS_STEP.MAIN_CATEGORY);
-    addToBrowserHistory({
-      activeStep: WIZARD_STEP.DETAILS,
-      detailsStep: WIZARD_DETAILS_STEP.MAIN_CATEGORY,
-    });
+    setTimeout(() => {
+      setActiveStep(activeStep + 1);
+      setWizardDetailsStep(WIZARD_DETAILS_STEP.MAIN_CATEGORY);
+      addToBrowserHistory({
+        activeStep: WIZARD_STEP.DETAILS,
+        detailsStep: WIZARD_DETAILS_STEP.MAIN_CATEGORY,
+      });
+    }, 300);
   }
 
   function setContactInfo(contInfo: ContactInfoType) {

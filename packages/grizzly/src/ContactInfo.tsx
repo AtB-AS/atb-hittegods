@@ -16,6 +16,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import InputLabel from "@material-ui/core/InputLabel";
 import BackBtn from "./components/BackBtn";
 import NextBtn from "./components/NextBtn";
+import Button from "@material-ui/core/Button";
 
 type Props = {
   onContactInfoSelect: (contactInfo: ContactInfoType) => void;
@@ -48,6 +49,10 @@ const useStyles = makeStyles((theme: Theme) =>
     rightAlign: {
       display: "flex",
       justifyContent: "flex-end",
+    },
+    button: {
+      textTransform: "lowercase",
+      fontweight: 300,
     },
   })
 );
@@ -181,15 +186,15 @@ function ContactInfo(props: Props, contactInfo: ContactInfoType) {
                 label={
                   <span>
                     Jeg godkjenner{" "}
-                    <a
-                      href=""
+                    <Button
+                      className={styles.button}
                       onClick={(event) => {
                         event.preventDefault();
                         handleClickOpen();
                       }}
                     >
                       bruksvilkårene
-                    </a>
+                    </Button>
                   </span>
                 }
               />

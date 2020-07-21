@@ -173,7 +173,10 @@ export default function Wizard() {
 
   function setLocation(location: string) {
     setLine(location);
-    setActiveStep(activeStep + 1);
+    setTimeout(() => {
+      setActiveStep(activeStep + 1);
+    }, 500);
+
     addToBrowserHistory({ activeStep: WIZARD_STEP.LOCATION });
   }
 

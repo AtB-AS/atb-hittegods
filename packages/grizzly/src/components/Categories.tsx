@@ -9,8 +9,12 @@ const useStyles = makeStyles((theme: Theme) =>
       gridTemplateColumns: "1fr",
       gridColumnGap: "20px",
       listStyle: "none",
-      margin: "0",
+      margin: "0 -16px",
       padding: "0",
+
+      [theme.breakpoints.up("sm")]: {
+        margin: "0",
+      },
     },
   })
 );

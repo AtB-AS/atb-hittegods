@@ -133,8 +133,8 @@ function ColorSelect(props: Props) {
               variant="outlined"
               style={{
                 borderColor: color.primary,
-                backgroundColor: color.primary,
-                padding: "20px",
+                background: color.primary,
+                padding: "20px 20px 16px",
                 margin: "5px",
               }}
               key={color.label}
@@ -156,8 +156,8 @@ function ColorSelect(props: Props) {
                 variant="outlined"
                 style={{
                   borderColor: color.primary,
-                  backgroundColor: color.primary,
-                  padding: "20px",
+                  background: color.primary,
+                  padding: "20px 20px 16px",
                   margin: "5px",
                 }}
                 key={color.label}

@@ -7,6 +7,7 @@ export const theme = createMuiTheme({
         borderRadius: 0,
         boxShadow: "0",
         color: "#00758D",
+        textTransform: "none",
       },
       outlined: {
         padding: "10px 16px 12px",
@@ -28,6 +29,10 @@ export const theme = createMuiTheme({
           outline: "none",
           boxShadow: "none",
         },
+        "&:focus": {
+          outline: "none",
+          boxShadow: "none",
+        },
         text: {
           color: "#00758D",
         },
@@ -37,11 +42,15 @@ export const theme = createMuiTheme({
         display: "block",
         boxShadow: "0",
         "&:hover": {
-          boxShadow: "0",
-          backgroundColor: "#00758D",
+          boxShadow: "none !important",
+          backgroundColor: "#00758D !important",
           borderBottom: "solid 3px #323A48",
         },
         "&:active": {
+          outline: "none",
+          boxShadow: "none",
+        },
+        "&:focus": {
           outline: "none",
           boxShadow: "none",
         },

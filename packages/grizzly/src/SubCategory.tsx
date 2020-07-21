@@ -4,6 +4,7 @@ import Box from "@material-ui/core/Box";
 
 import Categories from "./components/Categories";
 import Category from "./components/Category";
+import { Grow, Slide } from "@material-ui/core";
 
 type Props = {
   onSubCategorySelect: (category: string) => void;
@@ -25,25 +26,27 @@ function SubCategory(props: Props) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2 className="h4">Hvilken underkategori passer best? </h2>
+        <h2 className="h4">Hvilken kategori passer best? </h2>
         <p>
-          Er du usikker kan du velge <i>annet</i>.
+          Om du er usikker kan du velge <i>annet</i>.
         </p>
       </Box>
-      <Box mt={4}>
-        <Categories>
-          {subCatData.map((subCat) => {
-            return (
-              <Category
-                key={subCat.name}
-                title={subCat.name}
-                onClick={() => props.onSubCategorySelect(subCat.name)}
-                icon={subCat.icon}
-              />
-            );
-          })}
-        </Categories>
-      </Box>
+      <Grow in timeout={300}>
+        <Box mt={4}>
+          <Categories>
+            {subCatData.map((subCat) => {
+              return (
+                <Category
+                  key={subCat.name}
+                  title={subCat.name}
+                  onClick={() => props.onSubCategorySelect(subCat.name)}
+                  icon={subCat.icon}
+                />
+              );
+            })}
+          </Categories>
+        </Box>
+      </Grow>
     </div>
   );
 }

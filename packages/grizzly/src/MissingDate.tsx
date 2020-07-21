@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid } from "@material-ui/core";
+import { Grid, Grow } from "@material-ui/core";
 
 import Button from "@material-ui/core/Button";
 
@@ -7,8 +7,8 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import { Box } from "@material-ui/core";
 import NextBtn from "./components/NextBtn";
-import BackBtn from "./components/BackBtn";
 import InputLabel from "@material-ui/core/InputLabel";
+import Zoom from "@material-ui/core/Zoom";
 
 type Props = {
   onDateSelect: (date: string) => void;
@@ -29,6 +29,10 @@ function MissingDate(props: Props) {
       button: {
         color: theme.palette.secondary.main,
       },
+      rightAlign: {
+        display: "flex",
+        justifyContent: "flex-end",
+      },
     })
   );
   const classes = useStyles();
@@ -37,7 +41,6 @@ function MissingDate(props: Props) {
     let date: string;
     // @ts-ignore
     date = new Date().toJSON().split("T")[0];
-    console.log(date);
     props.onDateSelect(date);
   }
 
@@ -59,54 +62,75 @@ function MissingDate(props: Props) {
         <h2 className="h4">Hvilken dag var det?</h2>
         <p>Er du usikker, velg den du tror er nærmest.</p>
       </Box>
-      <form noValidate>
+      <form
+        onSubmit={(evt) => {
+          evt.preventDefault();
+          onSubmitDatepicker();
+        }}
+      >
         <Grid container spacing={3} justify="space-between">
-          <Grid item xs={6}>
-            <Box mt={3}>
-              <Button variant="outlined" type="submit" onClick={onSubmitToday}>
-                I dag
-              </Button>
-            </Box>
-          </Grid>
-          <Grid item xs={6}>
-            <Box mt={3}>
-              <Button
-                variant="outlined"
-                type="submit"
-                onClick={onSubmitYesterday}
-              >
-                I går
-              </Button>
-            </Box>
-          </Grid>
+          <Grow in timeout={300}>
+            <Grid item xs={6}>
+              <Box mt={3}>
+                <Button
+                  variant="outlined"
+                  type="button"
+                  onClick={onSubmitToday}
+                >
+                  I dag
+                </Button>
+              </Box>
+            </Grid>
+          </Grow>
+          <Grow in timeout={400}>
+            <Grid item xs={6}>
+              <Box mt={3}>
+                <Button
+                  variant="outlined"
+                  type="button"
+                  onClick={onSubmitYesterday}
+                >
+                  I går
+                </Button>
+              </Box>
+            </Grid>
+          </Grow>
 
-          <Grid item xs={12}>
-            <InputLabel htmlFor="line">Eller velg dato:</InputLabel>
-            <TextField
-              placeholder="dd.mm.2020"
-              type="date"
-              className={classes.textField}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={date}
-              inputProps={{
-                min: ((d) => new Date(d.setDate(d.getDate() - 90)))(new Date())
-                  .toJSON()
-                  .split("T")[0],
-                max: new Date().toJSON().split("T")[0],
-              }}
-              onChange={(event) => {
-                setDate(event.target.value);
-                setStatus(true);
-              }}
-            />
-          </Grid>
+          <Grow in timeout={600}>
+            <Grid item xs={12}>
+              <InputLabel htmlFor="line">Velg dato</InputLabel>
+              <TextField
+                placeholder="dd.mm.åååå"
+                type="date"
+                className={classes.textField}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={date}
+                inputProps={{
+                  min: ((d) => new Date(d.setDate(d.getDate() - 90)))(
+                    new Date()
+                  )
+                    .toJSON()
+                    .split("T")[0],
+                  max: new Date().toJSON().split("T")[0],
+                }}
+                onChange={(event) => {
+                  setDate(event.target.value);
+                  setStatus(true);
+                }}
+              />
+            </Grid>
+          </Grow>
 
           {status && (
-            <Grid item>
-              <NextBtn onClick={onSubmitDatepicker} />
-            </Grid>
+            <Zoom in>
+              <Grid item xs={12}>
+                <Box className={classes.rightAlign}>
+                  <NextBtn />
+                </Box>
+              </Grid>
+            </Zoom>
           )}
         </Grid>
       </form>

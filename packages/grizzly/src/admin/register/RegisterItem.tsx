@@ -165,7 +165,9 @@ function RegisterFound(props: Props) {
         <Link to={`${props.pathToComp}/${itemIdRegistered}`}>
           <Button>Gå til registrert gjenstand</Button>
         </Link>
-        <Button>Registrer ny gjenstand</Button>
+        <Button href={`${props.pathToComp}` + "/registrer"}>
+          Registrer ny gjenstand
+        </Button>
       </div>
     );
   }

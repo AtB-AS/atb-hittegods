@@ -70,6 +70,7 @@ function RegisterFound(props: Props) {
   const [error, setError] = useState(false);
   const [lines, setLines] = useState<LineObj[]>([]);
   const [itemIdRegistered, setItemIdRegistered] = useState(false);
+  const [printStatus, setPrintStatus] = useState(false);
 
   const classes = useStyles();
   const catData = categoryData;
@@ -125,18 +126,26 @@ function RegisterFound(props: Props) {
       .then((regData) => {
         setItemIdRegistered(regData.data.foundid);
         console.log("before print")
-        return printLabel(payload)
+        console.log(payload)
+        return regData
       })
-        .then((prinStatus) => {
-          console.log("prinstatus", prinStatus)
+        .then((regData) => {
+          console.log("regData : ", regData)
+          const status = printLabel(payload,regData.data.foundid)
+          return status
+        }).then((status)=>{
+          console.log("print status: ",status)
+          if(status==="print ok"){
+            setPrintStatus(true)
+          }
         })
-      .catch(() => {
+      .catch((e) => {
+        console.log("error:",e)
         setError(true);
-      }).finally(()=>{
-          console.log("Completed")});
+      })
   };
 
-  function getSubCatData(mainCat: string): string[] {
+  const getSubCatData = (mainCat: string): string[] => {
     if (mainCat) {
       return categoryData
         .find((mainCatName) => mainCatName.name === mainCat)!
@@ -152,6 +161,7 @@ function RegisterFound(props: Props) {
     return (
       <div>
         <h1>Gjenstand er nå registrert</h1>
+        <h2>{printStatus ?  "Lapp printet ut" :"Noe gikk galt, lapp ble ikke printet ut.\nEr printeren plugget i med USB og strøm med rikitg driver installert?"  }</h2>
         <Link to={`${props.pathToComp}/${itemIdRegistered}`}>
           <Button>Gå til registrert gjenstand</Button>
         </Link>
@@ -159,6 +169,7 @@ function RegisterFound(props: Props) {
       </div>
     );
   }
+
 
   return (
     <Grid container>

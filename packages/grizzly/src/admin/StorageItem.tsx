@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid } from "@material-ui/core";
+import {Box, Button, Grid} from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
 import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
+import {printLabel} from "../printer/printer";
+import PrintButton from "./printButton";
 
 const useStyles = makeStyles({
   root: {
@@ -53,8 +55,10 @@ function StorageItem(props: Props) {
   const [error, setError] = useState(false);
   const styles = useStyles();
   const [notFound, setNotFound] = useState<string | undefined>(undefined);
+  const [printerError,setPrinterError] = useState("")
 
   useEffect(() => {
+    setPrinterError("")
     setLoading(true);
     setNotFound(undefined);
     fetch("/api/admin/found/" + props.match.params.id)
@@ -85,6 +89,11 @@ function StorageItem(props: Props) {
         }
       });
   }, [props.match.params.id]);
+
+  function onClickedPrintButton(errorMessage:string){
+    setPrinterError(errorMessage)
+  }
+
 
   function ContactInfo() {
     if (item?.name != "" || item?.phone != "" || item?.email != "") {
@@ -133,7 +142,7 @@ function StorageItem(props: Props) {
               {item?.subcategory} - {item?.brand}
             </h2>
           </div>
-          <Box >
+          <Box>
             <Grid container>
               <Grid item md={12}>
                 <dt>Full beskrivelse:</dt>
@@ -161,6 +170,22 @@ function StorageItem(props: Props) {
           </Box>
           <h3 className="h4">Kontaktinfo:</h3>
           <ContactInfo/>
+          <Box mt={2} >
+            <Grid container spacing={1}>
+              <Grid item md={12}>
+                <PrintButton setErrorMessage={onClickedPrintButton}
+                             brand={item?.brand}
+                             description={item?.description}
+                             line={item?.line}
+                             id={item?.id}
+                             subCategory={item?.subcategory}/>
+              </Grid>
+              <Grid item md={12}>
+                <h6 style={{color:"red", fontSize:"16"}}>{printerError}</h6>
+              </Grid>
+            </Grid>
+          </Box>
+
         </Box>
       </div>
     </DataLoadingContainer>

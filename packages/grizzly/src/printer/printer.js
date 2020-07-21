@@ -1,40 +1,63 @@
 /* global dymo*/
 import {labelXml} from "./labelXml";
+import moment from "moment";
+import {PrinterNotConnectedError, PrinterNotInstalledError} from "../admin/Errors";
 
-export function printLabel(payload) {
+const printersConnected = (printers) => {
+    for (let i=0;i<printers.length;i++){
+        if(printers[i].isConnected){
+            return true;
+        }
+    }
+    return false;
+}
 
-    return new Promise((resolve,reject) => {
+export const printLabel = (payload,id) => {
 
+    return new Promise((resolve, reject) => {
         dymo.label.framework.trace = 1; //true
         dymo.label.framework.init(() => {
-            console.log("init printers")
-            var printers = dymo.label.framework.getPrinters();
-            if (printers.length == 0)
-                throw "No DYMO printers are installed. Install DYMO printers.";
-            dymo.label.framework.getPrintersAsync().then(function(printers){
+            let printers = dymo.label.framework.getPrinters();
+            console.log("Number of printers:", printers.length)
+
+            dymo.label.framework.getPrintersAsync().then(function (printers) {
+
+                if (printers.length === 0){
+                    //throw "No DYMO printers are installed. Install DYMO printers.";
+                    reject(new PrinterNotInstalledError("No DYMO printers installed"));
+                }
+
+                else if (!printersConnected(printers)) {
+                    console.log("No DYMO printers connected")
+                    //throw "No DYMO printers connected, plug it in and connect with USB"
+                    reject(new PrinterNotConnectedError("No DYMO printers connected"));
+                }
+
+                else {
+
                 // Successful result, printers variable has a list of all supported by the DYMO Label Framework
                 console.log(printers);
-            }).thenCatch(function(error){
+
+                var label = dymo.label.framework.openLabelXml(labelXml);
+
+                label.setObjectText("HEADER", `#${id}  ${payload.subCategory} - ${payload.brand}`);
+                label.setObjectText("LINE", `Linje: ${payload.line}`);
+                label.setObjectText("DATE", moment().format("DD.MM.yyyy"));
+                label.setObjectText("DESCRIPTION", payload.description);
+
+                label.print(printers[0].name); // This is the NAME of the printer which i found
+
+                resolve("print ok")
+                //var printers = dymo.label.framework.getPrinters();
+            }
+            }
+
+            ).thenCatch(function (error) {
+                reject(error)
                 console.log("error", error);
             });
-        });
-
-
-        var label = dymo.label.framework.openLabelXml(labelXml);
-
-        console.log("read xml file")
-        label.setObjectText("HEADER", 'Underkategori - Merke #ID');
-        label.setObjectText("LINE", 'Linje 1');
-        label.setObjectText("DATE", '20.07.2020');
-        label.setObjectText("DESCRIPTION", 'Veldig fin ting, ville tatt med hjem hvis jg var kriminell');
-        console.log("Set dynamic variables")
-        label.print("DYMO LabelWriter 450"); // This is the NAME of the printer which i found
-        console.log("atempted to print")
-        resolve("print ok")
-        //var printers = dymo.label.framework.getPrinters();
-        console.log("function called")
+        })
     })
-
 
 
 }

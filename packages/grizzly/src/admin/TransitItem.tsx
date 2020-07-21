@@ -5,6 +5,7 @@ import moment from "moment";
 import { useHistory } from "react-router";
 import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
+import PrintButton from "./printButton";
 
 const useStyles = makeStyles({
   root: {
@@ -56,8 +57,10 @@ function TransitItem(props: Props) {
   const [notFound, setNotFound] = useState<string | undefined>(undefined);
   const [edit, setEdit] = useState(false);
   const [editValue, setEditValue] = useState("");
+  const [printerError,setPrinterError] = useState("")
 
   useEffect(() => {
+    setPrinterError("")
     setLoading(true);
     setNotFound(undefined);
     fetch("/api/admin/found/" + props.match.params.id)
@@ -131,6 +134,10 @@ function TransitItem(props: Props) {
         });
     }
   };
+
+  function onClickedPrintButton(errorMessage:string){
+    setPrinterError(errorMessage)
+  }
 
   const editClickHandler = () => {
     if (edit) {
@@ -211,7 +218,8 @@ function TransitItem(props: Props) {
   } else {
     description = <p>{item?.description}</p>;
     buttons = (
-      <Grid item justify="space-between">
+      <Grid container>
+        <Grid item md={4}>
         <Button
           variant="contained"
           color="primary"
@@ -222,16 +230,30 @@ function TransitItem(props: Props) {
         >
           Rediger
         </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          className="storageButton"
-          onClick={(event) => {
-            storageClickHandler();
-          }}
-        >
-          Legg til lager
-        </Button>
+        </Grid>
+        <Grid item md={4}>
+          <Button
+            variant="contained"
+            color="primary"
+            className="storageButton"
+            onClick={(event) => {
+              storageClickHandler();
+            }}
+          >
+            Legg til lager
+          </Button>
+        </Grid>
+        <Grid item md={4}>
+          <PrintButton setErrorMessage={onClickedPrintButton}
+                       brand={item?.brand}
+                       description={item?.description}
+                       line={item?.line}
+                       id={item?.id}
+                       subCategory={item?.subcategory}/>
+        </Grid>
+        <Grid item md={12}>
+          <h6 style={{color:"red", fontSize:"16"}}>{printerError}</h6>
+        </Grid>
       </Grid>
     );
   }
@@ -312,7 +334,10 @@ function TransitItem(props: Props) {
           </Box>
           <h3 className="h4">Kontaktinfo:</h3>
           <ContactInfo />
-          <Grid>{buttons}</Grid>
+            <Box mt={2}>
+              {buttons}
+            </Box>
+
         </Box>
       </div>
     </DataLoadingContainer>

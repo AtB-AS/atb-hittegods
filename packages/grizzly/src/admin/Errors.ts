@@ -6,3 +6,17 @@ export class HTTPError extends Error {
     this.name = "HTTPError";
   }
 }
+
+export class PrinterNotInstalledError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name="PrinterNotInstalledError";
+  }
+}
+
+export class PrinterNotConnectedError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name="PrinterNotConnectedError";
+  }
+}

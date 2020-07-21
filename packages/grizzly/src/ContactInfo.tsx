@@ -172,7 +172,8 @@ function ContactInfo(props: Props, contactInfo: ContactInfoType) {
                   <Checkbox
                     name="terms"
                     inputRef={register({
-                      required: "Denne må være krysset av",
+                      required:
+                        "Du må godkjenne våre bruksvilkår for å sende inn ditt skjema",
                     })}
                   />
                 }

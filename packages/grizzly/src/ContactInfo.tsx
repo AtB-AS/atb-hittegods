@@ -114,6 +114,27 @@ function ContactInfo(props: Props, contactInfo: ContactInfoType) {
               })}
             />
           </Grid>
+
+          <Grid item xs={12}>
+            <InputLabel htmlFor="email">E-post</InputLabel>
+            <TextField
+              className={styles.textfield}
+              autoComplete="email"
+              type="text"
+              name="email"
+              id="email"
+              defaultValue={props.email}
+              helperText="Vil vil sende deg epost om vi finner noe"
+              //helperText={errors.email?.message}
+              error={!!errors.email}
+              variant="standard"
+              inputRef={register({
+                required: "Dette feltet må du fylle inn",
+              })}
+              inputProps={{}}
+              //TODO InputProps not working -> https://material-ui.com/components/text-fields/ or https://codesandbox.io/s/6v444wnvp3?file=/src/FormattedInput.js
+            />
+          </Grid>
           <Grid item xs={12}>
             <InputLabel htmlFor="phoneNumber">Telefonnummer</InputLabel>
 
@@ -138,26 +159,6 @@ function ContactInfo(props: Props, contactInfo: ContactInfoType) {
                   message: "Telefonnummeret er for langt",
                 },
               })}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <InputLabel htmlFor="email">E-post</InputLabel>
-            <TextField
-              className={styles.textfield}
-              autoComplete="email"
-              type="text"
-              name="email"
-              id="email"
-              defaultValue={props.email}
-              helperText="Vil vil sende deg epost om vi finner noe"
-              //helperText={errors.email?.message}
-              error={!!errors.email}
-              variant="standard"
-              inputRef={register({
-                required: "Dette feltet må du fylle inn",
-              })}
-              inputProps={{}}
-              //TODO InputProps not working -> https://material-ui.com/components/text-fields/ or https://codesandbox.io/s/6v444wnvp3?file=/src/FormattedInput.js
             />
           </Grid>
           <Grid item>

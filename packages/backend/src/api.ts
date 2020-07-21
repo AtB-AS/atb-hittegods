@@ -22,6 +22,7 @@ import {
 } from "./queries";
 import https = require("https");
 import { dbError, sendEmail } from "./util";
+import { confirmationEmail } from "./emailText";
 
 export default async (
   { app }: { app: express.Application },
@@ -133,15 +134,19 @@ export default async (
                   .on("error", (error) => {
                     console.log("matchmaker error : " + error);
                   });
-                //TODO send confirmation email or sms
-                //TODO determine possible errors
                 if (body.email) {
                   console.log("Sending email");
                   sendEmail(
                     body.email,
-                    "subject",
-                    "This is a text email",
-                    "<p>This is a test email</p>"
+                    "AtB hittegods",
+                    confirmationEmail(
+                      body.name,
+                      body.date,
+                      body.line,
+                      body.color,
+                      body.brand,
+                      body.description
+                    )
                   );
                 }
               })

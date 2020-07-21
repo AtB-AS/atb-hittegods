@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, Button, Theme, createStyles } from "@material-ui/core";
+import { Box, Grid, Button } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import InputLabel from "@material-ui/core/InputLabel";
 import DataLoadingContainer from "./DataLoadingContainer";
-import NextBtn from "./components/NextBtn";
-import { makeStyles } from "@material-ui/core/styles";
 
 type Props = {
   onLocationSelect: (location: string) => void;
@@ -18,22 +16,12 @@ type LineObj = {
   description: string;
 };
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    rightAlign: {
-      display: "flex",
-      justifyContent: "flex-end",
-    },
-  })
-);
-
 function Location(props: Props) {
-  const { register, handleSubmit } = useForm<Props>();
+  const { register, handleSubmit, watch, errors } = useForm<Props>();
   const [lines, setLines] = useState<LineObj[]>([]);
   const [error, setError] = useState(false);
   const [isloading, setLoading] = useState(true);
   const [line, setLine] = useState(props.line);
-  const styles = useStyles();
 
   useEffect(() => {
     setLoading(true);
@@ -52,7 +40,6 @@ function Location(props: Props) {
 
   const onSubmit: SubmitHandler<Props> = (data) => {
     console.log(` on submit line`);
-
     props.onLocationSelect(line);
     console.log(line);
   };
@@ -78,7 +65,7 @@ function Location(props: Props) {
                   getOptionLabel={(item) => item.line + " " + item.description}
                   defaultValue={lines.find((l) => l.line === line)}
                   onChange={(event, value) => {
-                    console.log("Sett verdi onchange", value?.line);
+                    console.log("Sett veri onchange", value?.line);
                     if (value?.line) {
                       // @ts-ignore
 

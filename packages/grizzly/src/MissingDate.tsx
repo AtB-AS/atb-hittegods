@@ -7,6 +7,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import { Box } from "@material-ui/core";
 import NextBtn from "./components/NextBtn";
+import BackBtn from "./components/BackBtn";
 import InputLabel from "@material-ui/core/InputLabel";
 
 type Props = {
@@ -27,10 +28,6 @@ function MissingDate(props: Props) {
       },
       button: {
         color: theme.palette.secondary.main,
-      },
-      rightAlign: {
-        display: "flex",
-        justifyContent: "flex-end",
       },
     })
   );
@@ -107,10 +104,8 @@ function MissingDate(props: Props) {
           </Grid>
 
           {status && (
-            <Grid item xs={12}>
-              <Box className={classes.rightAlign}>
-                <NextBtn onClick={onSubmitDatepicker} />
-              </Box>
+            <Grid item>
+              <NextBtn onClick={onSubmitDatepicker} />
             </Grid>
           )}
         </Grid>

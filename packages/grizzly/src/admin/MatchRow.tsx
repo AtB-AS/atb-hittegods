@@ -49,34 +49,39 @@ const MatchRow = (props: Props) => {
     return formattedDay + "." + formattedMonth;
   }
 
-  function formatDescription(desc: string) {
-    if (desc.length > 50) {
-      return desc.slice(0, 50) + "...";
-    } else {
-      return desc;
+  function formatDescription(desc:string) {
+    if(desc.length>50){
+      return desc.slice(0,50)+"..."
+    }
+    else{
+      return desc
     }
   }
 
+
   return (
-    <TableBody>
-      <TableRow hover onClick={(event) => clickedRowItem(props.foundItem.id)}>
-        <TableCell>{props.foundItem.id}</TableCell>
-        <TableCell>{props.foundItem.subcategory}</TableCell>
-        <TableCell>{props.foundItem.brand}</TableCell>
-        <TableCell>{formatDescription(props.foundItem.description)}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell colSpan={4}>
-          <Collapse in={isClicked} timeout="auto" unmountOnExit>
-            <MatchDetails
-              foundItem={props.foundItem}
-              removeItem={props.removeItem}
-              setLoading={props.setLoading}
-            />
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </TableBody>
+      <TableBody>
+        <TableRow hover onClick={(event) => clickedRowItem(props.foundItem.id)}>
+          <TableCell>{props.foundItem.id}</TableCell>
+          <TableCell>{props.foundItem.subcategory}</TableCell>
+          <TableCell>{props.foundItem.brand}</TableCell>
+          <TableCell>{formatDescription(props.foundItem.description)}</TableCell>
+
+        </TableRow>
+
+
+        <TableRow>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
+            <Collapse in={isClicked} timeout="auto" unmountOnExit>
+              <MatchDetails
+                  foundItem={props.foundItem}
+                  removeItem={props.removeItem}
+                  setLoading={props.setLoading}
+              />
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      </TableBody>
   );
 };
 

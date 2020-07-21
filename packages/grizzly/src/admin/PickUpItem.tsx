@@ -32,7 +32,7 @@ type Props = {
 };
 
 type ConfirmedMatch = {
-  matchid: number;
+  id: number;
   lostid: number;
   foundid: number;
 };
@@ -63,62 +63,7 @@ function PickUpItem(props: Props) {
   const styles = useStyles();
   const history = useHistory();
   const [notFound, setNotFound] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    setLoading(true);
-    setNotFound(undefined);
-    getMatches()
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error();
-        }
-      })
-      .then((jsonData) => {
-        const lostid = lostIdFromFoundId(
-          parseInt(props.match.params.id),
-          jsonData.data.matches
-        );
-        const promises = [];
-        promises.push(fetch("/api/admin/found/" + props.match.params.id));
-        if (lostid !== undefined) {
-          promises.push(getLost(lostid));
-        }
-        Promise.all(promises)
-          .then((data) => {
-            const foundResponse = data[0];
-            if (foundResponse.ok) {
-              foundResponse
-                .json()
-                .then((jsonData) => {
-                  setItem(jsonData.data);
-                  setLoading(false);
-                })
-                .catch();
-            }
-            if (data.length === 2) {
-              const lostResponse = data[1];
-              if (lostResponse.ok) {
-                lostResponse
-                  .json()
-                  .then((jsonData) => {
-                    setHenvendelse(jsonData.data);
-                  })
-                  .catch((e) => {
-                    setLoading(false);
-                  });
-              }
-            } else {
-              setHenvendelse(null);
-            }
-          })
-          .catch((e) => {
-            setLoading(false);
-          });
-      })
-      .catch((e) => setLoading(false));
-  }, [props.match.params.id]);
+  const [matchId, setMatchId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     setLoading(true);
@@ -135,6 +80,12 @@ function PickUpItem(props: Props) {
         const lostid = lostIdFromFoundId(
           parseInt(props.match.params.id),
           jsonData.data.matches
+        );
+        setMatchId(
+          matchIdFromFoundId(
+            parseInt(props.match.params.id),
+            jsonData.data.matches
+          )
         );
         const responsePromises = [];
         responsePromises.push(
@@ -155,8 +106,6 @@ function PickUpItem(props: Props) {
               setLoading(false);
             })
             .catch();
-        } else {
-          throw new HTTPError("HTTPError", foundResponse.status);
         }
         if (responses.length === 2) {
           const lostResponse = responses[1];
@@ -167,7 +116,7 @@ function PickUpItem(props: Props) {
                 setHenvendelse(jsonData.data);
               })
               .catch((e) => {
-                setHenvendelse(null);
+                setLoading(false);
               });
           }
         } else {
@@ -176,9 +125,9 @@ function PickUpItem(props: Props) {
       })
       .catch((e) => {
         setLoading(false);
-        if (e.name === "HTTPError") {
+        if ((e.name = "HTTPError")) {
           if (e.status === 404) {
-            setNotFound("Vi finner ikke denne gjenstanden");
+            setNotFound("Finner ikke gjenstanden");
           } else {
             setError(true);
           }
@@ -189,7 +138,7 @@ function PickUpItem(props: Props) {
   }, [props.match.params.id]);
 
   const getMatches = () => {
-    return fetch("/api/admin/match");
+    return fetch("/api/admin/match").catch();
   };
 
   const lostIdFromFoundId = (
@@ -204,8 +153,26 @@ function PickUpItem(props: Props) {
     }
   };
 
+  const matchIdFromFoundId = (
+    foundid: number,
+    matches: ConfirmedMatch[]
+  ): number | undefined => {
+    const match = matches.find((match) => match.foundid === foundid);
+    if (match !== undefined) {
+      return match.id;
+    } else {
+      return undefined;
+    }
+  };
+
   const getLost = (id: number): Promise<Response> => {
     return fetch("/api/admin/lost/" + id);
+  };
+
+  const deleteMatch = (id: number): Promise<Response> => {
+    return fetch("/api/admin/match/" + id, {
+      method: "delete",
+    });
   };
 
   const deliverClickHandler = () => {
@@ -247,12 +214,15 @@ function PickUpItem(props: Props) {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-      });
+      }).catch();
     }
   };
 
   const returnToStorageClickHandler = () => {
     setLoading(true);
+    if (matchId !== undefined) {
+      deleteMatch(matchId).catch();
+    }
     fetch("/api/admin/found/" + props.match.params.id, {
       body: JSON.stringify({
         status: "Funnet",
@@ -280,7 +250,7 @@ function PickUpItem(props: Props) {
           fetch(
             "https://hittegods-matchmaker.azurewebsites.net/found/" +
               props.match.params.id
-          );
+          ).catch();
         }
       })
       .catch((e) => {
@@ -299,23 +269,11 @@ function PickUpItem(props: Props) {
           fetch(
             "https://hittegods-matchmaker.azurewebsites.net/lost/" +
               henvendelse.id
-          );
+          ).catch();
         }
       });
     }
   };
-
-  if (isLoading) {
-    return (
-      <div className={styles.loading}>
-        <CircularProgress />
-      </div>
-    );
-  }
-
-  if (notFound) {
-    return <p>Beklager denne gjenstaden finnes ikke</p>;
-  }
 
   let henvendelseComponent;
   if (henvendelse != null) {

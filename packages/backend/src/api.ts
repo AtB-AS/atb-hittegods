@@ -20,7 +20,7 @@ import {
   updateStatusUserDelete,
   updateLost,
 } from "./queries";
-import https = require("https");
+import fetch from "node-fetch";
 import { dbError, sendEmail } from "./util";
 import { confirmationEmail } from "./emailText";
 
@@ -117,21 +117,11 @@ export default async (
                   "https://hittegods-matchmaker.azurewebsites.net/lost/" +
                   lostid;
                 console.log("Notify new lost to hittegods-matchmaker : " + url);
-                https
-                  .get(url, (httpsRes) => {
-                    httpsRes.setEncoding("utf8");
-                    let body = "";
-                    httpsRes.on("data", (data) => {
-                      body += data;
-                      console.log("Response from matchmaker : " + data);
-                    });
-                    httpsRes.on("end", () => {
-                      console.log("hittegods-matchmaker : " + body);
-                    });
+                fetch(url)
+                  .then((response) => {
+                    console.log("Hittegods-matchmaker: ", response.ok);
                   })
-                  .on("error", (error) => {
-                    console.log("matchmaker error : " + error);
-                  });
+                  .catch();
                 if (body.email) {
                   console.log("Sending email");
                   sendEmail(

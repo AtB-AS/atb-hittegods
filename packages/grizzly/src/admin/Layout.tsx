@@ -96,6 +96,7 @@ function Layout() {
     <div className={styles.root}>
       <header className={styles.header}>
         <h1>{getPageTitle()}</h1>
+
       </header>
       <nav className={styles.nav}>
         <ul className={styles.linkList}>

@@ -8,15 +8,15 @@ import Wizard from "./Wizard";
 
 function App() {
   return (
-    <HelmetProvider>
       <Box mb={6}>
         <Helmet>
+            <script src="http://labelwriter.com/software/dls/sdk/js/DYMO.Label.Framework.latest.js"
+                    type="text/javascript" charSet="UTF-8"></script>
           <title>Hittegods - AtB</title>
         </Helmet>
         <Header />
         <Wizard />
       </Box>
-    </HelmetProvider>
   );
 }
 

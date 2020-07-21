@@ -13,6 +13,8 @@ import { useTheme } from "@material-ui/core/styles";
 
 import RegAutoSelect from "./Select";
 import { Link } from "react-router-dom";
+import {printLabel} from "../../printer/printer";
+import {log} from "util";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -87,23 +89,33 @@ function RegisterFound(props: Props) {
       });
   }, []);
 
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = "http://labelwriter.com/software/dls/sdk/js/DYMO.Label.Framework.latest.js";
+    //For head
+    document.head.appendChild(script);
+  }, [])
+
   const { register, handleSubmit, errors } = useForm();
 
   const sendForm = () => {
+    const payload ={
+      name: name,
+      phone: tlf,
+      email: email,
+      category: mainCat,
+      subCategory: subCat,
+      color: color,
+      line: line,
+      brand: brand,
+      status: props.status,
+      description: desc,
+    };
+
     return fetch("/api/admin/found", {
       method: "post",
-      body: JSON.stringify({
-        name: name,
-        phone: tlf,
-        email: email,
-        category: mainCat,
-        subCategory: subCat,
-        color: color,
-        line: line,
-        brand: brand,
-        status: props.status,
-        description: desc,
-      }),
+      body: JSON.stringify(payload),
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -112,10 +124,16 @@ function RegisterFound(props: Props) {
       .then((response) => response.json())
       .then((regData) => {
         setItemIdRegistered(regData.data.foundid);
+        console.log("before print")
+        return printLabel(payload)
       })
+        .then((prinStatus) => {
+          console.log("prinstatus", prinStatus)
+        })
       .catch(() => {
         setError(true);
-      });
+      }).finally(()=>{
+          console.log("Completed")});
   };
 
   function getSubCatData(mainCat: string): string[] {

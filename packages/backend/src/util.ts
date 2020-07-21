@@ -50,12 +50,7 @@ export const dbError = (e: Error, res: Response): void => {
   });
 };
 
-export const sendEmail = (
-  to: string,
-  subject: string,
-  text: string,
-  html: string
-) => {
+export const sendEmail = (to: string, subject: string, text: string) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -69,7 +64,6 @@ export const sendEmail = (
     to: to,
     subject: subject,
     text: text,
-    html: html,
   };
 
   transporter.sendMail(mailOptions, function (error, info) {

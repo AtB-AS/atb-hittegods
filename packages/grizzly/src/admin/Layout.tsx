@@ -28,9 +28,8 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#00758d",
     },
     nav: {
-      gridColumn: "1/2",
-      width: "180px",
-      backgroundColor: "#e4e4e4",
+      display: "flex",
+      alignItems: "center",
     },
     main: {
       gridColumn: "2/3",
@@ -39,22 +38,22 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#f8f8f8",
     },
     linkList: {
-      margin: "60px 0 0",
+      margin: "0 0 0 20px",
       padding: 0,
       listStyle: "none",
     },
     linkListItem: {
-      display: "block",
+      display: "inline-block",
+      padding: "0 20px",
     },
     navItem: {
-      margin: "5px 0 5px 0",
-      padding: "20px 42px 20px",
-      fontSize: "18px",
+      fontSize: "20px",
       color: "#fff",
-      "&:hover, &:active, &:focus": {
-        textDecoration: "none",
-        fontWeight: "bold",
+      paddingBottom: "2px",
+      "&:hover, &:active, &.active": {
         color: "#fff",
+        textDecoration: "none",
+        borderBottom: "2px solid #fff",
       },
     },
     icon: {
@@ -89,17 +88,17 @@ function Layout() {
   return (
     <div className={styles.root}>
       <header className={styles.header}>
-        <nav>
+        <nav className={styles.nav}>
           <Logo className={styles.icon} />
-          {routes.map((route) => (
-            <NavLink
-              key={route.path}
-              className={styles.navItem}
-              to={route.path}
-            >
-              {route.title}
-            </NavLink>
-          ))}
+          <ul className={styles.linkList}>
+            {routes.map((route) => (
+              <li key={route.path} className={styles.linkListItem}>
+                <NavLink className={styles.navItem} to={route.path}>
+                  {route.title}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
         </nav>
       </header>
 

@@ -30,6 +30,8 @@ import PrimaryContent from "./layouts/PrimaryContent";
 import SecondaryContent from "./layouts/SecondaryContent";
 import SeachField from "../components/SeachField";
 import DatePickerToFrom from "../components/DatePickerToFrom";
+import Grid from "@material-ui/core/Grid";
+import PrimaryButton from "./PrimaryButton";
 
 type StorageItems = {
   id: number;
@@ -210,18 +212,29 @@ function Storage(props: Props) {
       {storageItems.length === 0 && <p>Ingen henvendelser registrert</p>}
       <Page>
         <Toolbar>
-          <Box mt={2} mb={2} className={searchClasses.box}>
-            <SeachField
-              onChange={(event) => {
-                setSearchValue(event.target.value);
-              }}
-            />
-            <DatePickerToFrom
-              onChangeFrom={(event) => setFromDate(event.target.value)}
-              onChangeTo={(event) => setToDate(event.target.value)}
-              fromDate={fromDate}
-              toDate={toDate}
-            />
+          <Box mt={2} mb={2}>
+            <Grid container className={searchClasses.box}>
+              <Grid item>
+                <SeachField
+                  onChange={(event) => {
+                    setSearchValue(event.target.value);
+                  }}
+                />
+              </Grid>
+              <Grid item>
+                <DatePickerToFrom
+                  onChangeFrom={(event) => setFromDate(event.target.value)}
+                  onChangeTo={(event) => setToDate(event.target.value)}
+                  fromDate={fromDate}
+                  toDate={toDate}
+                />
+              </Grid>
+              <Grid item>
+                <PrimaryButton href="/admin/lager/registrere">
+                  Ny gjenstand
+                </PrimaryButton>
+              </Grid>
+            </Grid>
           </Box>
         </Toolbar>
         <Content>
@@ -273,9 +286,6 @@ function Storage(props: Props) {
             </TableContainer>
           </PrimaryContent>
           <SecondaryContent>
-            <Button href="/admin/lager/registrere" variant="contained">
-              Registrer funnet gjenstand
-            </Button>
             <Route path="/admin/lager/:id" component={StorageItem} />
           </SecondaryContent>
         </Content>

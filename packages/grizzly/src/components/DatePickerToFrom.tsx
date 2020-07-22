@@ -2,6 +2,7 @@ import React from "react";
 import { Box, createStyles, InputLabel, Theme } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import Grid from "@material-ui/core/Grid";
 
 type Props = {
   onChangeFrom: (event: any) => void;
@@ -29,8 +30,8 @@ const useStyles = makeStyles((theme: Theme) =>
 function DatePickerToFrom(props: Props) {
   const classes = useStyles();
   return (
-    <Box className={classes.box}>
-      <Box className={classes.boxItem}>
+    <Grid container className={classes.box}>
+      <Grid item className={classes.boxItem}>
         <InputLabel htmlFor="fromDate">Fra dato: </InputLabel>
         <TextField
           id="fromDate"
@@ -45,8 +46,8 @@ function DatePickerToFrom(props: Props) {
           }}
           onChange={(event) => props.onChangeFrom(event)}
         />
-      </Box>
-      <Box className={classes.boxItem}>
+      </Grid>
+      <Grid item className={classes.boxItem}>
         <InputLabel htmlFor="toDate">Til dato: </InputLabel>
         <TextField
           type="date"
@@ -58,8 +59,8 @@ function DatePickerToFrom(props: Props) {
           }}
           onChange={(event) => props.onChangeTo(event)}
         />
-      </Box>
-    </Box>
+      </Grid>
+    </Grid>
   );
 }
 

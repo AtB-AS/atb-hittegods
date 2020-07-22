@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme: Theme) =>
       gridTemplateColumns: "60% 1fr",
     },
     withToolbar: {
-      height: "calc(100vh - 160px)",
+      height: "calc(100vh - 208px)",
       overflow: "scroll",
       display: "grid",
       gridTemplateColumns: "60% 1fr",

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   createStyles,
-  IconButton,
-  InputBase,
   TableContainer,
   TableSortLabel,
   Theme,
@@ -18,7 +16,6 @@ import Henvendelse from "./Henvendelse";
 import { Route } from "react-router-dom";
 import { useTableStyles } from "./styles";
 import { searchHenvendelse, HenvendelseType } from "./utils";
-import SearchIcon from "@material-ui/icons/Search";
 import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
 import Button from "@material-ui/core/Button";
@@ -47,25 +44,9 @@ type ColumnProps = {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    input: {
-      marginLeft: theme.spacing(1),
-      flex: 1,
-      width: "50%",
-    },
-    iconButton: {
-      padding: 10,
-    },
-    button: {
-      color: theme.palette.background.paper,
-      backgroundColor: theme.palette.secondary.light,
-      padding: "12px 16px 10px",
-      float: "right",
-      "&:hover": {
-        color: theme.palette.background.paper,
-      },
-    },
-    gridItem: {
-      display: "grid",
+    box: {
+      display: "flex",
+      alignItems: "flex-end",
     },
   })
 );
@@ -193,24 +174,24 @@ function Henvendelser(props: Props) {
   return (
     <DataLoadingContainer loading={isLoading} error={error}>
       <Page>
+        <h1>Henvendelser</h1>
         <Toolbar>
-          <Grid container>
-            <Grid item md={9}>
-              <Box>
+          <Box mt={2} mb={2}>
+            <Grid container className={searchClasses.box}>
+              <Grid item>
                 <SeachField
                   onChange={(event) => {
                     setSearchValue(event.target.value);
                   }}
                 />
-              </Box>
+              </Grid>
+              <Grid item>
+                <PrimaryButton href={"/"}>Ny henvendelse</PrimaryButton>
+              </Grid>
             </Grid>
-            <Grid item md={3}>
-              <PrimaryButton href={"/"} target={"_blank"}>
-                Ny henvendelse
-              </PrimaryButton>
-            </Grid>
-          </Grid>
+          </Box>
         </Toolbar>
+
         <Content>
           <PrimaryContent>
             <TableContainer className={classes.container}>

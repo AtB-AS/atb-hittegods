@@ -4,11 +4,6 @@ import { Button } from "@material-ui/core";
 import { theme } from "../components/styling";
 
 const useStyles = makeStyles({
-  imgIcon: {
-    position: "relative",
-    top: "-10px",
-  },
-
   button: {
     color: theme.palette.background.paper,
     backgroundColor: theme.palette.secondary.light,
@@ -19,7 +14,7 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = { href: string; target: string };
+type Props = { href: string; target?: string };
 
 const PrimaryButton: React.FC<Props> = (props) => {
   const style = useStyles();

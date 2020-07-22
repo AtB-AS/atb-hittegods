@@ -12,16 +12,13 @@ function ReadyToPickUp() {
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-
   const params = {
     status: "Funnet",
   };
 
   const queryString = Object.entries(params)
-      .map(([key, val]) => `${key}=${val}`)
-      .join("&");
-
-
+    .map(([key, val]) => `${key}=${val}`)
+    .join("&");
 
   useEffect(() => {
     setLoading(true);
@@ -40,7 +37,7 @@ function ReadyToPickUp() {
       .catch(() => {
         setError(true);
       });
-  });
+  }, []);
 
   if (error) {
     return <p>Noe gikk galt</p>;

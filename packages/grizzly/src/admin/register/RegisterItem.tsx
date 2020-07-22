@@ -93,7 +93,7 @@ function RegisterFound(props: Props) {
   useEffect(() => {
     const script = document.createElement("script");
     script.async = true;
-    script.src = "http://labelwriter.com/software/dls/sdk/js/DYMO.Label.Framework.latest.js";
+    script.src = `${window.location.origin}/dymosdk.js`;
     //For head
     document.head.appendChild(script);
   }, [])

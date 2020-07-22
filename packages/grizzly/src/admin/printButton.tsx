@@ -17,7 +17,7 @@ function PrintButton(props:Props) {
     useEffect(() => {
         const script = document.createElement("script");
         script.async = true;
-        script.src = "http://labelwriter.com/software/dls/sdk/js/DYMO.Label.Framework.latest.js";
+        script.src = `${window.location.origin}/dymosdk.js`;
         //For head
         document.head.appendChild(script);
     }, [])
@@ -47,7 +47,7 @@ function PrintButton(props:Props) {
                     }
                     else {
                         console.log("Unknown error")
-                        props.setErrorMessage("Printeren er koblet i og installert, men en ukjent feil har oppstått")
+                        props.setErrorMessage("En ukjent feil har oppstått")
                     }
                 })
         }

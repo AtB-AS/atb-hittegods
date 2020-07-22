@@ -315,15 +315,7 @@ function PickUpItem(props: Props) {
         <Box p={3} mb={3} className={styles.card}>
           {henvendelseComponent}
         </Box>
-        <Grid container  alignContent='center'>
-          <Grid item md={4}>
-          </Grid>
-          <Grid item md={4}>
-            Klar til utlevering:
-          </Grid>
-          <Grid item md={4}>
-          </Grid>
-        </Grid>
+            <p style={{textAlign:'center'}}>Klar til utlevering:</p>
         <Box p={3} mt={1} className={styles.card}>
           <Grid container>
             <Grid item md={12}>
@@ -332,13 +324,13 @@ function PickUpItem(props: Props) {
               </h2>
             </Grid>
 
-            <Grid item md={6}>
+            <Grid item md={8}>
               <dl>
               <dt>Dato funnet:</dt>
               <dd>{moment(item?.date).format("DD.MM.yy")}</dd>
               </dl>
             </Grid>
-            <Grid item md={6}>
+            <Grid item md={4}>
               <dt>Linje:</dt>
               <dd>{item?.line}</dd>
             </Grid>

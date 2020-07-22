@@ -95,9 +95,9 @@ select confirmedmatchid as id, lostid, foundid from confirmedmatch`;
 
 export const insertNewFound = `
 insert into found (nameonitem, emailonitem, phonenumberonitem, description, brand, date,
-lineid, colorid, catid, subcatid, statusid, orgid, findername)
+lineid, colorid, catid, subcatid, statusid, findername)
 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-$11, $12, $13)
+$11, $12)
 returning foundid`;
 
 export const updateFound = `

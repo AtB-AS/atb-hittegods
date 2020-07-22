@@ -1,15 +1,13 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { createStyles, Theme } from "@material-ui/core";
-import { NavLink, Route, Switch, useLocation } from "react-router-dom";
+import { NavLink, Route, Switch } from "react-router-dom";
 import Henvendelser from "./Henvendelser";
 import Storage from "./Storage";
 import Transit from "./Transit";
 import RegisterStorage from "./register/RegisterStorage";
 import RegisterTransit from "./register/RegisterTransit";
 import PickUp from "./PickUp";
-import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
 import Logo from "../components/icons/logo";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -26,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       display: "flex",
       color: "#fff",
-      paddingLeft: "50px",
+      paddingLeft: "20px",
       backgroundColor: "#00758d",
     },
     nav: {
@@ -87,34 +85,22 @@ const routes = [
 
 function Layout() {
   const styles = useStyles();
-  const location = useLocation();
-
-  const getPageTitle = () => {
-    const route = routes.find((route) =>
-      location.pathname.includes(route.path)
-    );
-    return route ? route.title : "Admin";
-  };
 
   return (
     <div className={styles.root}>
       <header className={styles.header}>
-        <Box>
-          <Grid container spacing={3}>
-            <nav>
-              <Logo className={styles.icon} />
-              {routes.map((route) => (
-                <NavLink
-                  key={route.path}
-                  className={styles.navItem}
-                  to={route.path}
-                >
-                  {route.title}
-                </NavLink>
-              ))}
-            </nav>
-          </Grid>
-        </Box>
+        <nav>
+          <Logo className={styles.icon} />
+          {routes.map((route) => (
+            <NavLink
+              key={route.path}
+              className={styles.navItem}
+              to={route.path}
+            >
+              {route.title}
+            </NavLink>
+          ))}
+        </nav>
       </header>
 
       <main className={styles.main}>

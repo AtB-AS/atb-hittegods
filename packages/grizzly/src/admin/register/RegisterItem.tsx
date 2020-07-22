@@ -8,10 +8,20 @@ import Button from "@material-ui/core/Button";
 import { categoryData } from "../../components/subCategoryData";
 import { useForm } from "react-hook-form";
 import { colorData } from "../../components/colorConstant";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
+
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 import RegAutoSelect from "./Select";
 import { Link } from "react-router-dom";
-import { printLabel } from "../../printer/printer";
+import { isPrinterConnected, printLabel } from "../../printer/printer";
+import { log } from "util";
+import useNotification from "../notificationCenter/useNotification";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -66,11 +76,14 @@ function RegisterFound(props: Props) {
   const [open, setOpen] = React.useState(false);
   const [error, setError] = useState(false);
   const [lines, setLines] = useState<LineObj[]>([]);
-  const [itemIdRegistered, setItemIdRegistered] = useState(false);
+  const [itemIdRegistered, setItemIdRegistered] = useState("");
   const [printStatus, setPrintStatus] = useState(false);
 
   const classes = useStyles();
   const catData = categoryData;
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const { notify } = useNotification();
 
   useEffect(() => {
     fetch("/api/line")
@@ -83,6 +96,15 @@ function RegisterFound(props: Props) {
       .catch(() => {
         setError(true);
       });
+  }, []);
+
+  useEffect(() => {
+    if (!isPrinterConnected()) {
+      notify({
+        type: "error",
+        description: "Printer ikke koblet til! Lapp blir ikke skrevet ut",
+      });
+    }
   }, []);
 
   const { register, handleSubmit, errors } = useForm();
@@ -111,6 +133,7 @@ function RegisterFound(props: Props) {
     })
       .then((response) => response.json())
       .then((regData) => {
+        console.log("test");
         setItemIdRegistered(regData.data.foundid);
         console.log("before print");
         console.log(payload);
@@ -118,7 +141,9 @@ function RegisterFound(props: Props) {
       })
       .then((regData) => {
         console.log("regData : ", regData);
+        setOpen(true);
         const status = printLabel(payload, regData.data.foundid);
+        console.log("status : " + status);
         return status;
       })
       .then((status) => {
@@ -145,25 +170,18 @@ function RegisterFound(props: Props) {
     }
   };
 
-  if (itemIdRegistered) {
-    return (
-      <div>
-        <h1>Gjenstand er nå registrert</h1>
-        <h2>
-          {printStatus
-            ? "Lapp printet ut"
-            : `Noe gikk galt, lapp ble ikke printet ut.
-            Er printeren plugget i med USB og strøm med rikitg driver installert?`}
-        </h2>
-        <Link to={`${props.pathToComp}/${itemIdRegistered}`}>
-          <Button>Gå til registrert gjenstand</Button>
-        </Link>
-        <Button href={`${props.pathToComp}/registrer`}>
-          Registrer ny gjenstand
-        </Button>
-      </div>
-    );
-  }
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleCloseSendNew = () => {
+    setOpen(false);
+    window.location.reload(false);
+  };
 
   return (
     <Grid container>
@@ -227,10 +245,6 @@ function RegisterFound(props: Props) {
             name={"line"}
             Options={lines.map((lineName) => lineName.line)}
             onChange={(value) => setLine(value ?? "")}
-            inputRef={register({
-              required: "Dette feltet må du fylle inn",
-            })}
-            errorMessage={errors.line?.message}
           />
         </Box>
 
@@ -320,6 +334,33 @@ function RegisterFound(props: Props) {
           <Button color="primary" variant="contained" type="submit">
             Registrer
           </Button>
+
+          <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
+            <DialogTitle className={classes.dialogbox}>
+              {"Gjenstanden er registrert"}
+            </DialogTitle>
+
+            <DialogActions>
+              <Button
+                onClick={handleClose}
+                type="button"
+                color="primary"
+                autoFocus
+                href={props.pathToComp}
+              >
+                Tilbake til oversiktsiden
+              </Button>
+              <Button
+                onClick={handleCloseSendNew}
+                type="button"
+                color="primary"
+                autoFocus
+                href={props.pathToComp + "/registrere"}
+              >
+                Ny registrering
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Box>
       </form>
     </Grid>

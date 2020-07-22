@@ -101,7 +101,13 @@ function Storage(props: Props) {
     fetch("/api/admin/found?" + queryString)
       .then((response) => response.json())
       .then((jsonData) => {
+        const storageData = jsonData.data.items;
         setStorageItems(jsonData.data.items);
+        if (orderBy === "desc") {
+          setStorageItems(storageData.sort(compare).reverse());
+        } else {
+          setStorageItems(storageData.sort(compare));
+        }
         setLoading(false);
       })
       .catch(() => {

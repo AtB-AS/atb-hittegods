@@ -106,6 +106,12 @@ function PickUp(props: Props) {
       })
       .then((jsonData) => {
         setStorageItems(jsonData.data.items);
+        const pickUpData = jsonData.data.items;
+        if (orderBy === "desc") {
+          setStorageItems(pickUpData.sort(compare).reverse());
+        } else {
+          setStorageItems(pickUpData.sort(compare));
+        }
         setLoading(false);
       })
       .catch(() => {

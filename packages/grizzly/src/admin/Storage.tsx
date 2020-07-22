@@ -28,6 +28,7 @@ import Page from "./layouts/Page";
 import Content from "./layouts/Content";
 import PrimaryContent from "./layouts/PrimaryContent";
 import SecondaryContent from "./layouts/SecondaryContent";
+import SeachField from "../components/SeachField";
 
 type StorageItems = {
   id: number;
@@ -219,21 +220,11 @@ function Storage(props: Props) {
       <Page>
         <Toolbar>
           <Box mt={2} mb={2} display="flex" className={searchClasses.box}>
-            <InputBase
-              className={searchClasses.input}
-              placeholder="Søk på lagerbeholdning"
+            <SeachField
               onChange={(event) => {
                 setSearchValue(event.target.value);
               }}
-              inputProps={{ "aria-label": "Søk på lagerbeholdning" }}
             />
-            <IconButton
-              type="submit"
-              className={searchClasses.iconButton}
-              aria-label="search"
-            >
-              <SearchIcon />
-            </IconButton>
 
             <TextField
               label="Fra dato"

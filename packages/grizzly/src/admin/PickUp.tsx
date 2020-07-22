@@ -28,6 +28,7 @@ import Toolbar from "./layouts/Toolbar";
 import PrimaryContent from "./layouts/PrimaryContent";
 import SecondaryContent from "./layouts/SecondaryContent";
 import Content from "./layouts/Content";
+import SeachField from "../components/SeachField";
 
 type StorageItems = {
   id: number;
@@ -219,21 +220,9 @@ function PickUp(props: Props) {
         <Page>
           <Toolbar>
             <Box mt={2} mb={2} display="flex">
-              <InputBase
-                className={searchClasses.input}
-                placeholder="Søk på lagerbeholdning"
-                onChange={(event) => {
-                  setSearchValue(event.target.value);
-                }}
-                inputProps={{ "aria-label": "Søk på lagerbeholdning" }}
+              <SeachField
+                onChange={(event) => setSearchValue(event.target.value)}
               />
-              <IconButton
-                type="submit"
-                className={searchClasses.iconButton}
-                aria-label="search"
-              >
-                <SearchIcon />
-              </IconButton>
 
               <TextField
                 label="Fra dato"

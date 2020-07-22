@@ -31,6 +31,7 @@ import PrimaryContent from "./layouts/PrimaryContent";
 import SecondaryContent from "./layouts/SecondaryContent";
 import SeachField from "../components/SeachField";
 import PrimaryButton from "./PrimaryButton";
+import useNotification from "./notificationCenter/useNotification";
 
 type Props = {
   match: {
@@ -80,6 +81,7 @@ function Henvendelser(props: Props) {
   const [orderBy, setOrderBy] = useState<string>("desc");
   const [collumnName, setCollumnName] = useState("id");
   const [searchValue, setSearchValue] = useState("");
+  const { notify } = useNotification();
   const params = {
     status: "Mistet",
   };

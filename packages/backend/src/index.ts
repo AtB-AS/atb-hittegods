@@ -11,6 +11,7 @@ import { authRoutes } from "./auth/authApi";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import pgSession from "connect-pg-simple";
+import { setupSchedules } from "./scheduler";
 
 dotenv.config();
 
@@ -71,6 +72,8 @@ async function startServer() {
 
   app.listen(port);
   console.log("Server running");
+
+  setupSchedules({ client });
 }
 
 startServer();

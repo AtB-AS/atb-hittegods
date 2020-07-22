@@ -29,6 +29,7 @@ import Toolbar from "./layouts/Toolbar";
 import Content from "./layouts/Content";
 import PrimaryContent from "./layouts/PrimaryContent";
 import SecondaryContent from "./layouts/SecondaryContent";
+import SeachField from "../components/SeachField";
 
 type Props = {
   match: {
@@ -195,24 +196,13 @@ function Henvendelser(props: Props) {
           <Grid container>
             <Grid item md={9}>
               <Box>
-                <InputBase
-                  className={searchClasses.input}
-                  placeholder="Søk på henvendelser"
+                <SeachField
                   onChange={(event) => {
                     setSearchValue(event.target.value);
                   }}
-                  inputProps={{ "aria-label": "Søk på henvendelser" }}
                 />
-                <IconButton
-                  type="submit"
-                  className={searchClasses.iconButton}
-                  aria-label="search"
-                >
-                  <SearchIcon />
-                </IconButton>
               </Box>
             </Grid>
-
             <Grid item md={3}>
               <Button
                 className={searchClasses.button}

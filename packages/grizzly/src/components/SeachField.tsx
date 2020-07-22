@@ -3,15 +3,22 @@ import { createStyles, IconButton, InputBase, Theme } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import Box from "@material-ui/core/Box";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import InputLabel from "@material-ui/core/InputLabel";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import TextField from "@material-ui/core/TextField";
 
 type Props = {
-  onChange: () => void;
+  onChange: (event: any) => void;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    input: {
+    inputBox: {
       marginLeft: theme.spacing(1),
+      display: "inline-block",
+    },
+    input: {
+      //marginLeft: theme.spacing(1),
       flex: 1,
       width: "50%",
     },
@@ -36,20 +43,22 @@ const useStyles = makeStyles((theme: Theme) =>
 function SeachField(props: Props) {
   const classes = useStyles();
   return (
-    <Box>
-      <InputBase
+    <Box className={classes.inputBox}>
+      <InputLabel htmlFor="searchfield">Søk:</InputLabel>
+      <TextField
         className={classes.input}
-        placeholder="Søk på henvendelser"
-        onChange={props.onChange}
-        inputProps={{ "aria-label": "Søk på henvendelser" }}
+        id="searchfield"
+        onChange={(event) => {
+          props.onChange(event);
+        }}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
       />
-      <IconButton
-        type="submit"
-        className={classes.iconButton}
-        aria-label="search"
-      >
-        <SearchIcon />
-      </IconButton>
     </Box>
   );
 }

@@ -46,8 +46,15 @@ type ColumnProps = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     box: {
-      display: "flex",
       alignItems: "flex-end",
+    },
+    gridItem1: {
+      display: "flex",
+      justifyContent: "flex-end",
+    },
+    gridItem2: {
+      display: "flex",
+      justifyContent: "flex-start",
     },
   })
 );
@@ -177,18 +184,24 @@ function Henvendelser(props: Props) {
     <DataLoadingContainer loading={isLoading} error={error}>
       <Page>
         <h1>Henvendelser</h1>
+        <p>Oversikt over henvendelser og potensielle funn. </p>
         <Toolbar>
-          <Box mt={2} mb={2}>
+          <Box>
             <Grid container className={searchClasses.box}>
-              <Grid item>
-                <SeachField
-                  onChange={(event) => {
-                    setSearchValue(event.target.value);
-                  }}
-                />
+              <Grid item md={7}>
+                <Box className={searchClasses.gridItem2}>
+                  <SeachField
+                    onChange={(event) => {
+                      setSearchValue(event.target.value);
+                    }}
+                  />
+                </Box>
               </Grid>
-              <Grid item>
-                <PrimaryButton href={"/"}>Ny henvendelse</PrimaryButton>
+
+              <Grid item md={5} className={searchClasses.gridItem1}>
+                <Box>
+                  <PrimaryButton href={"/"}>Ny henvendelse</PrimaryButton>
+                </Box>
               </Grid>
             </Grid>
           </Box>

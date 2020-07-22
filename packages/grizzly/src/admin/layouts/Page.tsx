@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: "18px",
       height: "100%",
       paddingLeft: "20px",
+      paddingTop: "15px",
     },
   })
 );

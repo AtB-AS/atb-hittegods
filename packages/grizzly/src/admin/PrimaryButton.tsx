@@ -5,6 +5,8 @@ import { theme } from "../components/styling";
 
 const useStyles = makeStyles({
   button: {
+    height: "44px",
+    width: "150px",
     color: theme.palette.background.paper,
     backgroundColor: theme.palette.secondary.light,
     padding: "12px 16px 10px",

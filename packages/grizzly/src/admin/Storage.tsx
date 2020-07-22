@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   createStyles,
-  IconButton,
-  InputBase,
   TableContainer,
   TableSortLabel,
   Theme,
@@ -17,12 +15,9 @@ import { Route } from "react-router-dom";
 import StorageItem from "./StorageItem";
 import { useHistory } from "react-router";
 import { useTableStyles } from "./styles";
-import SearchIcon from "@material-ui/icons/Search";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import moment from "moment";
-import TextField from "@material-ui/core/TextField";
 import DataLoadingContainer from "../DataLoadingContainer";
-import Button from "@material-ui/core/Button";
 import Toolbar from "./layouts/Toolbar";
 import Page from "./layouts/Page";
 import Content from "./layouts/Content";
@@ -72,7 +67,11 @@ const useStyles = makeStyles((theme: Theme) =>
       flexWrap: "wrap",
     },
     box: {
+      alignItems: "flex-end",
+    },
+    gridItemButton: {
       display: "flex",
+      justifyContent: "flex-end",
     },
   })
 );
@@ -211,17 +210,19 @@ function Storage(props: Props) {
     <DataLoadingContainer loading={isLoading} error={error}>
       {storageItems.length === 0 && <p>Ingen henvendelser registrert</p>}
       <Page>
+        <h1>Lager</h1>
+        <p>Oversikt over gjenstander som befinner seg på lager hos AtB.</p>
         <Toolbar>
-          <Box mt={2} mb={2}>
+          <Box>
             <Grid container className={searchClasses.box}>
-              <Grid item>
+              <Grid item md={4}>
                 <SeachField
                   onChange={(event) => {
                     setSearchValue(event.target.value);
                   }}
                 />
               </Grid>
-              <Grid item>
+              <Grid item md={6}>
                 <DatePickerToFrom
                   onChangeFrom={(event) => setFromDate(event.target.value)}
                   onChangeTo={(event) => setToDate(event.target.value)}
@@ -229,10 +230,12 @@ function Storage(props: Props) {
                   toDate={toDate}
                 />
               </Grid>
-              <Grid item>
-                <PrimaryButton href="/admin/lager/registrere">
-                  Ny gjenstand
-                </PrimaryButton>
+              <Grid item md={2} className={searchClasses.gridItemButton}>
+                <Box>
+                  <PrimaryButton href="/admin/lager/registrere">
+                    Ny gjenstand
+                  </PrimaryButton>
+                </Box>
               </Grid>
             </Grid>
           </Box>

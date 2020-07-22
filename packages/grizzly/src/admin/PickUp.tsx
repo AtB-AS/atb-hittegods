@@ -212,16 +212,15 @@ function PickUp(props: Props) {
       )}
       {storageItems.length > 0 && (
         <Page>
+          <h1>Til utlevering</h1>
+          <p>
+            Oversikt over gjenstander som ligger klar til utlevering med
+            tilhørende henvendelse.
+          </p>
           <Toolbar>
-            <Box mt={2} mb={2} display="flex">
+            <Box>
               <SeachField
                 onChange={(event) => setSearchValue(event.target.value)}
-              />
-              <DatePickerToFrom
-                onChangeFrom={(event) => setFromDate(event)}
-                onChangeTo={(event) => setToDate(event)}
-                fromDate={fromDate}
-                toDate={toDate}
               />
             </Box>
           </Toolbar>

@@ -16,13 +16,12 @@ const useStyles = makeStyles((theme: Theme) =>
     box: {
       display: "inline-flex",
     },
-    boxItem: {
-      marginLeft: theme.spacing(1),
+    dateFromItem: {
       display: "inline-block",
     },
-    textField: {
-      marginRight: theme.spacing(1),
-      width: "90%",
+    dateToItem: {
+      marginLeft: theme.spacing(3),
+      display: "inline-block",
     },
   })
 );
@@ -31,12 +30,11 @@ function DatePickerToFrom(props: Props) {
   const classes = useStyles();
   return (
     <Grid container className={classes.box}>
-      <Grid item className={classes.boxItem}>
+      <Grid item className={classes.dateFromItem}>
         <InputLabel htmlFor="fromDate">Fra dato: </InputLabel>
         <TextField
           id="fromDate"
           type="date"
-          className={classes.textField}
           value={props.fromDate}
           inputProps={{
             min: ((d) => new Date(d.setDate(d.getDate() - 90)))(new Date())
@@ -47,11 +45,10 @@ function DatePickerToFrom(props: Props) {
           onChange={(event) => props.onChangeFrom(event)}
         />
       </Grid>
-      <Grid item className={classes.boxItem}>
+      <Grid item className={classes.dateToItem}>
         <InputLabel htmlFor="toDate">Til dato: </InputLabel>
         <TextField
           type="date"
-          className={classes.textField}
           value={props.toDate}
           inputProps={{
             min: props.fromDate,

@@ -14,12 +14,8 @@ type Props = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     inputBox: {
-      marginLeft: theme.spacing(1),
       display: "inline-block",
-    },
-    input: {
-      flex: 1,
-      width: "90%",
+      marginRight: theme.spacing(3),
     },
   })
 );
@@ -30,7 +26,6 @@ function SeachField(props: Props) {
     <Box className={classes.inputBox}>
       <InputLabel htmlFor="searchfield">Søk:</InputLabel>
       <TextField
-        className={classes.input}
         id="searchfield"
         onChange={(event) => {
           props.onChange(event);

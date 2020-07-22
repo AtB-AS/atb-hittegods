@@ -166,7 +166,7 @@ export default function Wizard() {
         activeStep: WIZARD_STEP.DETAILS,
         detailsStep: WIZARD_DETAILS_STEP.CHARACTERISTICS,
       });
-    }, 200);
+    }, 100);
   }
 
   function onCharacteristicsDone(characteristics: Characteristics) {
@@ -174,14 +174,14 @@ export default function Wizard() {
     setTimeout(() => {
       setActiveStep(activeStep + 1);
       addToBrowserHistory({ activeStep: WIZARD_STEP.CONTACT_INFO });
-    }, 300);
+    }, 100);
   }
 
   function setLocation(location: string) {
     setLine(location);
     setTimeout(() => {
       setActiveStep(activeStep + 1);
-    }, 500);
+    }, 100);
     addToBrowserHistory({ activeStep: WIZARD_STEP.LOCATION });
   }
 
@@ -194,7 +194,7 @@ export default function Wizard() {
         activeStep: WIZARD_STEP.DETAILS,
         detailsStep: WIZARD_DETAILS_STEP.MAIN_CATEGORY,
       });
-    }, 300);
+    }, 100);
   }
 
   function setContactInfo(contInfo: ContactInfoType) {

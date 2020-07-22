@@ -1,15 +1,13 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { createStyles, Theme } from "@material-ui/core";
-import { NavLink, Route, Switch, useLocation } from "react-router-dom";
+import { NavLink, Route, Switch } from "react-router-dom";
 import Henvendelser from "./Henvendelser";
 import Storage from "./Storage";
 import Transit from "./Transit";
 import RegisterStorage from "./register/RegisterStorage";
 import RegisterTransit from "./register/RegisterTransit";
 import PickUp from "./PickUp";
-import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
 import Logo from "../components/icons/logo";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -26,13 +24,12 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       display: "flex",
       color: "#fff",
-      paddingLeft: "50px",
+      paddingLeft: "20px",
       backgroundColor: "#00758d",
     },
     nav: {
-      gridColumn: "1/2",
-      width: "180px",
-      backgroundColor: "#e4e4e4",
+      display: "flex",
+      alignItems: "center",
     },
     main: {
       gridColumn: "2/3",
@@ -41,22 +38,22 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#f8f8f8",
     },
     linkList: {
-      margin: "60px 0 0",
+      margin: "0 0 0 20px",
       padding: 0,
       listStyle: "none",
     },
     linkListItem: {
-      display: "block",
+      display: "inline-block",
+      padding: "0 20px",
     },
     navItem: {
-      margin: "5px 0 5px 0",
-      padding: "20px 42px 20px",
-      fontSize: "18px",
+      fontSize: "20px",
       color: "#fff",
-      "&:hover, &:active, &:focus": {
-        textDecoration: "none",
-        fontWeight: "bold",
+      paddingBottom: "2px",
+      "&:hover, &:active, &.active": {
         color: "#fff",
+        textDecoration: "none",
+        borderBottom: "2px solid #fff",
       },
     },
     icon: {
@@ -87,34 +84,22 @@ const routes = [
 
 function Layout() {
   const styles = useStyles();
-  const location = useLocation();
-
-  const getPageTitle = () => {
-    const route = routes.find((route) =>
-      location.pathname.includes(route.path)
-    );
-    return route ? route.title : "Admin";
-  };
 
   return (
     <div className={styles.root}>
       <header className={styles.header}>
-        <Box>
-          <Grid container spacing={3}>
-            <nav>
-              <Logo className={styles.icon} />
-              {routes.map((route) => (
-                <NavLink
-                  key={route.path}
-                  className={styles.navItem}
-                  to={route.path}
-                >
+        <nav className={styles.nav}>
+          <Logo className={styles.icon} />
+          <ul className={styles.linkList}>
+            {routes.map((route) => (
+              <li key={route.path} className={styles.linkListItem}>
+                <NavLink className={styles.navItem} to={route.path}>
                   {route.title}
                 </NavLink>
-              ))}
-            </nav>
-          </Grid>
-        </Box>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </header>
 
       <main className={styles.main}>

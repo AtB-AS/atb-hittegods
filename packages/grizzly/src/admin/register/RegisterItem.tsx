@@ -13,6 +13,8 @@ import { useTheme } from "@material-ui/core/styles";
 
 import RegAutoSelect from "./Select";
 import { Link } from "react-router-dom";
+import {printLabel} from "../../printer/printer";
+import {log} from "util";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -68,6 +70,7 @@ function RegisterFound(props: Props) {
   const [error, setError] = useState(false);
   const [lines, setLines] = useState<LineObj[]>([]);
   const [itemIdRegistered, setItemIdRegistered] = useState(false);
+  const [printStatus, setPrintStatus] = useState(false);
 
   const classes = useStyles();
   const catData = categoryData;
@@ -87,23 +90,33 @@ function RegisterFound(props: Props) {
       });
   }, []);
 
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `${window.location.origin}/dymosdk.js`;
+    //For head
+    document.head.appendChild(script);
+  }, [])
+
   const { register, handleSubmit, errors } = useForm();
 
   const sendForm = () => {
+    const payload ={
+      name: name,
+      phone: tlf,
+      email: email,
+      category: mainCat,
+      subCategory: subCat,
+      color: color,
+      line: line,
+      brand: brand,
+      status: props.status,
+      description: desc,
+    };
+
     return fetch("/api/admin/found", {
       method: "post",
-      body: JSON.stringify({
-        name: name,
-        phone: tlf,
-        email: email,
-        category: mainCat,
-        subCategory: subCat,
-        color: color,
-        line: line,
-        brand: brand,
-        status: props.status,
-        description: desc,
-      }),
+      body: JSON.stringify(payload),
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -112,13 +125,27 @@ function RegisterFound(props: Props) {
       .then((response) => response.json())
       .then((regData) => {
         setItemIdRegistered(regData.data.foundid);
+        console.log("before print")
+        console.log(payload)
+        return regData
       })
-      .catch(() => {
+        .then((regData) => {
+          console.log("regData : ", regData)
+          const status = printLabel(payload,regData.data.foundid)
+          return status
+        }).then((status)=>{
+          console.log("print status: ",status)
+          if(status==="print ok"){
+            setPrintStatus(true)
+          }
+        })
+      .catch((e) => {
+        console.log("error:",e)
         setError(true);
-      });
+      })
   };
 
-  function getSubCatData(mainCat: string): string[] {
+  const getSubCatData = (mainCat: string): string[] => {
     if (mainCat) {
       return categoryData
         .find((mainCatName) => mainCatName.name === mainCat)!
@@ -134,6 +161,7 @@ function RegisterFound(props: Props) {
     return (
       <div>
         <h1>Gjenstand er nå registrert</h1>
+        <h2>{printStatus ?  "Lapp printet ut" :"Noe gikk galt, lapp ble ikke printet ut.\nEr printeren plugget i med USB og strøm med rikitg driver installert?"  }</h2>
         <Link to={`${props.pathToComp}/${itemIdRegistered}`}>
           <Button>Gå til registrert gjenstand</Button>
         </Link>
@@ -143,6 +171,7 @@ function RegisterFound(props: Props) {
       </div>
     );
   }
+
 
   return (
     <Grid container>

@@ -4,6 +4,7 @@ import React from "react";
 import { HTTPError } from "./Errors";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import moment from "moment";
+import {theme} from "../components/styling";
 
 const useStyles = makeStyles({
   root: {
@@ -201,14 +202,9 @@ function MatchDetails(props: Props) {
     );
   } else {
     confirmButton = (
-      <Button
-        variant="contained"
-        color="primary"
-        className="editButton"
-        disabled={true}
-      >
-        Gjenstand er ikke bekreftet ankommet
-      </Button>
+        <Box>
+          <p style={{color:"#999999"}}>Gjenstand er ikke bekreftet ankommet</p>
+        </Box>
     );
   }
 
@@ -285,11 +281,10 @@ function MatchDetails(props: Props) {
               <dd>{props.foundItem.color}</dd>
             </dl>
           </Grid>
+          <Grid item md={12}><ContactInfo/></Grid>
+          <Grid item md={12}><Box mb={1}>{confirmButton}</Box></Grid>
         </Grid>
-
-        <ContactInfo />
       </Box>
-      <Box mb={1}>{confirmButton}</Box>
     </div>
   );
 }

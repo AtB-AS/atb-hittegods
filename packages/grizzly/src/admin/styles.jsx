@@ -10,7 +10,7 @@ export const useTableStyles = makeStyles({
     height: "100%",
   },
   container: {
-    height: "calc(100vh - 140px)",
+    height: "100%",
   },
   leftCol: {},
   rightCol: {},

@@ -1,12 +1,6 @@
-import express, { query, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import pg = require("pg");
-import {
-  registerGetValidator,
-  registerPostValidator,
-  registerPutValidator,
-} from "./validators/registerValidator";
-import { registerPutStatusValidator } from "./validators/statusValidator";
-import { v4 as uuidv4 } from "uuid";
+import { registerPostValidator } from "./validators/registerValidator";
 import {
   getColorId,
   getLineId,
@@ -14,12 +8,7 @@ import {
   getCategoryId,
   getStatusId,
 } from "./db";
-import {
-  selectLostByRefnum,
-  insertNewLost,
-  updateStatusUserDelete,
-  updateLost,
-} from "./queries";
+import { insertNewLost } from "./queries";
 import fetch from "node-fetch";
 import { dbError, sendEmail } from "./util";
 import { confirmationEmail } from "./emailText";
@@ -30,32 +19,6 @@ export default async (
 ) => {
   const registerEndpoint = "/api/register";
 
-  app.get(registerEndpoint, (req, res) => {
-    const query = req.query;
-    const { error, value } = registerGetValidator.validate(req.query);
-    if (error != undefined) {
-      //TODO figure out if error message leaks server information
-      res
-        .status(400)
-        .json({ status: "error", errorMessage: error.details[0].message });
-    } else {
-      client
-        .query(selectLostByRefnum, [query.refnum])
-        .then((queryRes) => {
-          if (queryRes.rowCount === 0) {
-            res
-              .status(404)
-              .json({ status: "error", errorMessage: "Unknown refnum" });
-          } else {
-            res.json({ status: "success", data: queryRes.rows[0] });
-          }
-        })
-        .catch((e) => {
-          dbError(e, res);
-        });
-    }
-  });
-
   app.post(registerEndpoint, (req, res) => {
     const body = req.body;
     const { error, value } = registerPostValidator.validate(body);
@@ -65,7 +28,6 @@ export default async (
         .status(400)
         .json({ status: "error", errorMessage: error.details[0].message });
     } else {
-      const refnum = uuidv4();
       const categoryIdPromise = getCategoryId(req.body.category, { client });
       const subCategoryIdPromise = getSubCategoryId(req.body.subCategory, {
         client,
@@ -100,13 +62,11 @@ export default async (
                 body.description,
                 body.brand,
                 body.date,
-                body.time,
                 lineId,
                 colorId,
                 categoryId,
                 subCategoryId,
                 statusId,
-                refnum,
               ])
               .then((queryRes) => {
                 //TODO check that response is compliant with api docs
@@ -169,141 +129,6 @@ export default async (
                 errorMessage: "internal server error",
               });
             }
-          }
-        })
-        .catch((e) => {
-          dbError(e, res);
-        });
-    }
-  });
-
-  app.put(registerEndpoint, (req, res) => {
-    const body = req.body;
-    const { error, value } = registerPutValidator.validate(body);
-    if (error != undefined) {
-      //TODO figure out if error message leaks server information
-      res
-        .status(400)
-        .json({ status: "error", errorMessage: error.details[0].message });
-    } else {
-      const categoryIdPromise = getCategoryId(req.body.category, { client });
-      const subCategoryIdPromise = getSubCategoryId(req.body.subCategory, {
-        client,
-      });
-      const lineIdPromise = getLineId(req.body.line, { client });
-      const colorIdPromise = getColorId(req.body.color, { client });
-      Promise.all([
-        categoryIdPromise,
-        subCategoryIdPromise,
-        lineIdPromise,
-        colorIdPromise,
-      ])
-        .then((data) => {
-          //TODO: validate category, subcat, line, color against database tables. Error if they do not exist in database
-          if (
-            data.every((queryResult) => {
-              return queryResult.rowCount != 0;
-            })
-          ) {
-            const categoryId = data[0].rows[0].categoryid;
-            const subCategoryId = data[1].rows[0].subcategoryid;
-            const lineId = data[2].rows[0].lineid;
-            const colorId = data[3].rows[0].colorid;
-            client
-              .query(updateLost, [
-                body.description,
-                body.brand,
-                body.date,
-                lineId,
-                colorId,
-                categoryId,
-                subCategoryId,
-                body.refnum,
-              ])
-              .then((queryRes) => {
-                if (queryRes.rowCount != 0) {
-                  //TODO check that response is compliant with api docs
-                  res.json({ status: "success", data: body });
-                } else {
-                  res.status(404).json({
-                    status: "error",
-                    errorMessage: "Unknown refnum",
-                  });
-                }
-              })
-              .catch((e) => {
-                dbError(e, res);
-              });
-          } else {
-            if (data[0].rowCount === 0) {
-              res.status(400).json({
-                status: "error",
-                errorMessage: "invalid category",
-              });
-            } else if (data[1].rowCount === 0) {
-              res.status(400).json({
-                status: "error",
-                errorMessage: "invalid subcategory",
-              });
-            } else if (data[2].rowCount === 0) {
-              res.status(400).json({
-                status: "error",
-                errorMessage: "invalid line",
-              });
-            } else if (data[3].rowCount === 0) {
-              res.status(400).json({
-                status: "error",
-                errorMessage: "invalid color",
-              });
-            } else {
-              console.error("Invalid status");
-              res.status(500).json({
-                status: "error",
-                errorMessage: "internal server error",
-              });
-            }
-          }
-        })
-        .catch((e) => {
-          dbError(e, res);
-        });
-    }
-  });
-
-  app.put("/api/updateStatus", (req, res) => {
-    const refnum = req.body.refnum;
-    const { error, value } = registerPutStatusValidator.validate(req.body);
-    if (error != undefined) {
-      //TODO figure out if error message leaks server information
-      res
-        .status(400)
-        .json({ status: "error", errorMessage: error.details[0].message });
-    } else {
-      getStatusId("Slettet av reisende", { client })
-        .then((queryResult) => {
-          if (queryResult.rowCount != 0) {
-            const statusid = queryResult.rows[0].statusid;
-            client
-              .query(updateStatusUserDelete, [statusid, refnum])
-              .then((queryRes) => {
-                if (queryRes.rowCount != 0) {
-                  res.json({ status: "success", data: { refnum: refnum } });
-                } else {
-                  res.status(404).json({
-                    status: "error",
-                    errorMessage: "Unknown refnum",
-                  });
-                }
-              })
-              .catch((e) => {
-                dbError(e, res);
-              });
-          } else {
-            console.error("no Slettet av reisende in database");
-            res.status(500).json({
-              status: "error",
-              errorMessage: "Unknown database error",
-            });
           }
         })
         .catch((e) => {

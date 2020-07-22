@@ -23,6 +23,12 @@ import moment from "moment";
 import TextField from "@material-ui/core/TextField";
 import DataLoadingContainer from "../DataLoadingContainer";
 import Button from "@material-ui/core/Button";
+import Toolbar from "./layouts/Toolbar";
+import Page from "./layouts/Page";
+import Content from "./layouts/Content";
+import PrimaryContent from "./layouts/PrimaryContent";
+import SecondaryContent from "./layouts/SecondaryContent";
+import SeachField from "../components/SeachField";
 
 type StorageItems = {
   id: number;
@@ -211,24 +217,14 @@ function Storage(props: Props) {
   return (
     <DataLoadingContainer loading={isLoading} error={error}>
       {storageItems.length === 0 && <p>Ingen henvendelser registrert</p>}
-      <div className={classes.root}>
-        <div className={classes.leftCol}>
+      <Page>
+        <Toolbar>
           <Box mt={2} mb={2} display="flex" className={searchClasses.box}>
-            <InputBase
-              className={searchClasses.input}
-              placeholder="Søk på lagerbeholdning"
+            <SeachField
               onChange={(event) => {
                 setSearchValue(event.target.value);
               }}
-              inputProps={{ "aria-label": "Søk på lagerbeholdning" }}
             />
-            <IconButton
-              type="submit"
-              className={searchClasses.iconButton}
-              aria-label="search"
-            >
-              <SearchIcon />
-            </IconButton>
 
             <TextField
               label="Fra dato"
@@ -265,59 +261,63 @@ function Storage(props: Props) {
               }}
             />
           </Box>
-          <TableContainer className={classes.container}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  <StorageColumn columnName={"id"} labelName={"Id"} />
-                  <StorageColumn
-                    columnName={"subcategory"}
-                    labelName={"Underkategori"}
-                  />
-                  <StorageColumn
-                    columnName={"description"}
-                    labelName={"Beskrivelse"}
-                  />
-                  <StorageColumn columnName={"phone"} labelName={"Telefon"} />
-                  <StorageColumn columnName={"date"} labelName={"Dato"} />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {searchStorage(storageItems, searchValue).map((item) => {
-                  return (
-                    <TableRow
-                      hover
-                      className={
-                        `${item.id}` === props.match.params?.id
-                          ? classes.activeRow
-                          : classes.row
-                      }
-                      onClick={(event) => clickedRowItem(item.id)}
-                      key={item.id}
-                    >
-                      <TableCell>{item.id}</TableCell>
-                      <TableCell>{item.subcategory}</TableCell>
-                      <TableCell>
-                        {formatDescription(item.description)}
-                      </TableCell>
-                      <TableCell>{item.phone}</TableCell>
-                      <TableCell>
-                        {moment(item?.date).format("DD.MM.yy")}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-        <div className={classes.rightCol}>
-          <Button href="/admin/lager/registrere" variant="contained">
-            Registrer funnet gjenstand
-          </Button>
-          <Route path="/admin/lager/:id" component={StorageItem} />
-        </div>
-      </div>
+        </Toolbar>
+        <Content>
+          <PrimaryContent>
+            <TableContainer className={classes.container}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    <StorageColumn columnName={"id"} labelName={"Id"} />
+                    <StorageColumn
+                      columnName={"subcategory"}
+                      labelName={"Underkategori"}
+                    />
+                    <StorageColumn
+                      columnName={"description"}
+                      labelName={"Beskrivelse"}
+                    />
+                    <StorageColumn columnName={"phone"} labelName={"Telefon"} />
+                    <StorageColumn columnName={"date"} labelName={"Dato"} />
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {searchStorage(storageItems, searchValue).map((item) => {
+                    return (
+                      <TableRow
+                        hover
+                        className={
+                          `${item.id}` === props.match.params?.id
+                            ? classes.activeRow
+                            : classes.row
+                        }
+                        onClick={(event) => clickedRowItem(item.id)}
+                        key={item.id}
+                      >
+                        <TableCell>{item.id}</TableCell>
+                        <TableCell>{item.subcategory}</TableCell>
+                        <TableCell>
+                          {formatDescription(item.description)}
+                        </TableCell>
+                        <TableCell>{item.phone}</TableCell>
+                        <TableCell>
+                          {moment(item?.date).format("DD.MM.yy")}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </PrimaryContent>
+          <SecondaryContent>
+            <Button href="/admin/lager/registrere" variant="contained">
+              Registrer funnet gjenstand
+            </Button>
+            <Route path="/admin/lager/:id" component={StorageItem} />
+          </SecondaryContent>
+        </Content>
+      </Page>
     </DataLoadingContainer>
   );
 }

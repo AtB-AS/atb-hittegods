@@ -23,6 +23,12 @@ import TextField from "@material-ui/core/TextField";
 import PickUpItem from "./PickUpItem";
 import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
+import Page from "./layouts/Page";
+import Toolbar from "./layouts/Toolbar";
+import PrimaryContent from "./layouts/PrimaryContent";
+import SecondaryContent from "./layouts/SecondaryContent";
+import Content from "./layouts/Content";
+import SeachField from "../components/SeachField";
 
 type StorageItems = {
   id: number;
@@ -211,24 +217,12 @@ function PickUp(props: Props) {
         </p>
       )}
       {storageItems.length > 0 && (
-        <div className={classes.root}>
-          <div className={classes.leftCol}>
-            <Box mt={2} mb={2}>
-              <InputBase
-                className={searchClasses.input}
-                placeholder="Søk på lagerbeholdning"
-                onChange={(event) => {
-                  setSearchValue(event.target.value);
-                }}
-                inputProps={{ "aria-label": "Søk på lagerbeholdning" }}
+        <Page>
+          <Toolbar>
+            <Box mt={2} mb={2} display="flex">
+              <SeachField
+                onChange={(event) => setSearchValue(event.target.value)}
               />
-              <IconButton
-                type="submit"
-                className={searchClasses.iconButton}
-                aria-label="search"
-              >
-                <SearchIcon />
-              </IconButton>
 
               <TextField
                 label="Fra dato"
@@ -267,59 +261,66 @@ function PickUp(props: Props) {
                 }}
               />
             </Box>
-            <TableContainer className={classes.container}>
-              <Table stickyHeader aria-label="sticky table">
-                <TableHead>
-                  <TableRow>
-                    <StorageColumn columnName={"id"} labelName={"Id"} />
-                    <StorageColumn
-                      columnName={"subcategory"}
-                      labelName={"Underkategori"}
-                    />
-                    <StorageColumn
-                      columnName={"description"}
-                      labelName={"Beskrivelse"}
-                    />
-                    <StorageColumn columnName={"phone"} labelName={"Telefon"} />
-                    <StorageColumn columnName={"date"} labelName={"Dato"} />
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {searchStorage(storageItems, searchValue).map((item) => {
-                    return (
-                      <TableRow
-                        hover
-                        className={
-                          `${item.id}` === props.match.params?.id
-                            ? classes.activeRow
-                            : classes.row
-                        }
-                        onClick={(event) => clickedRowItem(item.id)}
-                        key={item.id}
-                      >
-                        <TableCell>{item.id}</TableCell>
-                        <TableCell>{item.subcategory}</TableCell>
-                        <TableCell>{item.description}</TableCell>
-                        <TableCell>{item.phone}</TableCell>
-                        <TableCell>
-                          {moment(item?.date).format("DD.MM.yy")}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </div>
-          <div className={classes.rightCol}>
-            <Route
-              path="/admin/tilUtlevering/:id"
-              render={(routeProps) => (
-                <PickUpItem {...routeProps} removeItem={removeItem} />
-              )}
-            />
-          </div>
-        </div>
+          </Toolbar>
+          <Content>
+            <PrimaryContent>
+              <TableContainer className={classes.container}>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow>
+                      <StorageColumn columnName={"id"} labelName={"Id"} />
+                      <StorageColumn
+                        columnName={"subcategory"}
+                        labelName={"Underkategori"}
+                      />
+                      <StorageColumn
+                        columnName={"description"}
+                        labelName={"Beskrivelse"}
+                      />
+                      <StorageColumn
+                        columnName={"phone"}
+                        labelName={"Telefon"}
+                      />
+                      <StorageColumn columnName={"date"} labelName={"Dato"} />
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {searchStorage(storageItems, searchValue).map((item) => {
+                      return (
+                        <TableRow
+                          hover
+                          className={
+                            `${item.id}` === props.match.params?.id
+                              ? classes.activeRow
+                              : classes.row
+                          }
+                          onClick={(event) => clickedRowItem(item.id)}
+                          key={item.id}
+                        >
+                          <TableCell>{item.id}</TableCell>
+                          <TableCell>{item.subcategory}</TableCell>
+                          <TableCell>{item.description}</TableCell>
+                          <TableCell>{item.phone}</TableCell>
+                          <TableCell>
+                            {moment(item?.date).format("DD.MM.yy")}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </PrimaryContent>
+            <SecondaryContent>
+              <Route
+                path="/admin/tilUtlevering/:id"
+                render={(routeProps) => (
+                  <PickUpItem {...routeProps} removeItem={removeItem} />
+                )}
+              />
+            </SecondaryContent>
+          </Content>
+        </Page>
       )}
     </DataLoadingContainer>
   );

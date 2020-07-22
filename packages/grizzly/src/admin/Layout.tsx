@@ -9,16 +9,16 @@ import RegisterStorage from "./register/RegisterStorage";
 import RegisterTransit from "./register/RegisterTransit";
 import PickUp from "./PickUp";
 import Logo from "../components/icons/logo";
+import LayoutTest from "./layouts/layout";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: "grid",
       height: "100vh",
-      gridTemplate: "auto 1fr auto / auto 1fr auto;",
+      gridTemplate: "auto 1fr / auto",
     },
     header: {
-      gridColumn: "1 / 3",
       height: "80px",
       justifyContent: "flex-start",
       alignItems: "center",
@@ -32,9 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
     },
     main: {
-      gridColumn: "2/3",
       overflow: "scroll",
-      padding: "20px",
       backgroundColor: "#f8f8f8",
     },
     linkList: {

@@ -29,6 +29,7 @@ import PrimaryContent from "./layouts/PrimaryContent";
 import SecondaryContent from "./layouts/SecondaryContent";
 import Content from "./layouts/Content";
 import SeachField from "../components/SeachField";
+import DatePickerToFrom from "../components/DatePickerToFrom";
 
 type StorageItems = {
   id: number;
@@ -63,7 +64,6 @@ const useStyles = makeStyles((theme: Theme) =>
     input: {
       marginLeft: theme.spacing(1),
       flex: 1,
-      width: "50%",
     },
     iconButton: {
       padding: 10,
@@ -71,12 +71,6 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       display: "flex",
       flexWrap: "wrap",
-    },
-    textField: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      width: "20%",
-      color: "#000000",
     },
   })
 );
@@ -223,42 +217,11 @@ function PickUp(props: Props) {
               <SeachField
                 onChange={(event) => setSearchValue(event.target.value)}
               />
-
-              <TextField
-                label="Fra dato"
-                type="date"
-                className={searchClasses.textField}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                value={fromDate}
-                inputProps={{
-                  min: ((d) => new Date(d.setDate(d.getDate() - 90)))(
-                    new Date()
-                  )
-                    .toJSON()
-                    .split("T")[0],
-                  max: toDate || new Date().toJSON().split("T")[0],
-                }}
-                onChange={(event) => {
-                  setFromDate(event.target.value);
-                }}
-              />
-              <TextField
-                label="Til dato"
-                type="date"
-                className={searchClasses.textField}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                value={toDate}
-                inputProps={{
-                  min: fromDate,
-                  max: new Date().toJSON().split("T")[0],
-                }}
-                onChange={(event) => {
-                  setToDate(event.target.value);
-                }}
+              <DatePickerToFrom
+                onChangeFrom={(event) => setFromDate(event)}
+                onChangeTo={(event) => setToDate(event)}
+                fromDate={fromDate}
+                toDate={toDate}
               />
             </Box>
           </Toolbar>

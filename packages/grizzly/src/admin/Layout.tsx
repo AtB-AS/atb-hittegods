@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
     },
     main: {
-      overflow: "scroll",
+      overflowY: "auto",
       backgroundColor: "#f8f8f8",
     },
     linkList: {

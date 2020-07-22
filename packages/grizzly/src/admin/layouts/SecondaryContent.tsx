@@ -6,7 +6,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       height: "100%",
-      overflow: "scroll",
+      overflowY: "auto",
     },
   })
 );

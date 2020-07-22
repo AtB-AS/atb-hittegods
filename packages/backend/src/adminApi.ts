@@ -486,8 +486,6 @@ export default async (
                 categoryId,
                 subCategoryId,
                 statusId,
-                //todo
-                null,
                 //TODO fix this
                 (req.user as any).given_name,
               ])

@@ -5,7 +5,7 @@ import { query } from "express";
 import { selectAllLost } from "./queries";
 import { getStatusId } from "./db";
 import { sendEmail } from "./util";
-import { followupEmailDay7 } from "./emailText";
+import { followupEmailDay1, followupEmailDay7 } from "./emailText";
 
 export const setupSchedules = ({ client }: { client: pg.Client }): void => {
   const rule = new schedule.RecurrenceRule();
@@ -32,6 +32,31 @@ export const setupSchedules = ({ client }: { client: pg.Client }): void => {
               const uniqueEmails = new Set(emails);
               uniqueEmails.forEach((email) => {
                 sendEmail(email, "AtB hittegods", followupEmailDay7);
+              });
+            })
+            .catch();
+        }
+      })
+      .catch();
+
+    const yesterDay = moment().utc().subtract(1, "days").startOf("day");
+    getStatusId("Mistet", { client })
+      .then((statusRes) => {
+        if (statusRes.rowCount > 0) {
+          const statusid = statusRes.rows[0].statusid;
+          client
+            .query(selectAllLost, [statusid])
+            .then((queryResult) => {
+              const toBeEmailed = queryResult.rows.filter((row) => {
+                return moment.utc(row.date).diff(yesterDay, "days") === 0;
+              });
+              const emails: string[] = [];
+              toBeEmailed.forEach((row) => {
+                emails.push(row.email);
+              });
+              const uniqueEmails = new Set(emails);
+              uniqueEmails.forEach((email) => {
+                sendEmail(email, "AtB hittegods", followupEmailDay1);
               });
             })
             .catch();

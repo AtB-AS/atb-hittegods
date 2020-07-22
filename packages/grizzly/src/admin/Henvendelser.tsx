@@ -24,6 +24,11 @@ import { HTTPError } from "./Errors";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
+import Page from "./layouts/Page";
+import Toolbar from "./layouts/Toolbar";
+import Content from "./layouts/Content";
+import PrimaryContent from "./layouts/PrimaryContent";
+import SecondaryContent from "./layouts/SecondaryContent";
 
 type Props = {
   match: {
@@ -185,116 +190,119 @@ function Henvendelser(props: Props) {
 
   return (
     <DataLoadingContainer loading={isLoading} error={error}>
-      <div className={classes.root}>
-        <div className={classes.leftCol}>
-          <Box mb={1}>
-            <Grid container>
-              <Grid item md={9}>
-                <Box>
-                  <InputBase
-                    className={searchClasses.input}
-                    placeholder="Søk på henvendelser"
-                    onChange={(event) => {
-                      setSearchValue(event.target.value);
-                    }}
-                    inputProps={{ "aria-label": "Søk på henvendelser" }}
-                  />
-                  <IconButton
-                    type="submit"
-                    className={searchClasses.iconButton}
-                    aria-label="search"
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                </Box>
-              </Grid>
-
-              <Grid item md={3}>
-                <Button
-                  className={searchClasses.button}
-                  variant="contained"
-                  href="/"
-                  target="_blank"
+      <Page>
+        <Toolbar>
+          <Grid container>
+            <Grid item md={9}>
+              <Box>
+                <InputBase
+                  className={searchClasses.input}
+                  placeholder="Søk på henvendelser"
+                  onChange={(event) => {
+                    setSearchValue(event.target.value);
+                  }}
+                  inputProps={{ "aria-label": "Søk på henvendelser" }}
+                />
+                <IconButton
+                  type="submit"
+                  className={searchClasses.iconButton}
+                  aria-label="search"
                 >
-                  Ny henvendelse
-                </Button>
-              </Grid>
+                  <SearchIcon />
+                </IconButton>
+              </Box>
             </Grid>
-          </Box>
 
-          <TableContainer className={classes.container}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow className={classes.thRow}>
-                  <HenvendelseColumn columnName={"id"} labelName={"Id"} />
-                  <HenvendelseColumn columnName={"name"} labelName={"Navn"} />
-                  <HenvendelseColumn
-                    columnName={"phone"}
-                    labelName={"Telefon"}
-                  />
-                  <HenvendelseColumn
-                    columnName={"subcategory"}
-                    labelName={"Underkategori"}
-                  />
-                  <HenvendelseColumn
-                    columnName={"description"}
-                    labelName={"Beskrivelse"}
-                  />
-                  <HenvendelseColumn
-                    columnName={"matchCount"}
-                    labelName={"På lager"}
-                  />
-                  <HenvendelseColumn
-                    columnName={"newMatchCount"}
-                    labelName={"Nye funn"}
-                  />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {searchHenvendelse(henvendelser, searchValue).map(
-                  (item, index) => {
-                    return (
-                      <TableRow
-                        hover
-                        onClick={(event) => clickedRowItem(item.id)}
-                        className={
-                          `${item.id}` === props.match.params?.id
-                            ? classes.activeRow
-                            : classes.row
-                        }
-                      >
-                        <TableCell>{item.id}</TableCell>
-                        <TableCell>{item.name}</TableCell>
-                        <TableCell>{item.phone}</TableCell>
-                        <TableCell>{item.subcategory}</TableCell>
-                        <TableCell>
-                          {formatDescription(item.description)}
-                        </TableCell>
-                        <TableCell align="center">{item.matchCount}</TableCell>
-                        <TableCell align="center">
-                          {item.newMatchCount}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  }
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-        <div className={classes.rightCol}>
-          <Route
-            path="/admin/henvendelser/:id"
-            render={(routeProps) => (
-              <Henvendelse
-                {...routeProps}
-                removeItem={removeItem}
-                decrementNewMatch={decrementNewMatch}
-              />
-            )}
-          />
-        </div>
-      </div>
+            <Grid item md={3}>
+              <Button
+                className={searchClasses.button}
+                variant="contained"
+                href="/"
+                target="_blank"
+              >
+                Ny henvendelse
+              </Button>
+            </Grid>
+          </Grid>
+        </Toolbar>
+        <Content>
+          <PrimaryContent>
+            <TableContainer className={classes.container}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow className={classes.thRow}>
+                    <HenvendelseColumn columnName={"id"} labelName={"Id"} />
+                    <HenvendelseColumn columnName={"name"} labelName={"Navn"} />
+                    <HenvendelseColumn
+                      columnName={"phone"}
+                      labelName={"Telefon"}
+                    />
+                    <HenvendelseColumn
+                      columnName={"subcategory"}
+                      labelName={"Underkategori"}
+                    />
+                    <HenvendelseColumn
+                      columnName={"description"}
+                      labelName={"Beskrivelse"}
+                    />
+                    <HenvendelseColumn
+                      columnName={"matchCount"}
+                      labelName={"På lager"}
+                    />
+                    <HenvendelseColumn
+                      columnName={"newMatchCount"}
+                      labelName={"Nye funn"}
+                    />
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {searchHenvendelse(henvendelser, searchValue).map(
+                    (item, index) => {
+                      return (
+                        <TableRow
+                          hover
+                          onClick={(event) => clickedRowItem(item.id)}
+                          className={
+                            `${item.id}` === props.match.params?.id
+                              ? classes.activeRow
+                              : classes.row
+                          }
+                        >
+                          <TableCell>{item.id}</TableCell>
+                          <TableCell>{item.name}</TableCell>
+                          <TableCell>{item.phone}</TableCell>
+                          <TableCell>{item.subcategory}</TableCell>
+                          <TableCell>
+                            {formatDescription(item.description)}
+                          </TableCell>
+                          <TableCell align="center">
+                            {item.matchCount}
+                          </TableCell>
+                          <TableCell align="center">
+                            {item.newMatchCount}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    }
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </PrimaryContent>
+          <SecondaryContent>
+            <Route
+              path="/admin/henvendelser/:id"
+              render={(routeProps) => (
+                <Henvendelse
+                  {...routeProps}
+                  removeItem={removeItem}
+                  decrementNewMatch={decrementNewMatch}
+                />
+              )}
+            />
+          </SecondaryContent>
+        </Content>
+      </Page>
     </DataLoadingContainer>
   );
 }

@@ -283,29 +283,25 @@ function PickUpItem(props: Props) {
           <h2>
             {henvendelse?.subcategory} - {henvendelse?.brand}
           </h2>
-          <p>{henvendelse?.description}</p>
         </Grid>
         <Grid item md={8}>
-          <h3 className="h4">Innsender</h3>
-          <dl>
-            <dt>Navn:</dt>
-            <dd>{henvendelse?.name}</dd>
-            <dt>Telefon:</dt>
-            <dd>{henvendelse?.phone}</dd>
-            <dt>E-post:</dt>
-            <dd>{henvendelse?.email}</dd>
-          </dl>
+          <dd>{henvendelse?.description}</dd>
         </Grid>
         <Grid item md={4}>
-          <h3 className="h4">Detaljer</h3>
-          <dl>
-            <dt>Dato:</dt>
-            <dd>{moment(henvendelse?.date).format("DD.MM.yy")}</dd>
-            <dt>Linje:</dt>
-            <dd>{henvendelse?.line}</dd>
-            <dt>Farge:</dt>
-            <dd>{henvendelse?.color}</dd>
-          </dl>
+          <dt>Farge:</dt>
+          <dd>{henvendelse?.color}</dd>
+        </Grid>
+        <Grid item md={4}>
+            <dt>Navn:</dt>
+            <dd>{henvendelse?.name}</dd>
+        </Grid>
+        <Grid item md={4}>
+          <dt>Telefon:</dt>
+          <dd>{henvendelse?.phone}</dd>
+        </Grid>
+        <Grid item md={4}>
+          <dt>Date funnet:</dt>
+          <dd>{moment(henvendelse?.date).format("DD.MM.yyyy")}</dd>
         </Grid>
       </Grid>
     );
@@ -316,38 +312,58 @@ function PickUpItem(props: Props) {
   return (
     <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
       <div className={styles.root}>
-        <Box p={3} mt={4} className={styles.card}>
+        <Box p={3} mb={3} className={styles.card}>
+          {henvendelseComponent}
+        </Box>
+        <Grid container  alignContent='center'>
+          <Grid item md={4}>
+          </Grid>
+          <Grid item md={4}>
+            Klar til utlevering:
+          </Grid>
+          <Grid item md={4}>
+          </Grid>
+        </Grid>
+        <Box p={3} mt={1} className={styles.card}>
           <Grid container>
             <Grid item md={12}>
               <h2>
-                {item?.subcategory} - {item?.brand}
+                #{item?.id} {item?.subcategory} - {item?.brand}
               </h2>
-              <p>{item?.description}</p>
             </Grid>
-            <Grid item md={8}>
-              <h3 className="h4">På gjenstanden</h3>
+
+            <Grid item md={6}>
               <dl>
-                <dt>Navn:</dt>
-                <dd>{item?.name}</dd>
-                <dt>Telefon:</dt>
-                <dd>{item?.phone}</dd>
-                <dt>E-post:</dt>
-                <dd>{item?.email}</dd>
+              <dt>Dato funnet:</dt>
+              <dd>{moment(item?.date).format("DD.MM.yy")}</dd>
               </dl>
             </Grid>
-            <Grid item md={4}>
-              <h3 className="h4">Detaljer</h3>
-              <dl>
-                <dt>Dato:</dt>
-                <dd>{moment(item?.date).format("DD.MM.yy")}</dd>
-                <dt>Linje:</dt>
-                <dd>{item?.line}</dd>
-                <dt>Farge:</dt>
-                <dd>{item?.color}</dd>
-              </dl>
+            <Grid item md={6}>
+              <dt>Linje:</dt>
+              <dd>{item?.line}</dd>
+            </Grid>
+
+            <Grid item md={12}>
+              <dd>
+                {item?.description}
+              </dd>
             </Grid>
           </Grid>
-          <Grid item justify="space-between">
+          <Box mt={2}>
+          <Grid container>
+            <Grid item md={6}>
+              <Button
+                  variant="contained"
+                  color="primary"
+                  className="storageButton"
+                  onClick={(event) => {
+                    deliverClickHandler();
+                  }}
+              >
+                Lever ut
+              </Button>
+            </Grid>
+            <Grid item md={6}>
             <Button
               variant="contained"
               color="primary"
@@ -356,22 +372,11 @@ function PickUpItem(props: Props) {
                 returnToStorageClickHandler();
               }}
             >
-              Send tilbake til lager
+              Legg tilbake til lager
             </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              className="storageButton"
-              onClick={(event) => {
-                deliverClickHandler();
-              }}
-            >
-              Lever ut
-            </Button>
+            </Grid>
           </Grid>
-        </Box>
-        <Box p={3} mt={4} className={styles.card}>
-          {henvendelseComponent}
+          </Box>
         </Box>
       </div>
     </DataLoadingContainer>

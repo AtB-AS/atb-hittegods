@@ -1,0 +1,978 @@
+openapi: 3.0.0
+info:
+  version: "1-oas3"
+  title: hittegodsapi
+  description: Api for the hittegods system
+tags:
+  - name: user
+    description: requests related to users
+  - name: admin
+    description: requests related to the admin backend
+paths:
+  /api/register:
+    post:
+      tags:
+        - user
+      summary: Register a new lost item
+      operationId: registerLostItem
+      requestBody:
+        description: Lost object that needs to be added to the database
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lost'
+      responses:
+        '200':
+          description: Item succesfully registered
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    allOf:
+                      - $ref: '#/components/schemas/Lost'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInput'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DBError'
+
+  /api/line:
+    get:
+      tags:
+        - user
+      summary: Get all lines
+      operationId: getLines
+      responses:
+        '200':
+          description: Sucessfully get lines
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      lines:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            line:
+                              type: string
+                              example: "1"
+                            description:
+                              type: string
+                              example: "Lohove- Sentrum- Hallset"
+
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DBError'
+
+  /api/admin/lost:
+    get:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - admin
+      summary: Get all lost items
+      operationId: getAllLost
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            example: Mistet
+          description: The status of the lost items you want
+          required: true
+      responses:
+        '200':
+          description: Sucesfully retrieved the lost items
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          allOf:
+                            - $ref: '#/components/schemas/AdminLost'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInput'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DBError'
+        '401':
+          description: Unauthorized access attempt
+
+
+
+  /api/admin/lost/{id}:
+    get:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - admin
+      summary: Get a single lost item
+      operationId: getLostItemAdmin
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          description: The id of the lost item
+          required: true
+      responses:
+        '200':
+          description: Sucesfully retrieved the lost item
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    $ref: '#/components/schemas/AdminLost'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInput'
+        '404':
+          description: Id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DBError'
+        '401':
+          description: Unauthorized access attempt
+
+  /api/admin/lost/{id}/status:
+    put:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - admin
+      summary: Update status of a lost item
+      operationId: updateLostStatus
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          description: The id of the lost item
+          required: true
+      requestBody:
+        description: Changes to the found object
+        content:
+          application/json:
+            schema:
+              properties:
+                status:
+                  type: string
+                  example: Mistet
+      responses:
+        '200':
+          description: Successfully updated the status
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                        example: 10
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInput'
+        '404':
+          description: Id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DBError'
+        '401':
+          description: Unauthorized access attempt
+
+  /api/admin/found:
+    get:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - admin
+      summary: Get all found items
+      operationId: getAllFound
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            example: Mistet
+          description: The status of the found items you want
+          required: true
+      responses:
+        '200':
+          description: Sucesfully retrieved the found items
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          allOf:
+                            - $ref: '#/components/schemas/AdminFound'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInput'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DBError'
+        '401':
+          description: Unauthorized access attempt
+    post:
+      tags:
+        - admin
+      security:
+        - ApiKeyAuth: []
+      summary: Register a new found item
+      operationId: registerFoundItem
+      requestBody:
+        description: Found object that needs to be added to the database
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminFoundPost'
+      responses:
+        '200':
+          description: Item succesfully registered
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      lostid:
+                        type: number
+                        example: 10
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInput'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DBError'
+
+  /api/admin/found/{id}:
+    get:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - admin
+      summary: Get a single found item
+      operationId: getFoundItemAdmin
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          description: The id of the found item
+          required: true
+      responses:
+        '200':
+          description: Sucesfully retrieved the found item
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    $ref: '#/components/schemas/AdminFound'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInput'
+        '404':
+          description: Id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DBError'
+        '401':
+          description: Unauthorized access attempt
+    put:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - admin
+      summary: Change a found item
+      operationId: putFoundItem
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          description: The id of the found item
+          required: true
+      requestBody:
+        description: Changes to the found object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminFoundPost'
+      responses:
+        '200':
+          description: Sucesfully changed the found item
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    $ref: '#/components/schemas/AdminFound'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInput'
+        '404':
+          description: Id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DBError'
+        '401':
+          description: Unauthorized access attempt
+
+
+  /api/admin/match:
+    post:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - admin
+      summary: Match a lost and found item
+      operationId: matchLostItems
+      requestBody:
+        description: Items that are to be matched
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LostFoundId'
+      responses:
+        '200':
+          description: Succesful match
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    $ref: '#/components/schemas/LostFoundId'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInput'
+        '404':
+          description: Id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DBError'
+        '401':
+          description: Unauthorized access attempt
+        '409':
+          description: lostid or foundid already has a match
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conflict'
+    get:
+      tags:
+        - admin
+      summary: Get all matches
+      operationId: getMatches
+      responses:
+        '200':
+          description: Sucessfully get matches
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      matches:
+                        type: array
+                        items:
+                          allOf:
+                            - $ref: '#/components/schemas/LostFoundId'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DBError'
+  /api/admin/match/{id}:
+    delete:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - admin
+      summary: Delete a match
+      operationId: deleteMatch
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          description: The id of the match
+          required: true
+      responses:
+        '200':
+          description: Succesful delete
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "succes"
+                  data:
+                    $ref: '#/components/schemas/LostFoundId'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInput'
+        '404':
+          description: Id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DBError'
+        '401':
+          description: Unauthorized access attempt
+
+  /api/admin/possibleMatch:
+    get:
+      tags:
+        - admin
+      summary: Get all possible matches
+      operationId: getpossibleMatches
+      parameters:
+        - in: query
+          name: losid
+          schema:
+            type: number
+            example: 12
+          description: The lostid of the matches you want
+        - in: query
+          name: foundid
+          schema:
+            type: number
+            example: 5
+          description: The foundid of the matches you want
+      responses:
+        '200':
+          description: Sucessfully get matches
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      matches:
+                        type: array
+                        items:
+                          allOf:
+                            - $ref: '#/components/schemas/PossibleMatch'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInput'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DBError'
+
+  /api/admin/possibleMatch/{id}:
+    delete:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - admin
+      summary: Delete a possible match
+      operationId: deletePossibleMatch
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          description: The id of the possible matchmatch
+          required: true
+      responses:
+        '200':
+          description: Succesful delete
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "succes"
+                  data:
+                    $ref: '#/components/schemas/PossibleMatch'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInput'
+        '404':
+          description: Id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DBError'
+        '401':
+          description: Unauthorized access attempt
+  /api/admin/possibleMatch/{id}/new:
+    put:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - admin
+      summary: Update the new status of a possible math
+      operationId: UpdatePossibleMatchNew
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+            example: 1
+          description: The id of the possible matchmatch
+          required: true
+      requestBody:
+        description: Changes to the possibl match
+        content:
+          application/json:
+            schema:
+              properties:
+                new:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Succesful update
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "succes"
+                  data:
+                    $ref: '#/components/schemas/PossibleMatch'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInput'
+        '404':
+          description: Id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DBError'
+        '401':
+          description: Unauthorized access attempt
+
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: cookie
+      name: hittegods
+  schemas:
+    NotFound:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        errorMessage:
+          type: string
+          example: Unknown refnum
+    Conflict:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        errorMessage:
+          type: string
+          example: foundid already has a match
+    InvalidInput:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        errorMessage:
+          type: string
+          example: name is required
+    DBError:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        errorMessage:
+          type: string
+          example: Unknown database error
+    Lost:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Alice
+        email:
+          type: string
+          example: alice@gmail.com
+        phoneNumber:
+          type: string
+          example: "80901044"
+        category:
+          type: string
+          example: Elektronikk
+        subcategory:
+          type: string
+          example: Laptop/PC
+        line:
+          type: number
+          example: 11
+        description:
+          type: string
+          example: Svart Dell laptop
+        brand:
+          type: string
+          example: Dell
+        color:
+          type: string
+          example: Svart
+        date:
+          type: string
+          example: 7/12/2020
+    AdminLost:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        name:
+          type: string
+          example: Donald Duck
+        phone:
+          type: string
+          example: "40391029"
+        email:
+          type: string
+          example: donald@gmail.com
+        category:
+          type: string
+          example: Elektronikk
+        subcategory:
+          type: string
+          example: Laptop/PC
+        color:
+          type: string
+          example: Rød
+        status:
+          type: string
+          example: Mistet
+        date:
+          type: string
+          example: "2020-17-10"
+        brand:
+          type: string
+          example: Dell
+        description:
+          type: string
+          example: Svart Dell laptop
+        line:
+          type: string
+          example: "10"
+        matchCount:
+          type: number
+          example: 2
+        newMatchCount:
+          type: number
+          example: 1
+        matches:
+          type: array
+          items:
+            type: object
+            properties:
+              matchid:
+                type: number
+                example: 10
+              foundid:
+                type: number
+                example: 13
+              new:
+                type: boolean
+                example: true
+
+    AdminFound:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        name:
+          type: string
+          example: Donald Duck
+        phone:
+          type: string
+          example: "40391029"
+        email:
+          type: string
+          example: donald@gmail.com
+        category:
+          type: string
+          example: Elektronikk
+        subcategory:
+          type: string
+          example: Laptop/PC
+        color:
+          type: string
+          example: Rød
+        status:
+          type: string
+          example: Mistet
+        line:
+          type: string
+          example: "10"
+        date:
+          type: string
+          example: "2020-17-10"
+        brand:
+          type: string
+          example: Dell
+        description:
+          type: string
+          example: Svart Dell laptop
+
+    AdminFoundPost:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Donald Duck
+        phone:
+          type: string
+          example: "40391029"
+        email:
+          type: string
+          example: donald@gmail.com
+        category:
+          type: string
+          example: Elektronikk
+        subcategory:
+          type: string
+          example: Laptop/PC
+        color:
+          type: string
+          example: Rød
+        line:
+          type: string
+          example: "10"
+        brand:
+          type: string
+          example: Dell
+        status:
+          type: string
+          example: Funnet
+        description:
+          type: string
+          example: Svart Dell laptop
+
+    LostFoundId:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 7
+        lostid:
+          type: number
+          example: 5
+        foundid:
+          type: number
+          example: 6
+
+    PossibleMatch:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 10
+        lostid:
+          type: number
+          example: 5
+        foundid:
+          type: number
+          example: 6
+        score:
+          type: number
+          example: 0.8
+        new:
+          type: boolean
+          example: true

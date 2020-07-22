@@ -129,12 +129,6 @@ function Henvendelse(props: Props) {
           <h3 className="h4">Innsender:</h3>
           <Box>
             <Grid container>
-              <Grid item md={12}>
-                <dl>
-                  <dt>Navn:</dt>
-                  <dd>{henvendelse?.name}</dd>
-                </dl>
-              </Grid>
               <Grid item md={4}>
                 <dl>
                   <dt>Telefon:</dt>
@@ -142,6 +136,12 @@ function Henvendelse(props: Props) {
                 </dl>
               </Grid>
               <Grid item md={8}>
+                <dl>
+                  <dt>Navn:</dt>
+                  <dd>{henvendelse?.name}</dd>
+                </dl>
+              </Grid>
+              <Grid item md={12}>
                 <dl>
                   <dt>E-post:</dt>
                   <dd>{henvendelse?.email}</dd>

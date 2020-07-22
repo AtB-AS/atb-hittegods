@@ -24,6 +24,7 @@ import { HTTPError } from "./Errors";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
+import PrimaryButton from "./PrimaryButton";
 
 type Props = {
   match: {
@@ -210,14 +211,9 @@ function Henvendelser(props: Props) {
               </Grid>
 
               <Grid item md={3}>
-                <Button
-                  className={searchClasses.button}
-                  variant="contained"
-                  href="/"
-                  target="_blank"
-                >
+                <PrimaryButton href={"/"} target={"_blank"}>
                   Ny henvendelse
-                </Button>
+                </PrimaryButton>
               </Grid>
             </Grid>
           </Box>

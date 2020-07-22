@@ -39,7 +39,6 @@ export const theme = createMuiTheme({
       },
       contained: {
         borderBottom: "solid 3px #00758D",
-        display: "block",
         boxShadow: "0",
         "&:hover": {
           boxShadow: "none !important",

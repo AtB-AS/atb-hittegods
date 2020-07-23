@@ -12,8 +12,8 @@ export const theme = createMuiTheme({
       outlined: {
         padding: "10px 16px 12px",
         color: "#00758D",
-        display: "block",
         width: "100%",
+        display: "block",
         backgroundColor: "#ffffff",
         fontWeight: "lighter",
         border: "solid 1px",
@@ -21,6 +21,7 @@ export const theme = createMuiTheme({
         boxShadow: "0",
         "&:hover": {
           backgroundColor: "#ffffff",
+          color: "#00758D",
           border: "solid 1px",
           borderColor: "#00758D",
           boxShadow: "none",
@@ -40,10 +41,14 @@ export const theme = createMuiTheme({
       contained: {
         borderBottom: "solid 3px #00758D",
         boxShadow: "0",
+        color: "#FFF",
+        backgroundColor: "#018da6",
+        padding: "12px 16px 10px",
         "&:hover": {
           boxShadow: "none !important",
           backgroundColor: "#00758D !important",
           borderBottom: "solid 3px #323A48",
+          color: "#FFF",
         },
         "&:active": {
           outline: "none",

@@ -76,34 +76,24 @@ function Matches(props: Props) {
   return (
     <DataLoadingContainer loading={isLoading} error={error}>
       <Grid item md={12}>
-        <TableContainer>
-          <h3>Mulige funn</h3>
-          {foundItems.length === 0 && (
-            <p>Fant ingenting på lager som passet denne henvendelsen</p>
-          )}
-          {foundItems.length > 0 && (
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>ID</TableCell>
-                  <TableCell>Underkategori</TableCell>
-                  <TableCell>Merke</TableCell>
-                  <TableCell>Beskrivelse</TableCell>
-                </TableRow>
-              </TableHead>
-              {foundItems.map((foundItem) => (
-                <MatchRow
-                  foundItem={foundItem}
-                  removeItem={props.removeItem}
-                  setLoading={props.setLoading}
-                  decrementNewMatch={props.decrementNewMatch}
-                  match={matchByFoundId(foundItem.id)}
-                  hendvendelsesid={props.hendvendelsesid}
-                />
-              ))}
-            </Table>
-          )}
-        </TableContainer>
+        <h3>Mulige funn</h3>
+        {foundItems.length === 0 && (
+          <p>Fant ingenting på lager som passet denne henvendelsen</p>
+        )}
+        {foundItems.length > 0 && (
+          <div>
+            {foundItems.map((foundItem) => (
+              <MatchRow
+                foundItem={foundItem}
+                removeItem={props.removeItem}
+                setLoading={props.setLoading}
+                decrementNewMatch={props.decrementNewMatch}
+                match={matchByFoundId(foundItem.id)}
+                hendvendelsesid={props.hendvendelsesid}
+              />
+            ))}
+          </div>
+        )}
       </Grid>
     </DataLoadingContainer>
   );

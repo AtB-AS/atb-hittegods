@@ -2,6 +2,11 @@ import { createMuiTheme } from "@material-ui/core/styles";
 
 export const theme = createMuiTheme({
   overrides: {
+    MuiAccordionSummary: {
+      content: {
+        display: "block",
+      },
+    },
     MuiButton: {
       root: {
         borderRadius: 0,

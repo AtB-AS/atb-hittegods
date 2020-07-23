@@ -95,11 +95,10 @@ function Henvendelse(props: Props) {
     <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
       <div className={styles.root}>
         <Box p={3} mt={4} className={styles.card}>
-          <div>
-            <h2>
-              {henvendelse?.subcategory} - {henvendelse?.brand}
-            </h2>
-          </div>
+          <h2>
+            {henvendelse?.subcategory} - {henvendelse?.brand}
+          </h2>
+
           <Box>
             <Grid container>
               <Grid item md={12}>
@@ -131,17 +130,18 @@ function Henvendelse(props: Props) {
             <Grid container>
               <Grid item md={4}>
                 <dl>
-                  <dt>Telefon:</dt>
-                  <dd>{henvendelse?.phone}</dd>
-                </dl>
-              </Grid>
-              <Grid item md={8}>
-                <dl>
                   <dt>Navn:</dt>
                   <dd>{henvendelse?.name}</dd>
                 </dl>
               </Grid>
-              <Grid item md={12}>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Telefon:</dt>
+                  <dd>{henvendelse?.phone}</dd>
+                </dl>
+              </Grid>
+
+              <Grid item md={4}>
                 <dl>
                   <dt>E-post:</dt>
                   <dd>{henvendelse?.email}</dd>

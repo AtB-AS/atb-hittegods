@@ -28,6 +28,7 @@ import Page from "./layouts/Page";
 import Content from "./layouts/Content";
 import PrimaryContent from "./layouts/PrimaryContent";
 import SecondaryContent from "./layouts/SecondaryContent";
+import Henvendelse from "./Henvendelse";
 
 type StorageItems = {
   id: number;
@@ -201,6 +202,13 @@ function Storage(props: Props) {
     });
   }
 
+  const removeItem = (id: number) => {
+    const newStorageItems = storageItems.filter((storageItem) => {
+      return storageItem.id !== id;
+    });
+    setStorageItems(newStorageItems);
+  };
+
   function formatDescription(desc: string | undefined) {
     if (typeof desc === "string") {
       if (desc.length > 16) {
@@ -323,7 +331,12 @@ function Storage(props: Props) {
             <Button href="/admin/lager/registrere" variant="contained">
               Registrer funnet gjenstand
             </Button>
-            <Route path="/admin/lager/:id" component={StorageItem} />
+            <Route path="/admin/lager/:id" render={(routeProps) => (
+                <StorageItem
+                    {...routeProps}
+                    removeItem={removeItem}
+                />
+            )} />
           </SecondaryContent>
         </Content>
       </Page>

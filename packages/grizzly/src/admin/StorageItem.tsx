@@ -7,6 +7,7 @@ import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
 import {printLabel} from "../printer/printer";
 import PrintButton from "./printButton";
+import {useHistory} from "react-router";
 
 const useStyles = makeStyles({
   root: {
@@ -56,6 +57,7 @@ function StorageItem(props: Props) {
   const styles = useStyles();
   const [notFound, setNotFound] = useState<string | undefined>(undefined);
   const [printerError,setPrinterError] = useState("")
+  const history = useHistory();
 
   useEffect(() => {
     setPrinterError("")
@@ -132,6 +134,39 @@ function StorageItem(props: Props) {
       )
     }
   }
+  const clickedToDelivery = (id:number) => {
+    setLoading(true);
+    updateFoundStatus(id).then((response)=>{
+      if(response.ok){
+        props.removeItem(id)
+      }
+    }).finally(()=>{
+      history.replace("/admin/lager");
+      setLoading(false);
+    })
+  }
+
+  const updateFoundStatus = (id: number) => {
+    return fetch("/api/admin/found/" + id, {
+      method: "put",
+      body: JSON.stringify({
+        status: "Til utlevering",
+        name: item?.name,
+        phone: item?.phone,
+        email: item?.email,
+        category: item?.category,
+        subCategory: item?.subcategory,
+        color: item?.color,
+        brand: item?.brand,
+        description: item?.description,
+        line: item?.line,
+      }),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+  };
 
   return (
     <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
@@ -172,7 +207,16 @@ function StorageItem(props: Props) {
           <ContactInfo/>
           <Box mt={2} >
             <Grid container spacing={1}>
-              <Grid item md={12}>
+              <Grid item md={6}>
+                <Button
+                        onClick={()=>{
+                          if (item?.id!==undefined){clickedToDelivery(item?.id)}}}
+                        color="primary"
+                        variant="contained">
+                  Til utlevering
+                </Button>
+              </Grid>
+              <Grid item md={6}>
                 <PrintButton setErrorMessage={onClickedPrintButton}
                              brand={item?.brand}
                              description={item?.description}

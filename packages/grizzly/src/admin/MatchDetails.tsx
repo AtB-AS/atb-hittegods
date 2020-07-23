@@ -272,11 +272,8 @@ function MatchDetails(props: Props) {
 
   return (
     <div>
-      <Box p={2} mt={1} mb={0} className={styles.card}>
+      <Box ml={2}>
         <Grid container spacing={1}>
-          <h3 className="h4">
-            {props.foundItem.subcategory} - {props.foundItem.brand}
-          </h3>
           <Grid item md={12}>
             <dt>Full beskrivelse:</dt>
             <dd>{props.foundItem.description}</dd>

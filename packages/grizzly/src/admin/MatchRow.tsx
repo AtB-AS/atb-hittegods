@@ -6,6 +6,17 @@ import Collapse from "@material-ui/core/Collapse";
 import MatchDetails from "./MatchDetails";
 import { Match } from "./Henvendelse";
 import { Found } from "./Matches";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import Typography from "@material-ui/core/Typography";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import Accordion from "@material-ui/core/Accordion";
+import { IconButton } from "@material-ui/core";
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import Grid from "@material-ui/core/Grid";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import { useTableStyles } from "./styles";
 
 type Props = {
   foundItem: Found;
@@ -18,6 +29,8 @@ type Props = {
 
 const MatchRow = (props: Props) => {
   const [isClicked, setClicked] = useState(false);
+  const classes = useTableStyles();
+  const [isExpanded, setExpanded] = useState(false);
 
   function clickedRowItem(foundId: number) {
     if (!isClicked) {
@@ -53,33 +66,48 @@ const MatchRow = (props: Props) => {
 
   function formatDescription(desc: string) {
     if (desc.length > 50) {
-      return desc.slice(0, 50) + "...";
+      return desc.slice(0, 35) + "...";
     } else {
       return desc;
     }
   }
 
   return (
-    <TableBody>
-      <TableRow hover onClick={(event) => clickedRowItem(props.foundItem.id)}>
-        <TableCell>{props.foundItem.id}</TableCell>
-        <TableCell>{props.foundItem.subcategory}</TableCell>
-        <TableCell>{props.foundItem.brand}</TableCell>
-        <TableCell>{formatDescription(props.foundItem.description)}</TableCell>
-      </TableRow>
-
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
-          <Collapse in={isClicked} timeout="auto" unmountOnExit>
-            <MatchDetails
-              foundItem={props.foundItem}
-              removeItem={props.removeItem}
-              setLoading={props.setLoading}
-            />
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </TableBody>
+    <Accordion
+      onClick={(event) => clickedRowItem(props.foundItem.id)}
+      onChange={(event, expanded) => setExpanded(expanded)}
+    >
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls="panel1a-content"
+        id="panel1a-header"
+      >
+        <Typography
+          style={isExpanded ? { fontWeight: "bold" } : { fontWeight: "normal" }}
+        >
+          <Grid container>
+            <Grid item md={1}>
+              {props.foundItem.id}
+            </Grid>
+            <Grid item md={4}>
+              {props.foundItem.subcategory} -{props.foundItem.brand}
+            </Grid>
+            <Grid item md={5}>
+              {formatDescription(props.foundItem.description)}
+            </Grid>
+          </Grid>
+        </Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <Typography>
+          <MatchDetails
+            foundItem={props.foundItem}
+            removeItem={props.removeItem}
+            setLoading={props.setLoading}
+          />
+        </Typography>
+      </AccordionDetails>
+    </Accordion>
   );
 };
 

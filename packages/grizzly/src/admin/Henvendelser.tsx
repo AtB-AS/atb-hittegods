@@ -200,7 +200,9 @@ function Henvendelser(props: Props) {
 
               <Grid item md={5} className={searchClasses.gridItem1}>
                 <Box>
-                  <PrimaryButton href={"/"}>Ny henvendelse</PrimaryButton>
+                  <PrimaryButton href={"/"} target="_blank">
+                    Ny henvendelse
+                  </PrimaryButton>
                 </Box>
               </Grid>
             </Grid>

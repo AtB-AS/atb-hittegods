@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TableContainer } from "@material-ui/core";
+import { createStyles, TableContainer, Theme } from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -12,7 +12,15 @@ import TransitItem from "./TransitItem";
 import moment from "moment";
 import { HTTPError } from "./Errors";
 import DataLoadingContainer from "../DataLoadingContainer";
-import Button from "@material-ui/core/Button";
+import Toolbar from "./layouts/Toolbar";
+import Page from "./layouts/Page";
+import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid";
+import PrimaryButton from "./PrimaryButton";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import Content from "./layouts/Content";
+import PrimaryContent from "./layouts/PrimaryContent";
+import SecondaryContent from "./layouts/SecondaryContent";
 
 type TransitItem = {
   id: number;
@@ -36,6 +44,22 @@ type Props = {
   };
 };
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    box: {
+      alignItems: "flex-end",
+      paddingBottom: "8px",
+    },
+    gridContainer: {
+      marginTop: "27.7px",
+    },
+    gridItem: {
+      display: "flex",
+      justifyContent: "flex-end",
+    },
+  })
+);
+
 function Transit(props: Props) {
   const classes = useTableStyles();
   const [transitItems, setTransitItems] = useState<TransitItem[]>([]);
@@ -43,6 +67,7 @@ function Transit(props: Props) {
   const [error, setError] = useState(false);
   const history = useHistory();
   const [notFound, setNotFound] = useState<string | undefined>(undefined);
+  const gridClasses = useStyles();
 
   const removeItem = (id: number) => {
     const newItem = transitItems.filter((transitItem) => {
@@ -82,71 +107,77 @@ function Transit(props: Props) {
     history.push("/admin/påVei/" + id);
   }
 
-  function formatDescription(desc: string | undefined) {
-    if (typeof desc === "string") {
-      if (desc.length > 16) {
-        return desc.slice(0, 16) + "...";
-      } else {
-        return desc;
-      }
-    } else {
-      return "";
-    }
-  }
-
   return (
     <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
-      <div className={classes.root}>
-        <div className={classes.leftCol}>
-          <TableContainer className={classes.container}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow className={classes.thRow}>
-                  <TableCell className={classes.th}>Id</TableCell>
-                  <TableCell className={classes.th}>Underkategori</TableCell>
-                  <TableCell className={classes.th}>Beskrivelse</TableCell>
-                  <TableCell className={classes.th}>Telefon</TableCell>
-                  <TableCell className={classes.th}>Dato</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {transitItems.map((item, index) => {
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => clickedRowItem(item.id)}
-                      className={
-                        `${item.id}` === props.match.params?.id
-                          ? classes.activeRow
-                          : classes.row
-                      }
-                    >
-                      <TableCell>{item.id}</TableCell>
-                      <TableCell>{item.subcategory}</TableCell>
-                      <TableCell>{item.description}</TableCell>
-                      <TableCell>{item.phone}</TableCell>
-                      <TableCell>
-                        {moment(item?.date).format("DD.MM.yy")}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-        <div className={classes.rightCol}>
-          <Button href="/admin/påVei/registrer" variant="contained">
-            Registrer funnet gjenstand
-          </Button>
-          <Route
-            path="/admin/påVei/:id"
-            render={(routeProps) => (
-              <TransitItem {...routeProps} removeItem={removeItem} />
-            )}
-          />
-        </div>
-      </div>
+      <Page>
+        <h1>På vei</h1>
+        <p>Registreringsside for VY og Tide. </p>
+
+        <Toolbar>
+          <Grid
+            container
+            direction="row"
+            justify="flex-end"
+            alignItems="flex-end"
+            className={gridClasses.gridContainer}
+          >
+            <Grid item>
+              <PrimaryButton href="/admin/påVei/registrer">
+                Ny gjenstand
+              </PrimaryButton>
+            </Grid>
+          </Grid>
+        </Toolbar>
+
+        <Content>
+          <PrimaryContent>
+            <TableContainer className={classes.container}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow className={classes.thRow}>
+                    <TableCell className={classes.th}>Id</TableCell>
+                    <TableCell className={classes.th}>Underkategori</TableCell>
+                    <TableCell className={classes.th}>Beskrivelse</TableCell>
+                    <TableCell className={classes.th}>Telefon</TableCell>
+                    <TableCell className={classes.th}>Dato</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {transitItems.map((item, index) => {
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => clickedRowItem(item.id)}
+                        className={
+                          `${item.id}` === props.match.params?.id
+                            ? classes.activeRow
+                            : classes.row
+                        }
+                      >
+                        <TableCell>{item.id}</TableCell>
+                        <TableCell>{item.subcategory}</TableCell>
+                        <TableCell>{item.description}</TableCell>
+                        <TableCell>{item.phone}</TableCell>
+                        <TableCell>
+                          {moment(item?.date).format("DD.MM.yy")}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </PrimaryContent>
+          <SecondaryContent>
+            <Route
+              path="/admin/påVei/:id"
+              render={(routeProps) => (
+                <TransitItem {...routeProps} removeItem={removeItem} />
+              )}
+            />
+          </SecondaryContent>
+        </Content>
+      </Page>
     </DataLoadingContainer>
   );
 }

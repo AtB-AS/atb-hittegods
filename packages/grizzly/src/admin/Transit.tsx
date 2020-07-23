@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { createStyles, TableContainer, Theme } from "@material-ui/core";
+import { TableContainer, TableSortLabel, createStyles, Theme } from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -21,6 +21,8 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import Content from "./layouts/Content";
 import PrimaryContent from "./layouts/PrimaryContent";
 import SecondaryContent from "./layouts/SecondaryContent";
+import Button from "@material-ui/core/Button";
+import { HenvendelseType } from "./utils";
 
 type TransitItem = {
   id: number;
@@ -60,6 +62,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+type ColumnProps = {
+  columnName: string;
+  labelName: string;
+};
+
 function Transit(props: Props) {
   const classes = useTableStyles();
   const [transitItems, setTransitItems] = useState<TransitItem[]>([]);
@@ -68,6 +75,8 @@ function Transit(props: Props) {
   const history = useHistory();
   const [notFound, setNotFound] = useState<string | undefined>(undefined);
   const gridClasses = useStyles();
+  const [orderBy, setOrderBy] = useState<string>("desc");
+  const [collumnName, setCollumnName] = useState("id");
 
   const removeItem = (id: number) => {
     const newItem = transitItems.filter((transitItem) => {
@@ -75,6 +84,19 @@ function Transit(props: Props) {
     });
     setTransitItems(newItem);
   };
+
+  useEffect(() => {
+    if (orderBy === "desc") {
+      setTransitItems(
+        transitItems
+          .map((h) => h)
+          .sort(compare)
+          .reverse()
+      );
+    } else {
+      setTransitItems(transitItems.map((h) => h).sort(compare));
+    }
+  }, [orderBy, collumnName]);
 
   useEffect(() => {
     const params = {
@@ -94,7 +116,13 @@ function Transit(props: Props) {
         }
       })
       .then((jsonData) => {
+        const transitItem = jsonData.data.items;
         setTransitItems(jsonData.data.items);
+        if (orderBy === "desc") {
+          setTransitItems(transitItem.sort(compare).reverse());
+        } else {
+          setTransitItems(transitItem.sort(compare));
+        }
         setLoading(false);
       })
       .catch((e) => {
@@ -105,6 +133,47 @@ function Transit(props: Props) {
 
   function clickedRowItem(id: number) {
     history.push("/admin/påVei/" + id);
+  }
+
+  function compare(a: TransitItem, b: TransitItem) {
+    // @ts-ignore
+    return `${a[collumnName]}`.localeCompare(`${b[collumnName]}`, "en", {
+      numeric: true,
+      sensitivity: "base",
+    });
+  }
+
+  function TransitColumn(props: ColumnProps) {
+    return (
+      <TableCell className={classes.th}>
+        <TableSortLabel
+          active={collumnName === props.columnName}
+          direction={orderBy === "asc" ? "desc" : "asc"}
+          onClick={(event) => clickedColumnName(props.columnName)}
+        >
+          {props.labelName}
+        </TableSortLabel>
+      </TableCell>
+    );
+  }
+
+  function clickedColumnName(col: string) {
+    if (col === collumnName) {
+      setOrderBy(orderBy === "asc" ? "desc" : "asc");
+    }
+    setCollumnName(col);
+  }
+
+  function formatDescription(desc: string | undefined) {
+    if (typeof desc === "string") {
+      if (desc.length > 16) {
+        return desc.slice(0, 16) + "...";
+      } else {
+        return desc;
+      }
+    } else {
+      return "";
+    }
   }
 
   return (
@@ -135,11 +204,17 @@ function Transit(props: Props) {
               <Table stickyHeader aria-label="sticky table">
                 <TableHead>
                   <TableRow className={classes.thRow}>
-                    <TableCell className={classes.th}>Id</TableCell>
-                    <TableCell className={classes.th}>Underkategori</TableCell>
-                    <TableCell className={classes.th}>Beskrivelse</TableCell>
-                    <TableCell className={classes.th}>Telefon</TableCell>
-                    <TableCell className={classes.th}>Dato</TableCell>
+                    <TransitColumn columnName={"id"} labelName={"Id"} />
+                    <TransitColumn
+                        columnName={"subcategory"}
+                        labelName={"Underkategori"}
+                    />
+                    <TransitColumn
+                        columnName={"description"}
+                        labelName={"Beskrivelse"}
+                    />
+                    <TransitColumn columnName={"phone"} labelName={"Telefon"} />
+                    <TransitColumn columnName={"date"} labelName={"Dato"} />
                   </TableRow>
                 </TableHead>
                 <TableBody>

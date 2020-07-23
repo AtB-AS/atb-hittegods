@@ -57,10 +57,10 @@ function TransitItem(props: Props) {
   const [notFound, setNotFound] = useState<string | undefined>(undefined);
   const [edit, setEdit] = useState(false);
   const [editValue, setEditValue] = useState("");
-  const [printerError,setPrinterError] = useState("")
+  const [printerError, setPrinterError] = useState("");
 
   useEffect(() => {
-    setPrinterError("")
+    setPrinterError("");
     setLoading(true);
     setNotFound(undefined);
     fetch("/api/admin/found/" + props.match.params.id)
@@ -116,7 +116,7 @@ function TransitItem(props: Props) {
         .then((response) => {
           if (response.ok) {
             props.removeItem(parseInt(props.match.params.id));
-            history.replace("/admin/påVei");
+            history.replace("/admin/påVei/");
           } else {
             throw new HTTPError("HTTPError", response.status);
           }
@@ -135,8 +135,8 @@ function TransitItem(props: Props) {
     }
   };
 
-  function onClickedPrintButton(errorMessage:string){
-    setPrinterError(errorMessage)
+  function onClickedPrintButton(errorMessage: string) {
+    setPrinterError(errorMessage);
   }
 
   const editClickHandler = () => {
@@ -144,7 +144,7 @@ function TransitItem(props: Props) {
       if (props.match.params.id !== undefined) {
         fetch("/api/admin/found/" + props.match.params.id, {
           body: JSON.stringify({
-            status: "Funnet",
+            status: "På vei",
             subCategory: item?.subcategory,
             category: item?.category,
             description: editValue,
@@ -162,8 +162,10 @@ function TransitItem(props: Props) {
         })
           .then((response) => {
             if (response.ok) {
-              props.removeItem(parseInt(props.match.params.id));
-              history.replace("/admin/påVei");
+              //props.removeItem(parseInt(props.match.params.id));
+              console.log("Id : ", props.match.params.id);
+              history.replace("/admin/påVei/" + props.match.params.id);
+              window.location.reload(false);
             } else {
               throw new HTTPError("HTTPError", response.status);
             }
@@ -182,6 +184,48 @@ function TransitItem(props: Props) {
       }
     } else {
       setEdit(true);
+    }
+  };
+
+  const deleteClickHandler = () => {
+    if (props.match.params.id !== undefined) {
+      fetch("/api/admin/found/" + props.match.params.id, {
+        body: JSON.stringify({
+          status: "Utlevert",
+          subCategory: item?.subcategory,
+          category: item?.category,
+          description: item?.description,
+          name: item?.name,
+          phone: item?.phone,
+          email: item?.email,
+          brand: item?.brand,
+          color: item?.color,
+          line: item?.line,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "PUT",
+      })
+        .then((response) => {
+          if (response.ok) {
+            props.removeItem(parseInt(props.match.params.id));
+            history.replace("/admin/påVei/");
+          } else {
+            throw new HTTPError("HTTPError", response.status);
+          }
+        })
+        .catch((e) => {
+          if (e.name === "HTTPError") {
+            if (e.status === 404) {
+              //TODO 404 popup message
+            } else {
+              //TODO standard error
+            }
+          } else {
+            //TODO standart error
+          }
+        });
     }
   };
 
@@ -211,7 +255,7 @@ function TransitItem(props: Props) {
             editClickHandler();
           }}
         >
-          Lagre og legg til lager
+          Lagre
         </Button>
       </Grid>
     );
@@ -220,16 +264,16 @@ function TransitItem(props: Props) {
     buttons = (
       <Grid container>
         <Grid item md={4}>
-        <Button
-          variant="contained"
-          color="primary"
-          className="editButton"
-          onClick={(event) => {
-            editClickHandler();
-          }}
-        >
-          Rediger
-        </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            className="editButton"
+            onClick={(event) => {
+              editClickHandler();
+            }}
+          >
+            Rediger
+          </Button>
         </Grid>
         <Grid item md={4}>
           <Button
@@ -244,15 +288,29 @@ function TransitItem(props: Props) {
           </Button>
         </Grid>
         <Grid item md={4}>
-          <PrintButton setErrorMessage={onClickedPrintButton}
-                       brand={item?.brand}
-                       description={item?.description}
-                       line={item?.line}
-                       id={item?.id}
-                       subCategory={item?.subcategory}/>
+          <Button
+            variant="contained"
+            color="primary"
+            className="storageButton"
+            onClick={(event) => {
+              deleteClickHandler();
+            }}
+          >
+            Lever til eier
+          </Button>
+        </Grid>
+        <Grid item md={4}>
+          <PrintButton
+            setErrorMessage={onClickedPrintButton}
+            brand={item?.brand}
+            description={item?.description}
+            line={item?.line}
+            id={item?.id}
+            subCategory={item?.subcategory}
+          />
         </Grid>
         <Grid item md={12}>
-          <h6 style={{color:"red", fontSize:"16"}}>{printerError}</h6>
+          <h6 style={{ color: "red", fontSize: "16" }}>{printerError}</h6>
         </Grid>
       </Grid>
     );
@@ -334,10 +392,7 @@ function TransitItem(props: Props) {
           </Box>
           <h3 className="h4">Kontaktinfo:</h3>
           <ContactInfo />
-            <Box mt={2}>
-              {buttons}
-            </Box>
-
+          <Box mt={2}>{buttons}</Box>
         </Box>
       </div>
     </DataLoadingContainer>

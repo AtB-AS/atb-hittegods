@@ -2,6 +2,8 @@ export type HenvendelseType = {
   id: number;
   name: string;
   phone: string;
+  color: string;
+  email: string;
   subcategory: string;
   description: string;
   matchCount: number;
@@ -25,7 +27,9 @@ export function searchHenvendelse(
       user.subcategory
         .toLocaleLowerCase()
         .includes(query.toLocaleLowerCase()) ||
-      user.id.toLocaleString().includes(query)
+      user.id.toLocaleString().includes(query) ||
+      user.color.toLocaleLowerCase().includes(query.toLocaleLowerCase()) ||
+      user.email.toLocaleLowerCase().includes(query.toLocaleLowerCase())
     );
   });
   return searchResults;

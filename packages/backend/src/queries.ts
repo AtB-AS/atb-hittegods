@@ -1,35 +1,14 @@
-export const selectLostByRefnum = `
-select name, email, phone, description, brand, date, time, 
-refnr, status, category, subcategory, line, color
-from lost
-join status on (status.statusid = lost.statusid)
-join line on (line.lineid = lost.lineid)
-join category on (category.categoryid = lost.catid)
-join subcategory on (subcategory.subcategoryid = lost.subcatid)
-join color on (color.colorid = lost.colorid)
-where refnr=$1`;
-
 export const insertNewLost = `
-insert into lost (name, email, phone, description, brand, date, time,
-lineid, colorid, catid, subcatid, statusid, refnr)
+insert into lost (name, email, phone, description, brand, date,
+lineid, colorid, catid, subcatid, statusid)
 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-$11, $12, $13)
+$11)
 returning *`;
-
-export const updateLost = `
-update lost
-set description=$1, brand=$2, date=$3, lineid=$4,
-colorid=$5, catid=$6, subcatid=$7
-where refnr=$8
-`;
-
-export const updateStatusUserDelete = `
-update lost set statusid = $1 where refnr = $2`;
 
 export const selectAllLost = `
 select lost.name, lost.email, lost.phone, lost.description, lost.brand, lost."date",
 line, color, category, subcategory,
-status, lost.refnr, lost.lostid, match.matchid, match.new, match.foundid
+status, lost.lostid, match.matchid, match.new, match.foundid
 from lost
 join subcategory on subcatid=subcategoryid
 join category on catid=categoryid
@@ -43,7 +22,7 @@ where lost.statusid = $1`;
 export const selectLostById = `
 select lost.name, lost.email, lost.phone, lost.description, lost.brand, lost."date",
 line, color, category, subcategory,
-status, lost.refnr, lost.lostid, match.matchid, match.new, match.foundid
+status, lost.lostid, match.matchid, match.new, match.foundid
 from lost
 join subcategory on subcatid=subcategoryid
 join category on catid=categoryid

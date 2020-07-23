@@ -13,8 +13,8 @@ import { useTheme } from "@material-ui/core/styles";
 
 import RegAutoSelect from "./Select";
 import { Link } from "react-router-dom";
-import {printLabel} from "../../printer/printer";
-import {log} from "util";
+import { printLabel } from "../../printer/printer";
+import { log } from "util";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -74,8 +74,6 @@ function RegisterFound(props: Props) {
 
   const classes = useStyles();
   const catData = categoryData;
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     fetch("/api/line")
@@ -90,18 +88,10 @@ function RegisterFound(props: Props) {
       });
   }, []);
 
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = `${window.location.origin}/dymosdk.js`;
-    //For head
-    document.head.appendChild(script);
-  }, [])
-
   const { register, handleSubmit, errors } = useForm();
 
   const sendForm = () => {
-    const payload ={
+    const payload = {
       name: name,
       phone: tlf,
       email: email,
@@ -125,24 +115,25 @@ function RegisterFound(props: Props) {
       .then((response) => response.json())
       .then((regData) => {
         setItemIdRegistered(regData.data.foundid);
-        console.log("before print")
-        console.log(payload)
-        return regData
+        console.log("before print");
+        console.log(payload);
+        return regData;
       })
-        .then((regData) => {
-          console.log("regData : ", regData)
-          const status = printLabel(payload,regData.data.foundid)
-          return status
-        }).then((status)=>{
-          console.log("print status: ",status)
-          if(status==="print ok"){
-            setPrintStatus(true)
-          }
-        })
+      .then((regData) => {
+        console.log("regData : ", regData);
+        const status = printLabel(payload, regData.data.foundid);
+        return status;
+      })
+      .then((status) => {
+        console.log("print status: ", status);
+        if (status === "print ok") {
+          setPrintStatus(true);
+        }
+      })
       .catch((e) => {
-        console.log("error:",e)
+        console.log("error:", e);
         setError(true);
-      })
+      });
   };
 
   const getSubCatData = (mainCat: string): string[] => {
@@ -155,13 +146,17 @@ function RegisterFound(props: Props) {
     } else {
       return ["velg hovedkategori"];
     }
-  }
+  };
 
   if (itemIdRegistered) {
     return (
       <div>
         <h1>Gjenstand er nå registrert</h1>
-        <h2>{printStatus ?  "Lapp printet ut" :"Noe gikk galt, lapp ble ikke printet ut.\nEr printeren plugget i med USB og strøm med rikitg driver installert?"  }</h2>
+        <h2>
+          {printStatus
+            ? "Lapp printet ut"
+            : "Noe gikk galt, lapp ble ikke printet ut.\nEr printeren plugget i med USB og strøm med rikitg driver installert?"}
+        </h2>
         <Link to={`${props.pathToComp}/${itemIdRegistered}`}>
           <Button>Gå til registrert gjenstand</Button>
         </Link>
@@ -171,7 +166,6 @@ function RegisterFound(props: Props) {
       </div>
     );
   }
-
 
   return (
     <Grid container>

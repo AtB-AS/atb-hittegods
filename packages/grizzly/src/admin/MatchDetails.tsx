@@ -4,7 +4,8 @@ import React from "react";
 import { HTTPError } from "./Errors";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import moment from "moment";
-import {theme} from "../components/styling";
+import { theme } from "../components/styling";
+import useNotification from "./notificationCenter/useNotification";
 
 const useStyles = makeStyles({
   root: {
@@ -62,6 +63,7 @@ function MatchDetails(props: Props) {
   const { id } = useParams();
   const history = useHistory();
   const styles = useStyles();
+  const { notify } = useNotification();
 
   const confirmMatch = () => {
     props.setLoading(true);
@@ -119,14 +121,30 @@ function MatchDetails(props: Props) {
         props.setLoading(false);
         if ((e.name = "HTTPError")) {
           if (e.status === 409) {
-            //TODO 409 popup
+            notify({
+              type: "error",
+              description:
+                "Beklager, men kan ikke matche. Ta kontakt med drift",
+            });
           } else if (e.status === 404) {
-            //TODO 404 error
+            notify({
+              type: "error",
+              description:
+                "Beklager, men henvendelse eller gjenstand finnes ikke i databasen",
+            });
           } else {
-            //TODO standart error popup
+            notify({
+              type: "error",
+              description:
+                "Beklager. Teknisk feil oppstod. Prøv å last siden på nytt",
+            });
           }
         } else {
-          //TODO standart error popup
+          notify({
+            type: "error",
+            description:
+              "Beklager. Teknisk feil oppstod. Prøv å last siden på nytt",
+          });
         }
       });
   };
@@ -202,9 +220,9 @@ function MatchDetails(props: Props) {
     );
   } else {
     confirmButton = (
-        <Box>
-          <p style={{color:"#999999"}}>Gjenstand er ikke bekreftet ankommet</p>
-        </Box>
+      <Box>
+        <p style={{ color: "#999999" }}>Gjenstand er ikke bekreftet ankommet</p>
+      </Box>
     );
   }
 
@@ -281,8 +299,12 @@ function MatchDetails(props: Props) {
               <dd>{props.foundItem.color}</dd>
             </dl>
           </Grid>
-          <Grid item md={12}><ContactInfo/></Grid>
-          <Grid item md={12}><Box mb={1}>{confirmButton}</Box></Grid>
+          <Grid item md={12}>
+            <ContactInfo />
+          </Grid>
+          <Grid item md={12}>
+            <Box mb={1}>{confirmButton}</Box>
+          </Grid>
         </Grid>
       </Box>
     </div>

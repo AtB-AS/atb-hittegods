@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   createStyles,
-  IconButton,
-  InputBase,
   TableContainer,
   TableSortLabel,
   Theme,
@@ -18,7 +16,6 @@ import Henvendelse from "./Henvendelse";
 import { Route } from "react-router-dom";
 import { useTableStyles } from "./styles";
 import { searchHenvendelse, HenvendelseType } from "./utils";
-import SearchIcon from "@material-ui/icons/Search";
 import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
 import Button from "@material-ui/core/Button";
@@ -29,6 +26,9 @@ import Toolbar from "./layouts/Toolbar";
 import Content from "./layouts/Content";
 import PrimaryContent from "./layouts/PrimaryContent";
 import SecondaryContent from "./layouts/SecondaryContent";
+import SeachField from "../components/SeachField";
+import PrimaryButton from "./PrimaryButton";
+import useNotification from "./notificationCenter/useNotification";
 
 type Props = {
   match: {
@@ -45,25 +45,16 @@ type ColumnProps = {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    input: {
-      marginLeft: theme.spacing(1),
-      flex: 1,
-      width: "50%",
+    box: {
+      alignItems: "flex-end",
     },
-    iconButton: {
-      padding: 10,
+    gridItem1: {
+      display: "flex",
+      justifyContent: "flex-end",
     },
-    button: {
-      color: theme.palette.background.paper,
-      backgroundColor: theme.palette.secondary.light,
-      padding: "12px 16px 10px",
-      float: "right",
-      "&:hover": {
-        color: theme.palette.background.paper,
-      },
-    },
-    gridItem: {
-      display: "grid",
+    gridItem2: {
+      display: "flex",
+      justifyContent: "flex-start",
     },
   })
 );
@@ -78,6 +69,7 @@ function Henvendelser(props: Props) {
   const [orderBy, setOrderBy] = useState<string>("desc");
   const [collumnName, setCollumnName] = useState("id");
   const [searchValue, setSearchValue] = useState("");
+  const { notify } = useNotification();
   const params = {
     status: "Mistet",
   };
@@ -191,40 +183,30 @@ function Henvendelser(props: Props) {
   return (
     <DataLoadingContainer loading={isLoading} error={error}>
       <Page>
+        <h1>Henvendelser</h1>
+        <p>Oversikt over henvendelser og potensielle funn. </p>
         <Toolbar>
-          <Grid container>
-            <Grid item md={9}>
-              <Box>
-                <InputBase
-                  className={searchClasses.input}
-                  placeholder="Søk på henvendelser"
-                  onChange={(event) => {
-                    setSearchValue(event.target.value);
-                  }}
-                  inputProps={{ "aria-label": "Søk på henvendelser" }}
-                />
-                <IconButton
-                  type="submit"
-                  className={searchClasses.iconButton}
-                  aria-label="search"
-                >
-                  <SearchIcon />
-                </IconButton>
-              </Box>
-            </Grid>
+          <Box>
+            <Grid container className={searchClasses.box}>
+              <Grid item md={7}>
+                <Box className={searchClasses.gridItem2}>
+                  <SeachField
+                    onChange={(event) => {
+                      setSearchValue(event.target.value);
+                    }}
+                  />
+                </Box>
+              </Grid>
 
-            <Grid item md={3}>
-              <Button
-                className={searchClasses.button}
-                variant="contained"
-                href="/"
-                target="_blank"
-              >
-                Ny henvendelse
-              </Button>
+              <Grid item md={5} className={searchClasses.gridItem1}>
+                <Box>
+                  <PrimaryButton href={"/"}>Ny henvendelse</PrimaryButton>
+                </Box>
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
         </Toolbar>
+
         <Content>
           <PrimaryContent>
             <TableContainer className={classes.container}>

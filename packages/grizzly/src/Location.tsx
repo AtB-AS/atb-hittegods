@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, Button, Grow } from "@material-ui/core";
+import {
+  Box,
+  Grid,
+  Button,
+  Grow,
+  Theme,
+  createStyles,
+} from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import InputLabel from "@material-ui/core/InputLabel";
 import DataLoadingContainer from "./DataLoadingContainer";
+import NextBtn from "./components/NextBtn";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import Zoom from "@material-ui/core/Zoom";
 
 type Props = {
   onLocationSelect: (location: string) => void;
@@ -22,6 +32,17 @@ function Location(props: Props) {
   const [error, setError] = useState(false);
   const [isloading, setLoading] = useState(true);
   const [line, setLine] = useState(props.line);
+  const [status, setStatus] = useState(false);
+
+  const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+      rightAlign: {
+        display: "flex",
+        justifyContent: "flex-end",
+      },
+    })
+  );
+  const classes = useStyles();
 
   useEffect(() => {
     setLoading(true);
@@ -72,8 +93,8 @@ function Location(props: Props) {
                       if (value?.line) {
                         // @ts-ignore
 
-                        props.onLocationSelect(value.line);
                         setLine(value.line);
+                        setStatus(true);
                       }
                     }}
                     renderInput={(params) => (
@@ -95,6 +116,15 @@ function Location(props: Props) {
                   </Button>
                 </Grow>
               </Grid>
+              {status && (
+                <Zoom in>
+                  <Grid item xs={12}>
+                    <Box className={classes.rightAlign}>
+                      <NextBtn />
+                    </Box>
+                  </Grid>
+                </Zoom>
+              )}
             </Grid>
           </form>
         </Box>

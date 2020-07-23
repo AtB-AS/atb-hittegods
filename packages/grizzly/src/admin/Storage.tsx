@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   createStyles,
-  IconButton,
-  InputBase,
   TableContainer,
   TableSortLabel,
   Theme,
@@ -17,17 +15,18 @@ import { Route } from "react-router-dom";
 import StorageItem from "./StorageItem";
 import { useHistory } from "react-router";
 import { useTableStyles } from "./styles";
-import SearchIcon from "@material-ui/icons/Search";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import moment from "moment";
-import TextField from "@material-ui/core/TextField";
 import DataLoadingContainer from "../DataLoadingContainer";
-import Button from "@material-ui/core/Button";
 import Toolbar from "./layouts/Toolbar";
 import Page from "./layouts/Page";
 import Content from "./layouts/Content";
 import PrimaryContent from "./layouts/PrimaryContent";
 import SecondaryContent from "./layouts/SecondaryContent";
+import SeachField from "../components/SeachField";
+import DatePickerToFrom from "../components/DatePickerToFrom";
+import Grid from "@material-ui/core/Grid";
+import PrimaryButton from "./PrimaryButton";
 import Henvendelse from "./Henvendelse";
 
 type StorageItems = {
@@ -63,23 +62,17 @@ const useStyles = makeStyles((theme: Theme) =>
     input: {
       marginLeft: theme.spacing(1),
       flex: 1,
-      width: "50%",
-    },
-    iconButton: {
-      padding: 10,
     },
     container: {
       display: "flex",
       flexWrap: "wrap",
     },
-    textField: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      width: "20%",
-      color: "#000000",
-    },
     box: {
-      color: "#000000",
+      alignItems: "flex-end",
+    },
+    gridItemButton: {
+      display: "flex",
+      justifyContent: "flex-end",
     },
   })
 );
@@ -225,58 +218,34 @@ function Storage(props: Props) {
     <DataLoadingContainer loading={isLoading} error={error}>
       {storageItems.length === 0 && <p>Ingen henvendelser registrert</p>}
       <Page>
+        <h1>Lager</h1>
+        <p>Oversikt over gjenstander som befinner seg på lager hos AtB.</p>
         <Toolbar>
-          <Box mt={2} mb={2} display="flex" className={searchClasses.box}>
-            <InputBase
-              className={searchClasses.input}
-              placeholder="Søk på lagerbeholdning"
-              onChange={(event) => {
-                setSearchValue(event.target.value);
-              }}
-              inputProps={{ "aria-label": "Søk på lagerbeholdning" }}
-            />
-            <IconButton
-              type="submit"
-              className={searchClasses.iconButton}
-              aria-label="search"
-            >
-              <SearchIcon />
-            </IconButton>
-
-            <TextField
-              label="Fra dato"
-              type="date"
-              className={searchClasses.textField}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={fromDate}
-              inputProps={{
-                min: ((d) => new Date(d.setDate(d.getDate() - 90)))(new Date())
-                  .toJSON()
-                  .split("T")[0],
-                max: toDate || new Date().toJSON().split("T")[0],
-              }}
-              onChange={(event) => {
-                setFromDate(event.target.value);
-              }}
-            />
-            <TextField
-              label="Til dato"
-              type="date"
-              className={searchClasses.textField}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={toDate}
-              inputProps={{
-                min: fromDate,
-                max: new Date().toJSON().split("T")[0],
-              }}
-              onChange={(event) => {
-                setToDate(event.target.value);
-              }}
-            />
+          <Box>
+            <Grid container className={searchClasses.box}>
+              <Grid item md={4}>
+                <SeachField
+                  onChange={(event) => {
+                    setSearchValue(event.target.value);
+                  }}
+                />
+              </Grid>
+              <Grid item md={6}>
+                <DatePickerToFrom
+                  onChangeFrom={(event) => setFromDate(event.target.value)}
+                  onChangeTo={(event) => setToDate(event.target.value)}
+                  fromDate={fromDate}
+                  toDate={toDate}
+                />
+              </Grid>
+              <Grid item md={2} className={searchClasses.gridItemButton}>
+                <Box>
+                  <PrimaryButton href="/admin/lager/registrere">
+                    Ny gjenstand
+                  </PrimaryButton>
+                </Box>
+              </Grid>
+            </Grid>
           </Box>
         </Toolbar>
         <Content>
@@ -328,9 +297,6 @@ function Storage(props: Props) {
             </TableContainer>
           </PrimaryContent>
           <SecondaryContent>
-            <Button href="/admin/lager/registrere" variant="contained">
-              Registrer funnet gjenstand
-            </Button>
             <Route path="/admin/lager/:id" render={(routeProps) => (
                 <StorageItem
                     {...routeProps}

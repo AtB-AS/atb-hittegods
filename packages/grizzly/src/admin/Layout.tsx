@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { createStyles, Theme } from "@material-ui/core";
-import { NavLink, Route, Switch } from "react-router-dom";
+import { NavLink, Redirect, Route, Switch } from "react-router-dom";
 import Henvendelser from "./Henvendelser";
 import Storage from "./Storage";
 import Transit from "./Transit";
@@ -9,7 +9,6 @@ import RegisterStorage from "./register/RegisterStorage";
 import RegisterTransit from "./register/RegisterTransit";
 import PickUp from "./PickUp";
 import Logo from "../components/icons/logo";
-import LayoutTest from "./layouts/layout";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -108,6 +107,9 @@ function Layout() {
           <Route path="/admin/tilUtlevering/:id?" component={PickUp} />
           <Route path="/admin/påVei/registrer" component={RegisterTransit} />
           <Route path="/admin/påVei" component={Transit} />
+          <Route exact path="/admin">
+            <Redirect to="/admin/henvendelser" />
+          </Route>
         </Switch>
       </main>
     </div>

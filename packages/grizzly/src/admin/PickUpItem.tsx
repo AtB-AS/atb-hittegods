@@ -196,6 +196,13 @@ function PickUpItem(props: Props) {
       method: "PUT",
     })
       .then((response) => {
+        if (response.ok) {
+          setLoading(false);
+          props.removeItem(parseInt(props.match.params.id));
+          history.replace("/admin/tilUtlevering");
+        } else {
+          throw new HTTPError("HTTPError", response.status);
+        }
         if (response.status === 401) {
         } else if (response.status === 200) {
           setLoading(false);
@@ -205,6 +212,15 @@ function PickUpItem(props: Props) {
       })
       .catch((e) => {
         setLoading(false);
+        if ((e.name = "HTTPError")) {
+          if (e.status === 404) {
+            setNotFound("Finner ikke gjenstanden");
+          } else {
+            setError(true);
+          }
+        } else {
+          setError(true);
+        }
       });
     if (henvendelse != null) {
       fetch("/api/admin/lost/" + henvendelse.id + "/status", {
@@ -292,8 +308,8 @@ function PickUpItem(props: Props) {
           <dd>{henvendelse?.color}</dd>
         </Grid>
         <Grid item md={4}>
-            <dt>Navn:</dt>
-            <dd>{henvendelse?.name}</dd>
+          <dt>Navn:</dt>
+          <dd>{henvendelse?.name}</dd>
         </Grid>
         <Grid item md={4}>
           <dt>Telefon:</dt>
@@ -315,7 +331,7 @@ function PickUpItem(props: Props) {
         <Box p={3} mb={3} className={styles.card}>
           {henvendelseComponent}
         </Box>
-            <p style={{textAlign:'center'}}>Klar til utlevering:</p>
+        <p style={{ textAlign: "center" }}>Klar til utlevering:</p>
         <Box p={3} mt={1} className={styles.card}>
           <Grid container>
             <Grid item md={12}>
@@ -326,8 +342,8 @@ function PickUpItem(props: Props) {
 
             <Grid item md={8}>
               <dl>
-              <dt>Dato funnet:</dt>
-              <dd>{moment(item?.date).format("DD.MM.yy")}</dd>
+                <dt>Dato funnet:</dt>
+                <dd>{moment(item?.date).format("DD.MM.yy")}</dd>
               </dl>
             </Grid>
             <Grid item md={4}>
@@ -336,38 +352,36 @@ function PickUpItem(props: Props) {
             </Grid>
 
             <Grid item md={12}>
-              <dd>
-                {item?.description}
-              </dd>
+              <dd>{item?.description}</dd>
             </Grid>
           </Grid>
           <Box mt={2}>
-          <Grid container>
-            <Grid item md={6}>
-              <Button
+            <Grid container>
+              <Grid item md={6}>
+                <Button
                   variant="contained"
                   color="primary"
                   className="storageButton"
                   onClick={(event) => {
                     deliverClickHandler();
                   }}
-              >
-                Lever ut
-              </Button>
+                >
+                  Lever ut
+                </Button>
+              </Grid>
+              <Grid item md={6}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className="editButton"
+                  onClick={(event) => {
+                    returnToStorageClickHandler();
+                  }}
+                >
+                  Legg tilbake til lager
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item md={6}>
-            <Button
-              variant="contained"
-              color="primary"
-              className="editButton"
-              onClick={(event) => {
-                returnToStorageClickHandler();
-              }}
-            >
-              Legg tilbake til lager
-            </Button>
-            </Grid>
-          </Grid>
           </Box>
         </Box>
       </div>

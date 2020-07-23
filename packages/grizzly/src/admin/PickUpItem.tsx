@@ -356,12 +356,12 @@ function PickUpItem(props: Props) {
             </Grid>
           </Grid>
           <Box mt={2}>
-            <Grid container>
+            <Grid container spacing={3}>
               <Grid item md={6}>
                 <Button
                   variant="contained"
-                  color="primary"
                   className="storageButton"
+                  style={{ width: "100%" }}
                   onClick={(event) => {
                     deliverClickHandler();
                   }}
@@ -371,8 +371,7 @@ function PickUpItem(props: Props) {
               </Grid>
               <Grid item md={6}>
                 <Button
-                  variant="contained"
-                  color="primary"
+                  variant="outlined"
                   className="editButton"
                   onClick={(event) => {
                     returnToStorageClickHandler();

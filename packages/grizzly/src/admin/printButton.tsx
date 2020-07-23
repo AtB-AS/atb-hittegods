@@ -45,7 +45,7 @@ function PrintButton(props: Props) {
 
   return (
     <div>
-      <Button color="primary" variant="contained" onClick={onClickPrintLabel}>
+      <Button variant="outlined" onClick={onClickPrintLabel}>
         Print ut lapp
       </Button>
     </div>

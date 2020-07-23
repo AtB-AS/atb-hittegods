@@ -6,6 +6,7 @@ import { useHistory } from "react-router";
 import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
 import PrintButton from "./printButton";
+import { theme } from "../components/styling";
 
 const useStyles = makeStyles({
   root: {
@@ -249,7 +250,6 @@ function TransitItem(props: Props) {
       <Grid item justify="space-between">
         <Button
           variant="contained"
-          color="primary"
           className="editButton"
           onClick={(event) => {
             editClickHandler();
@@ -262,24 +262,14 @@ function TransitItem(props: Props) {
   } else {
     description = <p>{item?.description}</p>;
     buttons = (
-      <Grid container>
-        <Grid item md={4}>
+      <Grid container direction="row" justify="space-between" spacing={3}>
+        <Grid item md={12}>
           <Button
             variant="contained"
-            color="primary"
-            className="editButton"
-            onClick={(event) => {
-              editClickHandler();
-            }}
-          >
-            Rediger
-          </Button>
-        </Grid>
-        <Grid item md={4}>
-          <Button
-            variant="contained"
-            color="primary"
             className="storageButton"
+            style={{
+              width: "100%",
+            }}
             onClick={(event) => {
               storageClickHandler();
             }}
@@ -289,8 +279,19 @@ function TransitItem(props: Props) {
         </Grid>
         <Grid item md={4}>
           <Button
-            variant="contained"
-            color="primary"
+            variant="outlined"
+            className="editButton"
+            onClick={(event) => {
+              editClickHandler();
+            }}
+          >
+            Rediger
+          </Button>
+        </Grid>
+
+        <Grid item md={4}>
+          <Button
+            variant="outlined"
             className="storageButton"
             onClick={(event) => {
               deleteClickHandler();

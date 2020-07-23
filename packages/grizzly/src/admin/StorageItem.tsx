@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {Box, Button, Grid} from "@material-ui/core";
+import { Box, Button, Grid } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
 import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
-import {printLabel} from "../printer/printer";
+import { printLabel } from "../printer/printer";
 import PrintButton from "./printButton";
-import {useHistory} from "react-router";
+import { useHistory } from "react-router";
 
 const useStyles = makeStyles({
   root: {
@@ -56,11 +56,11 @@ function StorageItem(props: Props) {
   const [error, setError] = useState(false);
   const styles = useStyles();
   const [notFound, setNotFound] = useState<string | undefined>(undefined);
-  const [printerError,setPrinterError] = useState("")
+  const [printerError, setPrinterError] = useState("");
   const history = useHistory();
 
   useEffect(() => {
-    setPrinterError("")
+    setPrinterError("");
     setLoading(true);
     setNotFound(undefined);
     fetch("/api/admin/found/" + props.match.params.id)
@@ -92,59 +92,61 @@ function StorageItem(props: Props) {
       });
   }, [props.match.params.id]);
 
-  function onClickedPrintButton(errorMessage:string){
-    setPrinterError(errorMessage)
+  function onClickedPrintButton(errorMessage: string) {
+    setPrinterError(errorMessage);
   }
-
 
   function ContactInfo() {
     if (item?.name != "" || item?.phone != "" || item?.email != "") {
-      return (<div>
-        <Box >
-          <Grid container spacing={1}>
-            <Grid item md={4}>
-              <dl>
-                <dt>Navn:</dt>
-                <dd>{item?.name}</dd>
-              </dl>
+      return (
+        <div>
+          <Box>
+            <Grid container spacing={1}>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Navn:</dt>
+                  <dd>{item?.name}</dd>
+                </dl>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>Telefon:</dt>
+                  <dd>{item?.phone}</dd>
+                </dl>
+              </Grid>
+              <Grid item md={4}>
+                <dl>
+                  <dt>E-post:</dt>
+                  <dd>{item?.email}</dd>
+                </dl>
+              </Grid>
             </Grid>
-            <Grid item md={4}>
-              <dl>
-                <dt>Telefon:</dt>
-                <dd>{item?.phone}</dd>
-              </dl>
-            </Grid>
-            <Grid item md={4}>
-              <dl>
-                <dt>E-post:</dt>
-                <dd>{item?.email}</dd>
-              </dl>
-            </Grid>
-          </Grid>
-        </Box>
-      </div>)
-
+          </Box>
+        </div>
+      );
     } else {
       return (
-          <div>
-            <Grid item md={12}>
-              Ingen kontaktinfo funnet
-            </Grid>
-          </div>
-      )
+        <div>
+          <Grid item md={12}>
+            Ingen kontaktinfo funnet
+          </Grid>
+        </div>
+      );
     }
   }
-  const clickedToDelivery = (id:number) => {
+  const clickedToDelivery = (id: number) => {
     setLoading(true);
-    updateFoundStatus(id).then((response)=>{
-      if(response.ok){
-        props.removeItem(id)
-      }
-    }).finally(()=>{
-      history.replace("/admin/lager");
-      setLoading(false);
-    })
-  }
+    updateFoundStatus(id)
+      .then((response) => {
+        if (response.ok) {
+          props.removeItem(id);
+        }
+      })
+      .finally(() => {
+        history.replace("/admin/lager");
+        setLoading(false);
+      });
+  };
 
   const updateFoundStatus = (id: number) => {
     return fetch("/api/admin/found/" + id, {
@@ -204,32 +206,37 @@ function StorageItem(props: Props) {
             </Grid>
           </Box>
           <h3 className="h4">Kontaktinfo:</h3>
-          <ContactInfo/>
-          <Box mt={2} >
-            <Grid container spacing={1}>
+          <ContactInfo />
+          <Box mt={2}>
+            <Grid container spacing={3}>
               <Grid item md={6}>
                 <Button
-                        onClick={()=>{
-                          if (item?.id!==undefined){clickedToDelivery(item?.id)}}}
-                        color="primary"
-                        variant="contained">
+                  onClick={() => {
+                    if (item?.id !== undefined) {
+                      clickedToDelivery(item?.id);
+                    }
+                  }}
+                  variant="contained"
+                  style={{ width: "100%" }}
+                >
                   Til utlevering
                 </Button>
               </Grid>
               <Grid item md={6}>
-                <PrintButton setErrorMessage={onClickedPrintButton}
-                             brand={item?.brand}
-                             description={item?.description}
-                             line={item?.line}
-                             id={item?.id}
-                             subCategory={item?.subcategory}/>
+                <PrintButton
+                  setErrorMessage={onClickedPrintButton}
+                  brand={item?.brand}
+                  description={item?.description}
+                  line={item?.line}
+                  id={item?.id}
+                  subCategory={item?.subcategory}
+                />
               </Grid>
               <Grid item md={12}>
-                <h6 style={{color:"red", fontSize:"16"}}>{printerError}</h6>
+                <h6 style={{ color: "red", fontSize: "16" }}>{printerError}</h6>
               </Grid>
             </Grid>
           </Box>
-
         </Box>
       </div>
     </DataLoadingContainer>

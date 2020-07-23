@@ -32,11 +32,30 @@ Api permissions must be:
 - profile
 - User.read
 ##Setting up DB
+The database used for this project is a postgres sql database.
+The hittegodsDB.sql file contains a dump from the database and
+can be used to restore the database with all required data.
+See https://www.postgresqltutorial.com/postgresql-restore-database/
+for instructions for how to restore the database from the sql file.
+When the database has been set up the database password, host, port, name and used
+should be entered into the backend environment variables.
 ##Running locally
 
 ###Yarn
 
 ###Flask
+To run the flask application locally you need python and pip installed.
+To install all the required python packages to run the application navigate to the root directory
+the python project and run `pip install -r requirements.txt`.
+Crate a .env file in the root directory and enter:
+- DB_PASSWORD=password for the postgres database
+- DB_HOST=the host of the postgres database
+- DB_PORT=the port of the postgres database
+- DB_NAME=the name of the postgres database
+- DB_USER=the user for the postgres database
+Run `set FLASK_APP = Application.py`.
+To start the application run `flask run`
+
 
 ##Run in prod
 ###package.json
@@ -61,6 +80,11 @@ directory. When running the backend locally it will default to
 running on localhost:5000
 
 ##Database
+The database used for this project is a postgres sql database.
+The hittegodsDB.sql file contains a dump from the database and
+can be used to restore the database with all required data.
+See https://www.postgresqltutorial.com/postgresql-restore-database/
+for instructions for how to restore the database from the sql file.
 ###SQL-DB
 
 ##Matchmaker

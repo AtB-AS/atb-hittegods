@@ -56,7 +56,7 @@ export const printLabel = (payload, id) => {
             //var printers = dymo.label.framework.getPrinters();
           }
         })
-        .catch(function (error) {
+        .thenCatch(function (error) {
           console.log("error", error);
           reject(error);
         });

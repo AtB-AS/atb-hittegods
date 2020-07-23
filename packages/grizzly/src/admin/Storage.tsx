@@ -27,6 +27,7 @@ import SeachField from "../components/SeachField";
 import DatePickerToFrom from "../components/DatePickerToFrom";
 import Grid from "@material-ui/core/Grid";
 import PrimaryButton from "./PrimaryButton";
+import Henvendelse from "./Henvendelse";
 
 type StorageItems = {
   id: number;
@@ -194,6 +195,13 @@ function Storage(props: Props) {
     });
   }
 
+  const removeItem = (id: number) => {
+    const newStorageItems = storageItems.filter((storageItem) => {
+      return storageItem.id !== id;
+    });
+    setStorageItems(newStorageItems);
+  };
+
   function formatDescription(desc: string | undefined) {
     if (typeof desc === "string") {
       if (desc.length > 16) {
@@ -289,7 +297,12 @@ function Storage(props: Props) {
             </TableContainer>
           </PrimaryContent>
           <SecondaryContent>
-            <Route path="/admin/lager/:id" component={StorageItem} />
+            <Route path="/admin/lager/:id" render={(routeProps) => (
+                <StorageItem
+                    {...routeProps}
+                    removeItem={removeItem}
+                />
+            )} />
           </SecondaryContent>
         </Content>
       </Page>

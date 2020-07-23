@@ -71,6 +71,7 @@ export default function Wizard() {
   const [wizardDetailsStep, setWizardDetailsStep] = useState(
     WIZARD_DETAILS_STEP.MAIN_CATEGORY
   );
+  const [submitError, setSubmitError] = useState(false);
 
   const onNavigation = (event: PopStateEvent) => {
     const data = event.state;
@@ -208,12 +209,19 @@ export default function Wizard() {
     };
     setContInfo(contInfo);
     sendForm(payload)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error(response.statusText);
+      })
       .then(() => {
         setActiveStep(activeStep + 1);
         addToBrowserHistory({ activeStep: WIZARD_STEP.CONTACT_INFO });
       })
-      .catch(() => {
-        console.log("oh no, it broke");
+      .catch((error) => {
+        console.log(error);
+        setSubmitError(true);
       });
   }
 
@@ -361,6 +369,7 @@ export default function Wizard() {
             phoneNumber={contactInfo.phoneNumber}
             email={contactInfo.email}
             onContactInfoSelect={setContactInfo}
+            submitError={submitError}
           />
         )}
         {activeStep === WIZARD_STEP.CONFIRMATION && (

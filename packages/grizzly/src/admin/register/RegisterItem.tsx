@@ -8,13 +8,10 @@ import Button from "@material-ui/core/Button";
 import { categoryData } from "../../components/subCategoryData";
 import { useForm } from "react-hook-form";
 import { colorData } from "../../components/colorConstant";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { useTheme } from "@material-ui/core/styles";
 
 import RegAutoSelect from "./Select";
 import { Link } from "react-router-dom";
 import { printLabel } from "../../printer/printer";
-import { log } from "util";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -155,12 +152,13 @@ function RegisterFound(props: Props) {
         <h2>
           {printStatus
             ? "Lapp printet ut"
-            : "Noe gikk galt, lapp ble ikke printet ut.\nEr printeren plugget i med USB og strøm med rikitg driver installert?"}
+            : `Noe gikk galt, lapp ble ikke printet ut.
+            Er printeren plugget i med USB og strøm med rikitg driver installert?`}
         </h2>
         <Link to={`${props.pathToComp}/${itemIdRegistered}`}>
           <Button>Gå til registrert gjenstand</Button>
         </Link>
-        <Button href={`${props.pathToComp}` + "/registrer"}>
+        <Button href={`${props.pathToComp}/registrer`}>
           Registrer ny gjenstand
         </Button>
       </div>

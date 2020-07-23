@@ -12,12 +12,14 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import pgSession from "connect-pg-simple";
 import { setupSchedules } from "./scheduler";
+import compression from "compression";
 
 dotenv.config();
 
 const port = process.env.PORT || 5000;
 const app = express();
 app.set("trust proxy", 1);
+app.use(compression());
 //TODO imporve structure by putting db code somewhere else
 const config = {
   host: process.env.DB_HOST,

@@ -211,8 +211,8 @@ function MatchDetails(props: Props) {
     confirmButton = (
       <Button
         variant="contained"
-        color="primary"
         className="editButton"
+        style={{ width: "100%" }}
         onClick={() => confirmMatch()}
       >
         Bekreft match

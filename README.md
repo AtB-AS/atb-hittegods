@@ -51,6 +51,14 @@ Api permissions must be:
 
 ##Back end
 ###Node.js
+The backend server runs node.js with express,
+and is written in Typescript.
+The backend server consists of a number of REST endpoints which
+are documented in the api.yaml file. The api documentation follows the openAPI 3.0 specification.
+The code for the backend can be found in /packages/backend. Whe running
+the backend locally the .env file must be places in the backend src
+directory. When running the backend locally it will default to
+running on localhost:5000
 
 ##Database
 ###SQL-DB

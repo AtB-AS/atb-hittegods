@@ -23,6 +23,7 @@ type Props = {
   name: string;
   phoneNumber: string;
   email: string;
+  submitError?: boolean;
 };
 
 export type ContactInfoType = {
@@ -49,6 +50,9 @@ const useStyles = makeStyles((theme: Theme) =>
     rightAlign: {
       display: "flex",
       justifyContent: "flex-end",
+    },
+    errorMessage: {
+      color: "#b2292e",
     },
   })
 );
@@ -208,6 +212,12 @@ function ContactInfo(props: Props, contactInfo: ContactInfoType) {
           </Grow>
           <Grow in timeout={1000}>
             <Grid item xs={12}>
+              {props.submitError && (
+                <p className={styles.errorMessage}>
+                  Beklager, men det oppstod en feil ved innsending. Venligst
+                  prøv igjen eller ta kontakt med AtB kundeservice
+                </p>
+              )}
               <Box className={styles.rightAlign}>
                 <NextBtn>Send inn</NextBtn>
               </Box>

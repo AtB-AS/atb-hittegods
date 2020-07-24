@@ -70,6 +70,14 @@ environment variables. To disable email use just don't provide gmail
 username and password. For email to work the gmail account needs to
 enable less secure apps.
 
+When a user registers a new lost item, they receive a confirmation email.
+When someone at the office matches a found item with the users lost item
+the user receives an email informing them of the match and directing
+them to pick up their item. When 7 days has passed since the day the
+item was lost, the user receives an email informing them that it is unlikely
+that lost and found will find their item. 1 day after an item was lost the user
+will recieve an email informing them that they are still looking for the item.
+
 
 # Getting the project up and running
 ## Environment variables

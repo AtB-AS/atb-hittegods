@@ -209,12 +209,7 @@ function MatchDetails(props: Props) {
   console.log(props.foundItem.status);
   if (props.foundItem.status === "Funnet") {
     confirmButton = (
-      <Button
-        variant="contained"
-        className="editButton"
-        style={{ width: "100%" }}
-        onClick={() => confirmMatch()}
-      >
+      <Button variant="contained" onClick={() => confirmMatch()}>
         Bekreft match
       </Button>
     );
@@ -278,24 +273,7 @@ function MatchDetails(props: Props) {
             <dt>Full beskrivelse:</dt>
             <dd>{props.foundItem.description}</dd>
           </Grid>
-          <Grid item md={4}>
-            <dl>
-              <dt>Dato funnet:</dt>
-              <dd>{moment(props.foundItem.date).format("DD.MM.yy")}</dd>
-            </dl>
-          </Grid>
-          <Grid item md={4}>
-            <dl>
-              <dt>Linje:</dt>
-              <dd>{props.foundItem.line}</dd>
-            </dl>
-          </Grid>
-          <Grid item md={4}>
-            <dl>
-              <dt>Farge:</dt>
-              <dd>{props.foundItem.color}</dd>
-            </dl>
-          </Grid>
+
           <Grid item md={12}>
             <ContactInfo />
           </Grid>

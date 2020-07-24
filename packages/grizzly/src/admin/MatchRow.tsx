@@ -17,6 +17,7 @@ import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import Grid from "@material-ui/core/Grid";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { useTableStyles } from "./styles";
+import { theme } from "../components/styling";
 
 type Props = {
   foundItem: Found;
@@ -27,10 +28,38 @@ type Props = {
   hendvendelsesid: number;
 };
 
+const useStyles = makeStyles({
+  grid: {
+    display: "grid",
+    gridTemplateAreas:
+      "brand brand brand date date id" +
+      "subcategory subcategory subcategory line line color",
+  },
+  brand: {
+    gridArea: "brand",
+  },
+  date: {
+    gridArea: "date",
+  },
+  id: {
+    gridArea: "id",
+  },
+  subcategory: {
+    gridArea: "subcategory",
+  },
+  line: {
+    gridArea: "line",
+  },
+  color: {
+    gridArea: "color",
+  },
+});
+
 const MatchRow = (props: Props) => {
   const [isClicked, setClicked] = useState(false);
   const classes = useTableStyles();
   const [isExpanded, setExpanded] = useState(false);
+  const styles = useStyles();
 
   function clickedRowItem(foundId: number) {
     if (!isClicked) {
@@ -54,15 +83,14 @@ const MatchRow = (props: Props) => {
       }
     }
   }
-  /*
+
   function formatDate(date: string) {
     const formattedDay = date.slice(8, 10);
     const formattedMonth = date.slice(5, 7);
+    const formattedYear = date.slice(0, 4);
 
-    return formattedDay + "." + formattedMonth;
+    return formattedDay + "." + formattedMonth + "." + formattedYear;
   }
-
- */
 
   function formatDescription(desc: string) {
     if (desc.length > 50) {
@@ -85,17 +113,18 @@ const MatchRow = (props: Props) => {
         <Typography
           style={isExpanded ? { fontWeight: "bold" } : { fontWeight: "normal" }}
         >
-          <Grid container>
-            <Grid item md={1}>
-              {props.foundItem.id}
-            </Grid>
-            <Grid item md={4}>
-              {props.foundItem.subcategory} -{props.foundItem.brand}
-            </Grid>
-            <Grid item md={5}>
+          <div id="grid">
+            <div id="brand">
+              {props.foundItem.subcategory} - {props.foundItem.brand}
+            </div>
+            <div id="date">{formatDate(props.foundItem.date)}</div>
+            <div id="id"># {props.foundItem.id}</div>
+            <div id="line">Linje: {props.foundItem.line}</div>
+            <div id="color">{props.foundItem.color}</div>
+            <div id="description">
               {formatDescription(props.foundItem.description)}
-            </Grid>
-          </Grid>
+            </div>
+          </div>
         </Typography>
       </AccordionSummary>
       <AccordionDetails>

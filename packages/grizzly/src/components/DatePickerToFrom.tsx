@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, createStyles, InputLabel, Theme } from "@material-ui/core";
+import { createStyles, InputLabel, Theme } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+//Datepicker used for admin
 function DatePickerToFrom(props: Props) {
   const classes = useStyles();
   return (

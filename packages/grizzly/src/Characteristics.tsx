@@ -1,18 +1,11 @@
 import React, { useState } from "react";
-import {
-  Box,
-  createStyles,
-  Fade,
-  Grid,
-  Grow,
-  Theme,
-  Zoom,
-} from "@material-ui/core";
+import { Box, createStyles, Grid, Grow } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import ColorSelect from "./ColorSelect";
 import InputLabel from "@material-ui/core/InputLabel";
 import NextBtn from "./components/NextBtn";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 type Props = {
   onCharacteristicsSelect: (characteristics: Characteristics) => void;
@@ -28,7 +21,7 @@ type Characteristics = {
   description: string;
 };
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     textfield: {
       display: "flex",
@@ -39,31 +32,30 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function Characteristics(props: Props, characteristics: Characteristics) {
+function Characteristics(props: Props) {
   const [color, setColor] = useState(props.color);
   const [brand, setBrand] = useState(props.brand);
   const [description, setDescription] = useState(props.description);
+  const { register, handleSubmit, errors } = useForm<Characteristics>();
   const styles = useStyles();
 
-  function onSubmit() {
-    props.onCharacteristicsSelect({ color, brand, description });
-  }
-  //TODO Legge til ID i colorselect-
+  const onSubmit: SubmitHandler<Characteristics> = (data) => {
+    props.onCharacteristicsSelect({
+      color: data.color,
+      brand: data.brand,
+      description: data.description,
+    });
+  };
+
   return (
-    <form
-      onSubmit={(evt) => {
-        evt.preventDefault();
-        onSubmit();
-      }}
-    >
+    <div>
       <Box mt={4} mb={4}>
-        {/* Med underkategori: <h5>Beskriv din(e) {props.subCategory}</h5>*/}
         <h2 className="h4">Kan du beskrive det du har mistet?</h2>
         <p>
           Valgt gjenstand:<b> {props.subCategory}</b>
         </p>
       </Box>
-      <Box>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
           <Grow in timeout={300}>
             <Grid item xs={12}>
@@ -80,10 +72,22 @@ function Characteristics(props: Props, characteristics: Characteristics) {
               <TextField
                 className={styles.textfield}
                 type="text"
-                helperText="For eksempel Samsung, Stormberg, Patagonia"
+                name="brand"
+                helperText={
+                  !!errors.brand
+                    ? errors.brand.message
+                    : "For eksempel Samsung, Stormberg, Patagonia"
+                }
                 value={brand}
+                error={!!errors.brand}
                 onChange={(event) => setBrand(event.target.value)}
                 variant="standard"
+                inputRef={register({
+                  maxLength: {
+                    value: 250,
+                    message: "Merke kan ikke være over 250 tegn.",
+                  },
+                })}
                 id="brand"
               />
             </Grid>
@@ -96,10 +100,23 @@ function Characteristics(props: Props, characteristics: Characteristics) {
                 multiline={true}
                 className={styles.textfield}
                 type="text"
-                helperText="Er det noe unikt med gjenstanden din?"
+                helperText={
+                  !!errors.description
+                    ? errors.description.message
+                    : "Er det noe unikt med gjenstanden din? Maks 250 tegn."
+                }
                 value={description}
+                error={!!errors.description}
                 onChange={(event) => setDescription(event.target.value)}
                 variant="standard"
+                inputRef={register({
+                  required:
+                    "Vennligst legg til en beskrivelse av gjenstanden din",
+                  maxLength: {
+                    value: 250,
+                    message: "Beskrivelse kan ikke være mer enn 250 tegm.",
+                  },
+                })}
               />
             </Grid>
           </Grow>
@@ -111,8 +128,8 @@ function Characteristics(props: Props, characteristics: Characteristics) {
             </Grid>
           </Grow>
         </Grid>
-      </Box>
-    </form>
+      </form>
+    </div>
   );
 }
 

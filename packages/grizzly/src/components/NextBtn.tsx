@@ -5,11 +5,6 @@ import { theme } from "./styling";
 import { Button } from "@material-ui/core";
 
 const useStyles = makeStyles({
-  imgIcon: {
-    position: "relative",
-    top: "-10px",
-  },
-
   button: {
     color: theme.palette.background.paper,
     backgroundColor: theme.palette.secondary.light,

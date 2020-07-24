@@ -73,7 +73,7 @@ function Category(props: Props) {
   return (
     <a
       className={styles.root}
-      href=""
+      href="#"
       onClick={(event) => {
         event.preventDefault();
         props.onClick();

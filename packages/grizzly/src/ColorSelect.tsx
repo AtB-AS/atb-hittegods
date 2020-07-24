@@ -1,15 +1,6 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Chip,
-  Collapse,
-  createStyles,
-  Fab,
-  Grid,
-  Theme,
-} from "@material-ui/core";
+import { Box, Chip, Collapse, Fab, Grid } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import { makeStyles } from "@material-ui/core/styles";
 import { colorData } from "./components/colorConstant";
 
 type Props = {
@@ -26,43 +17,26 @@ type Colors = {
   data: Color[];
 };
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    textfield: {
-      display: "flex",
-    },
-    heading: {
-      fontWeight: 300,
-      fontSize: "16px",
-    },
-  })
-);
-
 function ColorSelect(props: Props) {
   const [openColorSelect, setOpenColorSelect] = useState<boolean>(true);
   const [colorOptions, setColorOptions] = useState<Colors>(colorData);
   const [selectedColors, setSelectedColors] = useState<Colors>({ data: [] });
   const [nSelectedColors, setNSelectedColors] = useState<number>(0);
   const maxColors = 1;
-  const styles = useStyles();
 
+  //Function not in use. Can be used for the ability to choose more than one color.
   function clickedColorOption(color: Color) {
-    console.log("Clicked on:", color);
     if (nSelectedColors > maxColors - 1) {
-      console.log("TOO MANY COLORS SELECTED");
     } else {
       setSelectedColors((prevState) => {
         const newColor: Colors = { data: [color] };
         const colors: Colors = { data: [...prevState.data, ...newColor.data] };
-        // or list ;
-        console.log("New selected colors: ", colors);
         return colors;
       });
       setColorOptions((prevState) => {
         const colorData = prevState.data.slice();
         const index = colorData.indexOf(color);
         colorData.splice(index, 1);
-        console.log("New color options: ", colorData);
         return { data: colorData };
       });
       setOpenColorSelect(false);
@@ -74,20 +48,16 @@ function ColorSelect(props: Props) {
   }
 
   function clickedSelectedColor(color: Color) {
-    console.log("Clicked on:", color);
     setSelectedColors((prevState) => {
       const colorData = prevState.data.slice();
       const index = colorData.indexOf(color);
       colorData.splice(index, 1);
-      console.log("New selected colors: ", colorData);
       return { data: colorData };
     });
 
     setColorOptions((prevState) => {
       const newColor: Colors = { data: [color] };
       const colors: Colors = { data: [...prevState.data, ...newColor.data] };
-      // or list ;
-      console.log("New color options: ", colors);
       return colors;
     });
 
@@ -100,7 +70,7 @@ function ColorSelect(props: Props) {
   }
 
   function clickedAddColor() {
-    if (openColorSelect === true) {
+    if (openColorSelect) {
       setOpenColorSelect(false);
     } else {
       setOpenColorSelect(true);
@@ -143,7 +113,6 @@ function ColorSelect(props: Props) {
                 <label style={{ color: color.secondary }}>{color.label}</label>
               }
               onClick={() => clickedSelectedColor(color)}
-              //className={classes.chip}
             />
           ))}
           <AddButton />
@@ -167,7 +136,6 @@ function ColorSelect(props: Props) {
                   </label>
                 }
                 onClick={() => clickedColorOption(color)}
-                //className={classes.chip}
               />
             ))}
           </Box>

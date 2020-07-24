@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Grid,
-  Button,
-  Grow,
-  Theme,
-  createStyles,
-} from "@material-ui/core";
+import { Box, Grid, Button, Grow, createStyles } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -14,7 +7,6 @@ import InputLabel from "@material-ui/core/InputLabel";
 import DataLoadingContainer from "./DataLoadingContainer";
 import NextBtn from "./components/NextBtn";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import Zoom from "@material-ui/core/Zoom";
 
 type Props = {
   onLocationSelect: (location: string) => void;
@@ -32,9 +24,10 @@ function Location(props: Props) {
   const [error, setError] = useState(false);
   const [isloading, setLoading] = useState(true);
   const [line, setLine] = useState(props.line);
+  //Displays "Neste" button if true
   const [status, setStatus] = useState(false);
 
-  const useStyles = makeStyles((theme: Theme) =>
+  const useStyles = makeStyles(() =>
     createStyles({
       rightAlign: {
         display: "flex",
@@ -59,12 +52,11 @@ function Location(props: Props) {
       });
   }, []);
 
-  const onSubmit: SubmitHandler<Props> = (data) => {
-    console.log(` on submit line`);
+  const onSubmit: SubmitHandler<Props> = () => {
     props.onLocationSelect(line);
-    console.log(line);
   };
 
+  // "Usikker"-button
   function unknownLineButtonHandler() {
     props.onLocationSelect("");
   }
@@ -89,10 +81,8 @@ function Location(props: Props) {
                     }
                     defaultValue={lines.find((l) => l.line === line)}
                     onChange={(event, value) => {
-                      console.log("Sett veri onchange", value?.line);
                       if (value?.line) {
                         // @ts-ignore
-
                         setLine(value.line);
                         setStatus(true);
                       }
@@ -117,13 +107,13 @@ function Location(props: Props) {
                 </Grow>
               </Grid>
               {status && (
-                <Zoom in>
+                <Grow in>
                   <Grid item xs={12}>
                     <Box className={classes.rightAlign}>
                       <NextBtn />
                     </Box>
                   </Grid>
-                </Zoom>
+                </Grow>
               )}
             </Grid>
           </form>

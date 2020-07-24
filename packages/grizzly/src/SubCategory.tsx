@@ -4,7 +4,7 @@ import Box from "@material-ui/core/Box";
 
 import Categories from "./components/Categories";
 import Category from "./components/Category";
-import { Grow, Slide } from "@material-ui/core";
+import { Grow } from "@material-ui/core";
 
 type Props = {
   onSubCategorySelect: (category: string) => void;

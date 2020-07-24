@@ -57,7 +57,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function ContactInfo(props: Props, contactInfo: ContactInfoType) {
+// Copy paste Chrome regex, https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
+const emailRegex = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+function ContactInfo(props: Props) {
   const styles = useStyles();
   const [showTerms, setShowTerms] = useState(false);
   const { register, handleSubmit, errors } = useForm<ContactInfoType>();
@@ -81,8 +84,7 @@ function ContactInfo(props: Props, contactInfo: ContactInfoType) {
     let firstPart = newNumber.substring(0, 3);
     let secondPart = newNumber.substring(3, 5);
     let thirdPart = newNumber.substring(5, 8);
-    let finalNumberFormat = firstPart + " " + secondPart + " " + thirdPart;
-    return finalNumberFormat;
+    return firstPart + " " + secondPart + " " + thirdPart;
   }
 
   return (
@@ -131,15 +133,21 @@ function ContactInfo(props: Props, contactInfo: ContactInfoType) {
                 name="email"
                 id="email"
                 defaultValue={props.email}
-                helperText="Vil vil sende deg epost om vi finner noe"
+                helperText={
+                  !!errors.email
+                    ? errors.email.message
+                    : "Vil vil sende deg epost om vi finner noe"
+                }
                 //helperText={errors.email?.message}
                 error={!!errors.email}
                 variant="standard"
                 inputRef={register({
-                  required: "Dette feltet må du fylle inn",
+                  required: "Husk å legge til epost",
+                  pattern: {
+                    value: emailRegex,
+                    message: "Ugyldig epost",
+                  },
                 })}
-                inputProps={{}}
-                //TODO InputProps not working -> https://material-ui.com/components/text-fields/ or https://codesandbox.io/s/6v444wnvp3?file=/src/FormattedInput.js
               />
             </Grid>
           </Grow>

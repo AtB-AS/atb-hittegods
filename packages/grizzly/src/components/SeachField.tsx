@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+//Used as searchfield for admin
 function SeachField(props: Props) {
   const classes = useStyles();
   return (

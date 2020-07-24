@@ -4,7 +4,7 @@ import Box from "@material-ui/core/Box";
 import { Helmet } from "react-helmet-async";
 import Categories from "./components/Categories";
 import Category from "./components/Category";
-import { Grow, Slide } from "@material-ui/core";
+import { Grow } from "@material-ui/core";
 
 type Props = {
   onCategorySelect: (category: string) => void;
@@ -14,8 +14,6 @@ type Props = {
 };
 
 function MainCategory(props: Props) {
-  const catData = categoryData;
-
   return (
     <div>
       <Helmet>
@@ -30,7 +28,7 @@ function MainCategory(props: Props) {
       <Grow in timeout={300}>
         <Box mt={4}>
           <Categories>
-            {catData.map((mainCat) => {
+            {categoryData.map((mainCat) => {
               return (
                 <Category
                   key={mainCat.name}

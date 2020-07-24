@@ -117,7 +117,7 @@ function PickUp(props: Props) {
       .catch(() => {
         setError(true);
       });
-  }, []);
+  }, [compare, orderBy]);
 
   useEffect(() => {
     if (orderBy === "desc") {
@@ -130,7 +130,7 @@ function PickUp(props: Props) {
     } else {
       setStorageItems(storageItems.map((h) => h).sort(compare));
     }
-  }, [orderBy, columnName]);
+  }, [orderBy, columnName, storageItems, compare]);
 
   function clickedRowItem(id: number) {
     history.push("/admin/tilUtlevering/" + id);

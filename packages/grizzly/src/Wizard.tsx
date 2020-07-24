@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  makeStyles,
-  Theme,
-  createStyles,
-  withStyles,
-} from "@material-ui/core/styles";
+import { makeStyles, createStyles, withStyles } from "@material-ui/core/styles";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import MainCategory from "./MainCategory";
@@ -25,7 +20,7 @@ import {
 } from "@material-ui/icons";
 import QuestionMark from "./components/icons/questionMark";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
       width: "100%",

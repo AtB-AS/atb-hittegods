@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import { Grid, Grow } from "@material-ui/core";
-
 import Button from "@material-ui/core/Button";
-
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import { Box } from "@material-ui/core";
 import NextBtn from "./components/NextBtn";
 import InputLabel from "@material-ui/core/InputLabel";
-import Zoom from "@material-ui/core/Zoom";
 
 type Props = {
   onDateSelect: (date: string) => void;
@@ -17,17 +14,14 @@ type Props = {
 
 function MissingDate(props: Props) {
   const [date, setDate] = useState(props.date);
-  // false: , true:
+  // Displays "Neste" button if true
   const [status, setStatus] = useState(false);
 
-  const useStyles = makeStyles((theme: Theme) =>
+  const useStyles = makeStyles(() =>
     createStyles({
       textField: {
         display: "flex",
         width: "100%",
-      },
-      button: {
-        color: theme.palette.secondary.main,
       },
       rightAlign: {
         display: "flex",
@@ -117,6 +111,7 @@ function MissingDate(props: Props) {
                 }}
                 onChange={(event) => {
                   setDate(event.target.value);
+                  // Displays "Neste" button when true
                   setStatus(true);
                 }}
               />
@@ -124,13 +119,13 @@ function MissingDate(props: Props) {
           </Grow>
 
           {status && (
-            <Zoom in>
+            <Grow in>
               <Grid item xs={12}>
                 <Box className={classes.rightAlign}>
                   <NextBtn />
                 </Box>
               </Grid>
-            </Zoom>
+            </Grow>
           )}
         </Grid>
       </form>

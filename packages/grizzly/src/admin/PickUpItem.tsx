@@ -264,7 +264,8 @@ function PickUpItem(props: Props) {
           props.removeItem(parseInt(props.match.params.id));
           history.replace("/admin/tilUtlevering");
           fetch(
-            "https://hittegods-matchmaker.azurewebsites.net/found/" +
+            process.env.REACT_APP_MATCH_BACKEND_HOST +
+              "/found/" +
               props.match.params.id
           ).catch();
         }
@@ -283,8 +284,7 @@ function PickUpItem(props: Props) {
       }).then((response) => {
         if (response.ok) {
           fetch(
-            "https://hittegods-matchmaker.azurewebsites.net/lost/" +
-              henvendelse.id
+            process.env.REACT_APP_MATCH_BACKEND_HOST + "/lost/" + henvendelse.id
           ).catch();
         }
       });

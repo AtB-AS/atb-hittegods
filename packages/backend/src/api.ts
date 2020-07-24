@@ -73,9 +73,7 @@ export default async (
                 //fetch request to
                 res.json({ status: "success", data: body });
                 const lostid = queryRes.rows[0].lostid;
-                const url =
-                  "https://hittegods-matchmaker.azurewebsites.net/lost/" +
-                  lostid;
+                const url = process.env.MATCH_BACKEND_HOST + "/lost/" + lostid;
                 console.log("Notify new lost to hittegods-matchmaker : " + url);
                 fetch(url)
                   .then((response) => {

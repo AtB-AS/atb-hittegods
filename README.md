@@ -80,10 +80,10 @@ https://graph.microsoft.com
 - DB_NAME=the name of the postgres database
 - DB_USER=the user for the postgres database
 
-default file
 ## Active directory integration
 You must register a new azure oauth app.
-Callback uri must be *host*/auth/azureoauth2/callback where where *host* is where the backend server is hosted.
+Callback uri must be *host*/auth/azureoauth2/callback
+where where *host* is where the backend server is hosted.
 Client id, client secret, tennt id, resource id and callback uri must
 be entered into the environment variables.
 Api permissions must be:
@@ -99,9 +99,13 @@ for instructions for how to restore the database from the sql file.
 When the database has been set up the database password, host, port, name and used
 should be entered into the backend environment variables.
 ## Running locally
-
-
-### Yarn
+### Node.js and frontend
+To run this project yarn and Node.js must be installed.
+Run `yarn install` in the root directory of the project to install
+all required modules. Put the .env file in /packages/backend. Run yarn start to start running both the frontend
+and the backend. The frontend and backend can be run individually
+by navigating to /packages/backend and /packages/grizzly and running
+yarn start
 
 ### Flask
 To run the flask application locally you need python and pip installed.

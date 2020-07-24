@@ -148,10 +148,3 @@ Crate a .env file in the root directory and enter:
 - DB_USER=the user for the postgres database
 Run `set FLASK_APP = Application.py`.
 To start the application run `flask run`
-
-
-## Run in Azure
-### package.json
-### resources.txt
-
-## Azure pipelines

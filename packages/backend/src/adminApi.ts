@@ -495,8 +495,7 @@ export default async (
                 res.json({ status: "success", data: queryRes.rows[0] });
                 const foundid = queryRes.rows[0].foundid;
                 const url =
-                  "https://hittegods-matchmaker.azurewebsites.net/found/" +
-                  foundid;
+                  process.env.MATCH_BACKEND_HOST + "/found/" + foundid;
                 console.log(
                   "Notify new found to hittegods-matchmaker : " + url
                 );

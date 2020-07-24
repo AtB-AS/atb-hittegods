@@ -102,6 +102,13 @@ https://graph.microsoft.com
 - GMAIL_USERNAME=the username for the gmail account used to send emails
 - GMAIL_PASSWORD=the password of the gmail account used to send emails
 
+- MATCH_BACKEND_HOST=the host for the flask app which does the
+matching
+
+### React.js environment variables
+- REACT_APP_MATCH_BACKEND_HOST=the host for the flask app which does the
+matching
+
 ### Flask environment variables
 - DB_PASSWORD=password for the postgres database
 - DB_HOST=the host of the postgres database

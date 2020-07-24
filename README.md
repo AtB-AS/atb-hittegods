@@ -33,6 +33,8 @@ who try to access the admin interface
 The front end consists of a user front end where users can register lost
 items, and an admin front end where employees at the lost and found office
 can administer lost and found items.
+
+The front end code is in /packages/grizzly
 ### React
 React.js was used to build the front end.
 ### Material-UI
@@ -56,6 +58,8 @@ The code for the backend can be found in /packages/backend. Whe running
 the backend locally the .env file must be places in the backend src
 directory. When running the backend locally it will default to
 running on localhost:5000
+
+The Node.js code is in /packages/admin
 
 ### Python Flask-app
 The server responsible for finding possible matches runs in Python
@@ -138,7 +142,8 @@ should be entered into the backend environment variables.
 ### Node.js and front end
 To run this project yarn and Node.js must be installed.
 Run `yarn install` in the root directory of the project to install
-all required modules. Put the .env file in /packages/backend. Run yarn start to start running both the front end
+all required modules. Put the .env file in /packages/backend.
+Put the .env file in /packages/grizzly. Run yarn start to start running both the front end
 and the backend. The front end and backend can be run individually
 by navigating to /packages/backend and /packages/grizzly and running
 yarn start

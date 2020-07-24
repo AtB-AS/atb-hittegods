@@ -75,6 +75,14 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+function compare(a: StorageItems, b: StorageItems) {
+  // @ts-ignore
+  return `${a[columnName]}`.localeCompare(`${b[columnName]}`, "en", {
+    numeric: true,
+    sensitivity: "base",
+  });
+}
+
 function PickUp(props: Props) {
   const classes = useTableStyles();
   const [storageItems, setStorageItems] = useState<StorageItems[]>([]);
@@ -130,7 +138,7 @@ function PickUp(props: Props) {
     } else {
       setStorageItems(storageItems.map((h) => h).sort(compare));
     }
-  }, [orderBy, columnName, storageItems, compare]);
+  }, [orderBy, columnName, compare]);
 
   function clickedRowItem(id: number) {
     history.push("/admin/tilUtlevering/" + id);
@@ -195,13 +203,6 @@ function PickUp(props: Props) {
         </TableSortLabel>
       </TableCell>
     );
-  }
-  function compare(a: StorageItems, b: StorageItems) {
-    // @ts-ignore
-    return `${a[columnName]}`.localeCompare(`${b[columnName]}`, "en", {
-      numeric: true,
-      sensitivity: "base",
-    });
   }
 
   const removeItem = (id: number) => {

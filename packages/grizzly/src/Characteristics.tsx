@@ -40,6 +40,9 @@ function Characteristics(props: Props) {
   const styles = useStyles();
 
   const onSubmit: SubmitHandler<Characteristics> = (data) => {
+    if (data.color === undefined) {
+      data.color = "";
+    }
     props.onCharacteristicsSelect({
       color: data.color,
       brand: data.brand,

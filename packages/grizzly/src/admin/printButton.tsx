@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { printLabel } from "../printer/printer";
 import { Button } from "@material-ui/core";
 
@@ -29,13 +29,10 @@ function PrintButton(props: Props) {
         .catch((e) => {
           console.log(e);
           if (e.name === "PrinterNotConnectedError") {
-            console.log("PrinterNotConnectedError");
             props.setErrorMessage("Koble til printeren og prøv igjen");
           } else if (e.name === "PrinterNotInstalledError") {
-            console.log("PrinterNotInstalledError");
             props.setErrorMessage("Installer printeren og prøv igjen");
           } else {
-            console.log("Unknown error");
             props.setErrorMessage("En ukjent feil har oppstått");
           }
         });

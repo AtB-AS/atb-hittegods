@@ -6,7 +6,6 @@ import { useHistory } from "react-router";
 import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
 import PrintButton from "./printButton";
-import { theme } from "../components/styling";
 
 const useStyles = makeStyles({
   root: {
@@ -130,7 +129,7 @@ function TransitItem(props: Props) {
               //TODO standard error
             }
           } else {
-            //TODO standart error
+            //TODO standard error
           }
         });
     }
@@ -163,8 +162,6 @@ function TransitItem(props: Props) {
         })
           .then((response) => {
             if (response.ok) {
-              //props.removeItem(parseInt(props.match.params.id));
-              console.log("Id : ", props.match.params.id);
               history.replace("/admin/påVei/" + props.match.params.id);
               window.location.reload(false);
             } else {
@@ -179,7 +176,7 @@ function TransitItem(props: Props) {
                 //TODO standard error
               }
             } else {
-              //TODO standart error
+              //TODO standard error
             }
           });
       }
@@ -224,7 +221,7 @@ function TransitItem(props: Props) {
               //TODO standard error
             }
           } else {
-            //TODO standart error
+            //TODO standard error
           }
         });
     }

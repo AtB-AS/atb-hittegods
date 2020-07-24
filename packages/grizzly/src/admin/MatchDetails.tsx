@@ -1,25 +1,8 @@
+import React from "react";
 import { useHistory, useParams } from "react-router";
 import { Box, Button, Grid } from "@material-ui/core";
-import React from "react";
 import { HTTPError } from "./Errors";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import moment from "moment";
-import { theme } from "../components/styling";
 import useNotification from "./notificationCenter/useNotification";
-
-const useStyles = makeStyles({
-  root: {
-    padding: "20px 0 0 20px",
-    fontSize: "18px",
-  },
-  loading: {
-    textAlign: "center",
-    marginTop: "60px",
-  },
-  card: {
-    backgroundColor: "#fff",
-  },
-});
 
 type Props = {
   foundItem: FoundMatch;
@@ -62,7 +45,6 @@ type PossibleMatch = {
 function MatchDetails(props: Props) {
   const { id } = useParams();
   const history = useHistory();
-  const styles = useStyles();
   const { notify } = useNotification();
 
   const confirmMatch = () => {
@@ -206,7 +188,6 @@ function MatchDetails(props: Props) {
     });
   };
   let confirmButton;
-  console.log(props.foundItem.status);
   if (props.foundItem.status === "Funnet") {
     confirmButton = (
       <Button variant="contained" onClick={() => confirmMatch()}>

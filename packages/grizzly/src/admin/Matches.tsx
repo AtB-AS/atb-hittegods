@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Grid } from "@material-ui/core";
-import TableContainer from "@material-ui/core/TableContainer";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
 import MatchRow from "./MatchRow";
 import { Match } from "./Henvendelse";
 import DataLoadingContainer from "../DataLoadingContainer";
@@ -90,6 +85,7 @@ function Matches(props: Props) {
                 decrementNewMatch={props.decrementNewMatch}
                 match={matchByFoundId(foundItem.id)}
                 hendvendelsesid={props.hendvendelsesid}
+                key={foundItem.id}
               />
             ))}
           </div>

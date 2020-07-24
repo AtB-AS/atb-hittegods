@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { createStyles, Theme } from "@material-ui/core";
 

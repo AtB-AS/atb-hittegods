@@ -14,8 +14,6 @@ type newInquery = {
 };
 
 function RegisterInquery() {
-  const [inquery, setInquery] = useState<newInquery>();
-
   function postForm() {}
 
   return (
@@ -23,7 +21,7 @@ function RegisterInquery() {
       <form onSubmit={postForm}>
         <TextField name="name" type="text" label="Navn" variant="outlined" />
         <TextField name="phoneNumber" type="text" label="Telefon" />
-        <button type="submit"></button>
+        <button type="submit" />
       </form>
     </div>
   );

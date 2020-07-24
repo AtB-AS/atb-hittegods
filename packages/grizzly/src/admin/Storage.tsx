@@ -27,7 +27,6 @@ import SeachField from "../components/SeachField";
 import DatePickerToFrom from "../components/DatePickerToFrom";
 import Grid from "@material-ui/core/Grid";
 import PrimaryButton from "./PrimaryButton";
-import Henvendelse from "./Henvendelse";
 
 type StorageItems = {
   id: number;
@@ -303,12 +302,12 @@ function Storage(props: Props) {
             </TableContainer>
           </PrimaryContent>
           <SecondaryContent>
-            <Route path="/admin/lager/:id" render={(routeProps) => (
-                <StorageItem
-                    {...routeProps}
-                    removeItem={removeItem}
-                />
-            )} />
+            <Route
+              path="/admin/lager/:id"
+              render={(routeProps) => (
+                <StorageItem {...routeProps} removeItem={removeItem} />
+              )}
+            />
           </SecondaryContent>
         </Content>
       </Page>

@@ -18,7 +18,6 @@ import { useTableStyles } from "./styles";
 import { searchHenvendelse, HenvendelseType } from "./utils";
 import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
-import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import Page from "./layouts/Page";
@@ -28,7 +27,6 @@ import PrimaryContent from "./layouts/PrimaryContent";
 import SecondaryContent from "./layouts/SecondaryContent";
 import SeachField from "../components/SeachField";
 import PrimaryButton from "./PrimaryButton";
-import useNotification from "./notificationCenter/useNotification";
 
 type Props = {
   match: {
@@ -69,21 +67,22 @@ function Henvendelser(props: Props) {
   const [orderBy, setOrderBy] = useState<string>("desc");
   const [collumnName, setCollumnName] = useState("id");
   const [searchValue, setSearchValue] = useState("");
-  const { notify } = useNotification();
   const params = {
     status: "Mistet",
   };
 
   useEffect(() => {
     if (orderBy === "desc") {
-      setHenvendelser(
-        henvendelser
+      setHenvendelser((currentHenvendelser) =>
+        currentHenvendelser
           .map((h) => h)
           .sort(compare)
           .reverse()
       );
     } else {
-      setHenvendelser(henvendelser.map((h) => h).sort(compare));
+      setHenvendelser((currentHenvendelser) =>
+        currentHenvendelser.map((h) => h).sort(compare)
+      );
     }
   }, [orderBy, collumnName]);
 
@@ -115,15 +114,14 @@ function Henvendelser(props: Props) {
       })
       .then((jsonData) => {
         const lostData = jsonData.data.items;
-        if (orderBy === "desc") {
-          setHenvendelser(lostData.sort(compare).reverse());
-        } else {
-          setHenvendelser(lostData.sort(compare));
-        }
+
+        setHenvendelser(lostData.sort(compare).reverse());
+
         setLoading(false);
       })
       .catch((e) => {
         setLoading(false);
+        console.log("error: ", e);
         setError(true);
       });
   }, []);
@@ -197,7 +195,6 @@ function Henvendelser(props: Props) {
                   />
                 </Box>
               </Grid>
-
               <Grid item md={5} className={searchClasses.gridItem1}>
                 <Box>
                   <PrimaryButton href={"/"} target="_blank">
@@ -208,7 +205,6 @@ function Henvendelser(props: Props) {
             </Grid>
           </Box>
         </Toolbar>
-
         <Content>
           <PrimaryContent>
             <TableContainer className={classes.container}>
@@ -251,6 +247,7 @@ function Henvendelser(props: Props) {
                               ? classes.activeRow
                               : classes.row
                           }
+                          key={item.id}
                         >
                           <TableCell>{item.id}</TableCell>
                           <TableCell>{item.name}</TableCell>

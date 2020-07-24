@@ -31,7 +31,6 @@ function AdminApp() {
                 ? "/auth/login"
                 : "http://localhost:5000/auth/login"
             }
-            color="primary"
             type="submit"
             className={styles.loginButton}
             variant="contained"

@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { TableContainer, TableSortLabel, createStyles, Theme } from "@material-ui/core";
+import {
+  TableContainer,
+  TableSortLabel,
+  createStyles,
+  Theme,
+} from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -14,15 +19,12 @@ import { HTTPError } from "./Errors";
 import DataLoadingContainer from "../DataLoadingContainer";
 import Toolbar from "./layouts/Toolbar";
 import Page from "./layouts/Page";
-import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import PrimaryButton from "./PrimaryButton";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Content from "./layouts/Content";
 import PrimaryContent from "./layouts/PrimaryContent";
 import SecondaryContent from "./layouts/SecondaryContent";
-import Button from "@material-ui/core/Button";
-import { HenvendelseType } from "./utils";
 
 type TransitItem = {
   id: number;
@@ -73,7 +75,7 @@ function Transit(props: Props) {
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const history = useHistory();
-  const [notFound, setNotFound] = useState<string | undefined>(undefined);
+  const [notFound] = useState<string | undefined>(undefined);
   const gridClasses = useStyles();
   const [orderBy, setOrderBy] = useState<string>("desc");
   const [collumnName, setCollumnName] = useState("id");
@@ -164,18 +166,6 @@ function Transit(props: Props) {
     setCollumnName(col);
   }
 
-  function formatDescription(desc: string | undefined) {
-    if (typeof desc === "string") {
-      if (desc.length > 16) {
-        return desc.slice(0, 16) + "...";
-      } else {
-        return desc;
-      }
-    } else {
-      return "";
-    }
-  }
-
   return (
     <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
       <Page>
@@ -206,12 +196,12 @@ function Transit(props: Props) {
                   <TableRow className={classes.thRow}>
                     <TransitColumn columnName={"id"} labelName={"Id"} />
                     <TransitColumn
-                        columnName={"subcategory"}
-                        labelName={"Underkategori"}
+                      columnName={"subcategory"}
+                      labelName={"Underkategori"}
                     />
                     <TransitColumn
-                        columnName={"description"}
-                        labelName={"Beskrivelse"}
+                      columnName={"description"}
+                      labelName={"Beskrivelse"}
                     />
                     <TransitColumn columnName={"phone"} labelName={"Telefon"} />
                     <TransitColumn columnName={"date"} labelName={"Dato"} />
@@ -228,6 +218,7 @@ function Transit(props: Props) {
                             ? classes.activeRow
                             : classes.row
                         }
+                        key={item.id}
                       >
                         <TableCell>{item.id}</TableCell>
                         <TableCell>{item.subcategory}</TableCell>

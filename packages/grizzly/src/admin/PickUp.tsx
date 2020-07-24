@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  createStyles,
-  IconButton,
-  InputBase,
-  TableContainer,
-  TableSortLabel,
-  Theme,
-} from "@material-ui/core";
+import { Box, TableContainer, TableSortLabel } from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -16,10 +8,7 @@ import TableBody from "@material-ui/core/TableBody";
 import { Route } from "react-router-dom";
 import { useHistory } from "react-router";
 import { useTableStyles } from "./styles";
-import SearchIcon from "@material-ui/icons/Search";
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import moment from "moment";
-import TextField from "@material-ui/core/TextField";
 import PickUpItem from "./PickUpItem";
 import DataLoadingContainer from "../DataLoadingContainer";
 import { HTTPError } from "./Errors";
@@ -29,7 +18,6 @@ import PrimaryContent from "./layouts/PrimaryContent";
 import SecondaryContent from "./layouts/SecondaryContent";
 import Content from "./layouts/Content";
 import SeachField from "../components/SeachField";
-import DatePickerToFrom from "../components/DatePickerToFrom";
 
 type StorageItems = {
   id: number;
@@ -59,42 +47,17 @@ type ColumnProps = {
   labelName: string;
 };
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    input: {
-      marginLeft: theme.spacing(1),
-      flex: 1,
-    },
-    iconButton: {
-      padding: 10,
-    },
-    container: {
-      display: "flex",
-      flexWrap: "wrap",
-    },
-  })
-);
-
-function compare(a: StorageItems, b: StorageItems) {
-  // @ts-ignore
-  return `${a[columnName]}`.localeCompare(`${b[columnName]}`, "en", {
-    numeric: true,
-    sensitivity: "base",
-  });
-}
-
 function PickUp(props: Props) {
   const classes = useTableStyles();
   const [storageItems, setStorageItems] = useState<StorageItems[]>([]);
   const [error, setError] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const history = useHistory();
-  const searchClasses = useStyles();
   const [searchValue, setSearchValue] = useState("");
   const [orderBy, setOrderBy] = useState<string>("desc");
   const [columnName, setColumnName] = useState("id");
-  const [toDate, setToDate] = useState("");
-  const [fromDate, setFromDate] = useState("");
+  const [toDate] = useState("");
+  const [fromDate] = useState("");
 
   useEffect(() => {
     const params = {
@@ -125,7 +88,7 @@ function PickUp(props: Props) {
       .catch(() => {
         setError(true);
       });
-  }, [compare, orderBy]);
+  }, []);
 
   useEffect(() => {
     if (orderBy === "desc") {
@@ -138,7 +101,7 @@ function PickUp(props: Props) {
     } else {
       setStorageItems(storageItems.map((h) => h).sort(compare));
     }
-  }, [orderBy, columnName, compare]);
+  }, [orderBy, columnName]);
 
   function clickedRowItem(id: number) {
     history.push("/admin/tilUtlevering/" + id);
@@ -203,6 +166,13 @@ function PickUp(props: Props) {
         </TableSortLabel>
       </TableCell>
     );
+  }
+  function compare(a: StorageItems, b: StorageItems) {
+    // @ts-ignore
+    return `${a[columnName]}`.localeCompare(`${b[columnName]}`, "en", {
+      numeric: true,
+      sensitivity: "base",
+    });
   }
 
   const removeItem = (id: number) => {

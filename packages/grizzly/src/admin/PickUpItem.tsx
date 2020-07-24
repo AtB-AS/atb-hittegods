@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Grid } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
 import { useHistory } from "react-router";
 import { HenvendelseType } from "./Henvendelse";
@@ -64,6 +63,7 @@ function PickUpItem(props: Props) {
   const history = useHistory();
   const [notFound, setNotFound] = useState<string | undefined>(undefined);
   const [matchId, setMatchId] = useState<number | undefined>(undefined);
+  let henvendelseComponent;
 
   useEffect(() => {
     setLoading(true);
@@ -291,7 +291,6 @@ function PickUpItem(props: Props) {
     }
   };
 
-  let henvendelseComponent;
   if (henvendelse != null) {
     henvendelseComponent = (
       <Grid container>

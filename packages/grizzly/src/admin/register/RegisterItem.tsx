@@ -1,31 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
-
-import { Box, Container, Grid } from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import { categoryData } from "../../components/subCategoryData";
-import { useForm } from "react-hook-form";
-import { colorData } from "../../components/colorConstant";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { useTheme } from "@material-ui/core/styles";
-
+import InputLabel from "@material-ui/core/InputLabel";
+import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
-
 import DialogTitle from "@material-ui/core/DialogTitle";
-
-import RegAutoSelect from "./Select";
+import Button from "@material-ui/core/Button";
+import { useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
+import { Box, Container } from "@material-ui/core";
+import { useForm } from "react-hook-form";
 import { isPrinterConnected, printLabel } from "../../printer/printer";
-
+import { categoryData } from "../../components/subCategoryData";
+import { colorData } from "../../components/colorConstant";
+import RegAutoSelect from "./Select";
 import useNotification from "../notificationCenter/useNotification";
 
 const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
   textfield: {
     display: "flex",
     width: "100%",
@@ -36,18 +27,9 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
   },
-  heading: {
-    fontWeight: 300,
-    fontSize: "24px",
-  },
-  headingh2: {
-    fontWeight: 350,
-    fontSize: "36px",
-  },
   formContainer: {
     width: "100%",
   },
-  dialogContent: { color: "#000000" },
   dialogbox: { minWidth: 400 },
 }));
 
@@ -72,16 +54,13 @@ function RegisterFound(props: Props) {
   const [tlf, setTlf] = useState("");
   const [email, setEmail] = useState("");
   const [open, setOpen] = React.useState(false);
-  const [error, setError] = useState(false);
   const [lines, setLines] = useState<LineObj[]>([]);
-  const [itemIdRegistered, setItemIdRegistered] = useState("");
-  const [printStatus, setPrintStatus] = useState(false);
-
   const classes = useStyles();
   const catData = categoryData;
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const { notify } = useNotification();
+  const { register, handleSubmit, errors } = useForm();
 
   useEffect(() => {
     fetch("/api/line")
@@ -91,9 +70,7 @@ function RegisterFound(props: Props) {
       .then((jsonData) => {
         setLines(jsonData.data.lines);
       })
-      .catch(() => {
-        setError(true);
-      });
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -104,8 +81,6 @@ function RegisterFound(props: Props) {
       });
     }
   }, []);
-
-  const { register, handleSubmit, errors } = useForm();
 
   const sendForm = () => {
     const payload = {
@@ -131,29 +106,14 @@ function RegisterFound(props: Props) {
     })
       .then((response) => response.json())
       .then((regData) => {
-        console.log("test");
-        setItemIdRegistered(regData.data.foundid);
-        console.log("before print");
-        console.log(payload);
         return regData;
       })
       .then((regData) => {
-        console.log("regData : ", regData);
         setOpen(true);
         const status = printLabel(payload, regData.data.foundid);
-        console.log("status : " + status);
         return status;
       })
-      .then((status) => {
-        console.log("print status: ", status);
-        if (status === "print ok") {
-          setPrintStatus(true);
-        }
-      })
-      .catch((e) => {
-        console.log("error:", e);
-        setError(true);
-      });
+      .catch((e) => {});
   };
 
   const getSubCatData = (mainCat: string): string[] => {
@@ -166,10 +126,6 @@ function RegisterFound(props: Props) {
     } else {
       return ["velg hovedkategori"];
     }
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
   };
 
   const handleClose = () => {

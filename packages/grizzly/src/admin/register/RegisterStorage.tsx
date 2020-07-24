@@ -6,7 +6,7 @@ type Props = {
   path: string;
 };
 
-function RegisterStorage(props: Props) {
+function RegisterStorage() {
   return (
     <div>
       <RegisterItem status={"Funnet"} pathToComp={"/admin/lager"} />

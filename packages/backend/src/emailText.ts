@@ -30,10 +30,9 @@ Oss i AtB hittegods`;
 };
 
 export const followupEmailDay1 = `Hei igjen!
-Vi har gått igjennom det vi har inne på lager og vi har ikke fått inn noe som matcher din henvendelse, men vi skal fortsette å lete!
+Vi har gått igjennom det vi har inne på lager, og vi har ikke fått inn noe som ligner på det du har mistet, men vi skal fortsette å lete! Det som blir mistet i helgene får vi ikke inn før mandag.
 
-Hilsen
-Oss i AtB Hittegods
+Hilsen Oss i AtB Hittegods
 `;
 
 export const followupEmailDay3 = `Hei igjen!

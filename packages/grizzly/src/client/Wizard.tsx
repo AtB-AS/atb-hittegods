@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles, createStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import MainCategory from "./MainCategory";
@@ -10,7 +10,7 @@ import MissingDate from "./MissingDate";
 import ContactInfo, { ContactInfoType } from "./ContactInfo";
 import Confirmation from "./Confirmation";
 import Container from "@material-ui/core/Container";
-import { Box, StepConnector, StepLabel } from "@material-ui/core";
+import { Box, StepLabel } from "@material-ui/core";
 import moment from "moment";
 import {
   Room,
@@ -18,7 +18,8 @@ import {
   HelpOutline,
   PersonOutline,
 } from "@material-ui/icons";
-import QuestionMark from "../components/icons/questionMark";
+import StepIcon from "./wizard/StepIcon";
+import StepConnector from "./wizard/StepConnector";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -136,61 +137,51 @@ export default function Wizard() {
 
   function onCategorySelect(cat: string) {
     setCategory(cat);
-    setTimeout(() => {
-      if (cat === "Annet") {
-        setWizardDetailsStep(WIZARD_DETAILS_STEP.CHARACTERISTICS);
-        setSubCategory("Annet");
-        addToBrowserHistory({
-          activeStep: WIZARD_STEP.DETAILS,
-          detailsStep: WIZARD_DETAILS_STEP.CHARACTERISTICS,
-        });
-      } else {
-        addToBrowserHistory({
-          activeStep: WIZARD_STEP.DETAILS,
-          detailsStep: WIZARD_DETAILS_STEP.SUB_CATEGORY,
-        });
-        setWizardDetailsStep(WIZARD_DETAILS_STEP.SUB_CATEGORY);
-      }
-    }, 100);
-  }
-
-  function onSubCategorySelected(subCat: string) {
-    setSubCategory(subCat);
-    setTimeout(() => {
+    if (cat === "Annet") {
       setWizardDetailsStep(WIZARD_DETAILS_STEP.CHARACTERISTICS);
+      setSubCategory("Annet");
       addToBrowserHistory({
         activeStep: WIZARD_STEP.DETAILS,
         detailsStep: WIZARD_DETAILS_STEP.CHARACTERISTICS,
       });
-    }, 100);
+    } else {
+      addToBrowserHistory({
+        activeStep: WIZARD_STEP.DETAILS,
+        detailsStep: WIZARD_DETAILS_STEP.SUB_CATEGORY,
+      });
+      setWizardDetailsStep(WIZARD_DETAILS_STEP.SUB_CATEGORY);
+    }
+  }
+
+  function onSubCategorySelected(subCat: string) {
+    setSubCategory(subCat);
+    setWizardDetailsStep(WIZARD_DETAILS_STEP.CHARACTERISTICS);
+    addToBrowserHistory({
+      activeStep: WIZARD_STEP.DETAILS,
+      detailsStep: WIZARD_DETAILS_STEP.CHARACTERISTICS,
+    });
   }
 
   function onCharacteristicsDone(characteristics: Characteristics) {
     setCharacteristics(characteristics);
-    setTimeout(() => {
-      setActiveStep(activeStep + 1);
-      addToBrowserHistory({ activeStep: WIZARD_STEP.CONTACT_INFO });
-    }, 100);
+    setActiveStep(activeStep + 1);
+    addToBrowserHistory({ activeStep: WIZARD_STEP.CONTACT_INFO });
   }
 
   function setLocation(location: string) {
     setLine(location);
-    setTimeout(() => {
-      setActiveStep(activeStep + 1);
-    }, 100);
+    setActiveStep(activeStep + 1);
     addToBrowserHistory({ activeStep: WIZARD_STEP.LOCATION });
   }
 
   function setDate(date: string) {
     setNewDate(date);
-    setTimeout(() => {
-      setActiveStep(activeStep + 1);
-      setWizardDetailsStep(WIZARD_DETAILS_STEP.MAIN_CATEGORY);
-      addToBrowserHistory({
-        activeStep: WIZARD_STEP.DETAILS,
-        detailsStep: WIZARD_DETAILS_STEP.MAIN_CATEGORY,
-      });
-    }, 100);
+    setActiveStep(activeStep + 1);
+    setWizardDetailsStep(WIZARD_DETAILS_STEP.MAIN_CATEGORY);
+    addToBrowserHistory({
+      activeStep: WIZARD_STEP.DETAILS,
+      detailsStep: WIZARD_DETAILS_STEP.MAIN_CATEGORY,
+    });
   }
 
   function setContactInfo(contInfo: ContactInfoType) {
@@ -231,80 +222,6 @@ export default function Wizard() {
     });
   }
 
-  const ColorlibConnector = withStyles({
-    alternativeLabel: {
-      top: 21,
-    },
-    active: {
-      "& $line": {
-        backgroundColor: "#00758D",
-      },
-    },
-    completed: {
-      "& $line": {
-        backgroundColor: "#00758D",
-      },
-    },
-    line: {
-      height: 3,
-      border: 0,
-      backgroundColor: "#eaeaf0",
-      borderRadius: 1,
-    },
-  })(StepConnector);
-
-  const useColorlibStepIconStyles = makeStyles({
-    root: {
-      backgroundColor: "#F1F1F1",
-      zIndex: 1,
-      color: "#E0E0E0",
-      width: 44,
-      height: 44,
-      display: "flex",
-      borderRadius: "50%",
-      border: "2px solid #E0E0E0",
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    active: {
-      color: "#00758D",
-      border: "2px solid #00758D",
-    },
-    completed: {
-      backgroundColor: "#323A48",
-      border: "2px solid #323A48",
-      color: "#fff",
-    },
-  });
-
-  type ColorlibStepIconProps = {
-    active: boolean;
-    completed: boolean;
-    icon: React.ReactNode;
-  };
-
-  function ColorlibStepIcon(props: ColorlibStepIconProps) {
-    const classes = useColorlibStepIconStyles();
-    const { active, completed } = props;
-
-    const icons: { [k: string]: any } = {
-      "1": <Room />,
-      "2": <CalendarToday />,
-      "3": <QuestionMark />,
-      "4": <PersonOutline />,
-    };
-
-    return (
-      <div
-        className={`${classes.root} ${active ? classes.active : ""} ${
-          completed ? classes.completed : ""
-        }`}
-      >
-        {icons[String(props.icon)]}
-      </div>
-    );
-  }
-
   const showNavigationStepper = activeStep < WIZARD_STEP.CONFIRMATION;
   return (
     <div className={classes.root}>
@@ -314,13 +231,11 @@ export default function Wizard() {
             activeStep={activeStep}
             alternativeLabel
             className={classes.stepper}
-            connector={<ColorlibConnector />}
+            connector={<StepConnector />}
           >
             {getSteps().map((step, index) => (
               <Step key={step.label} completed={activeStep > index}>
-                <StepLabel StepIconComponent={ColorlibStepIcon}>
-                  {step.label}
-                </StepLabel>
+                <StepLabel StepIconComponent={StepIcon}>{step.label}</StepLabel>
               </Step>
             ))}
           </Stepper>

@@ -22,7 +22,7 @@
     
 
 # Tech stack
-![Alt text](./TechStackHittegodsATB.png?raw=true "Title")
+![Alt text](docs/TechStackHittegodsATB.png?raw=true "Title")
 ## Azure active directory
 This solution uses Oauth 2.0 and Azure active directory to authenticate users
 who try to access the admin interface
@@ -52,7 +52,7 @@ The database used for this project is a postgres sql database.
 The backend server responsible for handling requests from the front end
 runs node.js with express, and is written in Typescript.
 The backend server consists of a number of REST endpoints which
-are documented in the api.yaml file. The api documentation follows the openAPI 3.0 specification.
+are documented in the docs/api.yaml file. The api documentation follows the openAPI 3.0 specification.
 
 The code for the backend can be found in /packages/backend. Whe running
 the backend locally the .env file must be places in the backend src
@@ -124,7 +124,7 @@ matching
 You must register a new azure oauth app.
 Callback uri must be *host*/auth/azureoauth2/callback
 where where *host* is where the backend server is hosted.
-Client id, client secret, tennt id, resource id and callback uri must
+Client id, client secret, tenant id, resource id and callback uri must
 be entered into the environment variables.
 Api permissions must be:
 - email
@@ -140,7 +140,7 @@ When the database has been set up the database password, host, port, name and us
 should be entered into the backend environment variables.
 ## Running locally
 ### Node.js and front end
-To run this project yarn and Node.js must be installed.
+To run this project yarn and Node.js (>= 12.x) must be installed.
 Run `yarn install` in the root directory of the project to install
 all required modules. Put the .env file in /packages/backend.
 Put the .env file in /packages/grizzly. Run yarn start to start running both the front end

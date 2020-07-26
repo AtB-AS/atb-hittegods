@@ -1,62 +1,39 @@
-import React, { useEffect, useState } from "react";
-import { Box, Grid, Button, Grow, createStyles } from "@material-ui/core";
+import React, { useState } from "react";
+import { Box, Grid, Button, Grow } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
-import { SubmitHandler, useForm } from "react-hook-form";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import InputLabel from "@material-ui/core/InputLabel";
 import DataLoadingContainer from "./DataLoadingContainer";
 import NextBtn from "./components/NextBtn";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import useFetch from "use-http";
 
 type Props = {
   onLocationSelect: (location: string) => void;
   line: string;
 };
 
-type LineObj = {
+type Line = {
   line: string;
   description: string;
 };
 
+type LineResponse = {
+  data: {
+    lines: Line[];
+  };
+};
+
 function Location(props: Props) {
-  const { handleSubmit } = useForm<Props>();
-  const [lines, setLines] = useState<LineObj[]>([]);
-  const [error, setError] = useState(false);
-  const [isloading, setLoading] = useState(true);
   const [line, setLine] = useState(props.line);
-  //Displays "Neste" button if true
-  const [status, setStatus] = useState(false);
+  const { loading, error, data = { data: { lines: [] } } } = useFetch<
+    LineResponse
+  >("api/line", {}, []);
 
-  const useStyles = makeStyles(() =>
-    createStyles({
-      rightAlign: {
-        display: "flex",
-        justifyContent: "flex-end",
-      },
-    })
-  );
-  const classes = useStyles();
-
-  useEffect(() => {
-    setLoading(true);
-    fetch("api/line")
-      .then((response) => {
-        return response.json();
-      })
-      .then((jsonData) => {
-        setLines(jsonData.data.lines);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError(true);
-      });
-  }, []);
-
-  const onSubmit: SubmitHandler<Props> = () => {
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     props.onLocationSelect(line);
   };
 
-  // "Usikker"-button
   function unknownLineButtonHandler() {
     props.onLocationSelect("");
   }
@@ -67,24 +44,22 @@ function Location(props: Props) {
         <h2 className="h4">Husker du hvilken linje du tok? </h2>
         <p>Om du er usikker, går det også fint. </p>
       </Box>
-      <DataLoadingContainer loading={isloading} error={error}>
+      <DataLoadingContainer loading={loading} error={!!error}>
         <Box>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={onSubmit}>
             <Grid container spacing={3}>
               <Grow in timeout={400}>
                 <Grid item xs={12}>
                   <InputLabel htmlFor="line">Linjenummer</InputLabel>
                   <Autocomplete
-                    options={lines}
+                    options={data.data.lines}
                     getOptionLabel={(item) =>
                       item.line + " " + item.description
                     }
-                    defaultValue={lines.find((l) => l.line === line)}
+                    defaultValue={data.data.lines.find((l) => l.line === line)}
                     onChange={(event, value) => {
                       if (value?.line) {
-                        // @ts-ignore
                         setLine(value.line);
-                        setStatus(true);
                       }
                     }}
                     renderInput={(params) => (
@@ -106,14 +81,14 @@ function Location(props: Props) {
                   </Button>
                 </Grow>
               </Grid>
-              {status && (
-                <Grow in>
-                  <Grid item xs={12}>
-                    <Box className={classes.rightAlign}>
+              {line && (
+                <Grid item xs={12}>
+                  <Grow in>
+                    <Box textAlign="right">
                       <NextBtn />
                     </Box>
-                  </Grid>
-                </Grow>
+                  </Grow>
+                </Grid>
               )}
             </Grid>
           </form>

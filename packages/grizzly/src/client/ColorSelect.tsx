@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Chip, Collapse, Fab, Grid } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import { colorData } from "./components/colorConstant";
+import { colorData } from "../components/colorConstant";
 
 type Props = {
   onColorSelect: (color: string) => void;

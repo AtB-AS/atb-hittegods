@@ -17,7 +17,7 @@ import { useHistory } from "react-router";
 import { useTableStyles } from "./styles";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import moment from "moment";
-import DataLoadingContainer from "../DataLoadingContainer";
+import DataLoadingContainer from "../client/DataLoadingContainer";
 import Toolbar from "./layouts/Toolbar";
 import Page from "./layouts/Page";
 import Content from "./layouts/Content";

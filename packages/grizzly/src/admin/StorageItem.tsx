@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Button, Grid } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import moment from "moment";
-import DataLoadingContainer from "../DataLoadingContainer";
+import DataLoadingContainer from "../client/DataLoadingContainer";
 import { HTTPError } from "./Errors";
 import PrintButton from "./printButton";
 import { useHistory } from "react-router";

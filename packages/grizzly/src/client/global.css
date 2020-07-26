@@ -1,0 +1,39 @@
+#root {
+  overflow: hidden;
+}
+
+/* Because its really hard to style the autocomplete! Sorry, but its true */
+.MuiAutocomplete-input {
+  padding: 12px 16px 12px !important;
+}
+
+/*Styling for MatchRow.txs*/
+#grid {
+  display: grid;
+  grid-template-areas:
+    "brand brand brand brand  date id"
+    "description description description description line color";
+  grid-gap: 10px;
+}
+
+#brand {
+  grid-area: brand;
+}
+#date {
+  grid-area: date;
+}
+#id {
+  grid-area: id;
+}
+#subcategory {
+  grid-area: subcategory;
+}
+#line {
+  grid-area: line;
+}
+#color {
+  grid-area: color;
+}
+#description {
+  grid-area: description;
+}

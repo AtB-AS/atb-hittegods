@@ -10,13 +10,14 @@ import {
   FormHelperText,
   Dialog,
   Grow,
+  Typography,
 } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import { useForm, SubmitHandler } from "react-hook-form";
 import InputLabel from "@material-ui/core/InputLabel";
-import BackBtn from "./components/BackBtn";
-import NextBtn from "./components/NextBtn";
+import BackBtn from "../components/BackBtn";
+import NextBtn from "../components/NextBtn";
 
 type Props = {
   onContactInfoSelect: (contactInfo: ContactInfoType) => void;
@@ -90,7 +91,7 @@ function ContactInfo(props: Props) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2 className="h4">Hvordan kan vi kontakte deg?</h2>
+        <Typography variant="h2">Hvordan kan vi kontakte deg?</Typography>
       </Box>
 
       <form onSubmit={handleSubmit(onSubmit)}>

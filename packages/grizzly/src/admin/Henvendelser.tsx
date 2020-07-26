@@ -16,7 +16,7 @@ import Henvendelse from "./Henvendelse";
 import { Route } from "react-router-dom";
 import { useTableStyles } from "./styles";
 import { searchHenvendelse, HenvendelseType } from "./utils";
-import DataLoadingContainer from "../DataLoadingContainer";
+import DataLoadingContainer from "../client/DataLoadingContainer";
 import { HTTPError } from "./Errors";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";

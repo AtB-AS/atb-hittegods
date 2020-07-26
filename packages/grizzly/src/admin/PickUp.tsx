@@ -10,7 +10,7 @@ import { useHistory } from "react-router";
 import { useTableStyles } from "./styles";
 import moment from "moment";
 import PickUpItem from "./PickUpItem";
-import DataLoadingContainer from "../DataLoadingContainer";
+import DataLoadingContainer from "../client/DataLoadingContainer";
 import { HTTPError } from "./Errors";
 import Page from "./layouts/Page";
 import Toolbar from "./layouts/Toolbar";

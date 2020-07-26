@@ -1,10 +1,10 @@
 import React from "react";
-import { categoryData } from "./components/subCategoryData";
+import { categoryData } from "../components/subCategoryData";
 import Box from "@material-ui/core/Box";
 import { Helmet } from "react-helmet-async";
-import Categories from "./components/Categories";
-import Category from "./components/Category";
-import { Grow } from "@material-ui/core";
+import Categories from "../components/Categories";
+import Category from "../components/Category";
+import { Grow, Typography } from "@material-ui/core";
 
 type Props = {
   onCategorySelect: (category: string) => void;
@@ -20,7 +20,7 @@ function MainCategory(props: Props) {
         <title>Hovedkategori - AtB</title>
       </Helmet>
       <Box mt={4} mb={4}>
-        <h2 className="h4">Hvilken kategori passer best?</h2>
+        <Typography variant="h2">Hvilken kategori passer best?</Typography>
         <p>
           Om du er usikker kan du velge <i>annet</i>.
         </p>

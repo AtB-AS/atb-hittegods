@@ -3,7 +3,7 @@ import { Box, Grid } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import moment from "moment";
 import Matches from "./Matches";
-import DataLoadingContainer from "../DataLoadingContainer";
+import DataLoadingContainer from "../client/DataLoadingContainer";
 import { HTTPError } from "./Errors";
 
 const useStyles = makeStyles({

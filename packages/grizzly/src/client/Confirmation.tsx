@@ -1,14 +1,14 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, createStyles, Theme } from "@material-ui/core";
-import BusImage from "./components/img/BusImage";
-import PostmanImage from "./components/img/PostmanImage";
-import StorageImage from "./components/img/StorageImage";
-import LetterImage from "./components/img/LetterImage";
+import { Box, createStyles, Theme, Typography } from "@material-ui/core";
+import BusImage from "../components/img/BusImage";
+import PostmanImage from "../components/img/PostmanImage";
+import StorageImage from "../components/img/StorageImage";
+import LetterImage from "../components/img/LetterImage";
 import moment from "moment";
-import LineImage3 from "./components/img/LineImage3";
-import LineImage2 from "./components/img/LineImage2";
-import LineImage1 from "./components/img/LineImage1";
+import LineImage3 from "../components/img/LineImage3";
+import LineImage2 from "../components/img/LineImage2";
+import LineImage1 from "../components/img/LineImage1";
 
 type Props = {
   name: string;
@@ -168,7 +168,7 @@ function Confirmation(props: Props) {
   return (
     <div>
       <Box mt={4} mb={6}>
-        <h2 className="h4">Vi er på saken!</h2>
+        <Typography variant="h2">Vi er på saken!</Typography>
         <p className={styles.lead}>
           Du har nå gjort ditt, og vi skal ta over. Vi skal lete for deg, men
           det kan ta litt tid før vi får det inn.

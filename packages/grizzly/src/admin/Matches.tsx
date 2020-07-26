@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Grid } from "@material-ui/core";
 import MatchRow from "./MatchRow";
 import { Match } from "./Henvendelse";
-import DataLoadingContainer from "../DataLoadingContainer";
+import DataLoadingContainer from "../client/DataLoadingContainer";
 
 type Props = {
   matches: Match[];

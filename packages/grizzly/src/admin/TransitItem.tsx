@@ -3,7 +3,7 @@ import { Box, Button, Grid, TextField } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import moment from "moment";
 import { useHistory } from "react-router";
-import DataLoadingContainer from "../DataLoadingContainer";
+import DataLoadingContainer from "../client/DataLoadingContainer";
 import { HTTPError } from "./Errors";
 import PrintButton from "./printButton";
 

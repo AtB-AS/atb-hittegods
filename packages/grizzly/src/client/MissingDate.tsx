@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Grid, Grow } from "@material-ui/core";
+import { Grid, Grow, Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import { Box } from "@material-ui/core";
-import NextBtn from "./components/NextBtn";
+import NextBtn from "../components/NextBtn";
 import InputLabel from "@material-ui/core/InputLabel";
 
 type Props = {
@@ -53,7 +53,7 @@ function MissingDate(props: Props) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2 className="h4">Hvilken dag var det?</h2>
+        <Typography variant="h2">Hvilken dag var det?</Typography>
         <p>Er du usikker, velg den du tror er nærmest.</p>
       </Box>
       <form

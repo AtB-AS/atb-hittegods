@@ -18,7 +18,7 @@ import {
   HelpOutline,
   PersonOutline,
 } from "@material-ui/icons";
-import QuestionMark from "./components/icons/questionMark";
+import QuestionMark from "../components/icons/questionMark";
 
 const useStyles = makeStyles(() =>
   createStyles({

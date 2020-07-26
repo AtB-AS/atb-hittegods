@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Box, Grid, Button, Grow } from "@material-ui/core";
+import { Box, Grid, Button, Grow, Typography } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import InputLabel from "@material-ui/core/InputLabel";
 import DataLoadingContainer from "./DataLoadingContainer";
-import NextBtn from "./components/NextBtn";
+import NextBtn from "../components/NextBtn";
 import useFetch from "use-http";
 
 type Props = {
@@ -41,7 +41,7 @@ function Location(props: Props) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2 className="h4">Husker du hvilken linje du tok? </h2>
+        <Typography variant="h2">Husker du hvilken linje du tok? </Typography>
         <p>Om du er usikker, går det også fint. </p>
       </Box>
       <DataLoadingContainer loading={loading} error={!!error}>

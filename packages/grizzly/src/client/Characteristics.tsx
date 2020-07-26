@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Box, createStyles, Grid, Grow } from "@material-ui/core";
+import { Box, createStyles, Grid, Grow, Typography } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import ColorSelect from "./ColorSelect";
 import InputLabel from "@material-ui/core/InputLabel";
-import NextBtn from "./components/NextBtn";
+import NextBtn from "../components/NextBtn";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 type Props = {
@@ -53,7 +53,7 @@ function Characteristics(props: Props) {
   return (
     <div>
       <Box mt={4} mb={4}>
-        <h2 className="h4">Kan du beskrive det du har mistet?</h2>
+        <Typography variant="h2">Kan du beskrive det du har mistet?</Typography>
         <p>
           Valgt gjenstand:<b> {props.subCategory}</b>
         </p>

@@ -1,8 +1,19 @@
 import React from "react";
-import App from "../App";
+import { Helmet } from "react-helmet-async";
+import Header from "../components/header";
+import Wizard from "./Wizard";
+import { Box } from "@material-ui/core";
 
 function Client() {
-  return <App />;
+  return (
+    <Box mb={6}>
+      <Helmet>
+        <title>Hittegods - AtB</title>
+      </Helmet>
+      <Header />
+      <Wizard />
+    </Box>
+  );
 }
 
 export default Client;

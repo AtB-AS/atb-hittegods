@@ -81,6 +81,7 @@ export const theme = createMuiTheme({
       root: {
         color: "#323A48",
         fontWeight: "bold",
+        marginBottom: ".5rem",
       },
     },
     MuiFormHelperText: {
@@ -146,11 +147,15 @@ export const theme = createMuiTheme({
     },
   },
   typography: {
+    h2: {
+      margin: "0 0 10px",
+      fontSize: "24px",
+      fontWeight: 500,
+    },
     body2: {
       color: "#323A48",
       disabled: "#999999",
     },
-
     fontFamily: ["UnitOT", "Roboto", "sans-serif"].join(","),
     fontSize: 16,
   },

@@ -4,7 +4,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import moment from "moment";
 import { useHistory } from "react-router";
 import { HenvendelseType } from "./Henvendelse";
-import DataLoadingContainer from "../DataLoadingContainer";
+import DataLoadingContainer from "../client/DataLoadingContainer";
 import { HTTPError } from "./Errors";
 
 const useStyles = makeStyles({

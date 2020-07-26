@@ -16,7 +16,7 @@ import { useHistory } from "react-router";
 import TransitItem from "./TransitItem";
 import moment from "moment";
 import { HTTPError } from "./Errors";
-import DataLoadingContainer from "../DataLoadingContainer";
+import DataLoadingContainer from "../client/DataLoadingContainer";
 import Toolbar from "./layouts/Toolbar";
 import Page from "./layouts/Page";
 import Grid from "@material-ui/core/Grid";

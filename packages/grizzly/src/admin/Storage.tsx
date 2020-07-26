@@ -5,6 +5,7 @@ import {
   TableContainer,
   TableSortLabel,
   Theme,
+  Typography,
 } from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -223,7 +224,7 @@ function Storage(props: Props) {
     <DataLoadingContainer loading={isLoading} error={error}>
       {storageItems.length === 0 && <p>Ingen henvendelser registrert</p>}
       <Page>
-        <h1>Lager</h1>
+        <Typography variant="h1">Lager</Typography>
         <p>Oversikt over gjenstander som befinner seg på lager hos AtB.</p>
         <Toolbar>
           <Box>

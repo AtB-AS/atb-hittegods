@@ -4,6 +4,7 @@ import {
   TableSortLabel,
   createStyles,
   Theme,
+  Typography,
 } from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -169,7 +170,7 @@ function Transit(props: Props) {
   return (
     <DataLoadingContainer loading={isLoading} error={error} notFound={notFound}>
       <Page>
-        <h1>På vei</h1>
+        <Typography variant="h1">På vei</Typography>
         <p>Registreringsside for VY og Tide. </p>
 
         <Toolbar>

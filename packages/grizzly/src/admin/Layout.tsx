@@ -47,6 +47,7 @@ const useStyles = makeStyles(() =>
       fontSize: "20px",
       color: "#fff",
       paddingBottom: "2px",
+      textDecoration: "none",
       "&:hover, &:active, &.active": {
         color: "#fff",
         textDecoration: "none",

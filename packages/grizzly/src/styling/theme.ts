@@ -147,6 +147,11 @@ export const theme = createMuiTheme({
     },
   },
   typography: {
+    h1: {
+      fontSize: "32px",
+      margin: 0,
+      fontWeight: 500,
+    },
     h2: {
       margin: "0 0 10px",
       fontSize: "24px",

@@ -4,6 +4,7 @@ import {
   TableContainer,
   TableSortLabel,
   Theme,
+  Typography,
 } from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -181,7 +182,7 @@ function Henvendelser(props: Props) {
   return (
     <DataLoadingContainer loading={isLoading} error={error}>
       <Page>
-        <h1>Henvendelser</h1>
+        <Typography variant="h1">Henvendelser</Typography>
         <p>Oversikt over henvendelser og potensielle funn. </p>
         <Toolbar>
           <Box>

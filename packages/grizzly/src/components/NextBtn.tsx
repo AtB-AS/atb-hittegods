@@ -1,7 +1,7 @@
 import React from "react";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { theme } from "./styling";
+import { theme } from "../styling/theme";
 import { Button } from "@material-ui/core";
 
 const useStyles = makeStyles({

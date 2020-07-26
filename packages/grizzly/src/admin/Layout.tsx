@@ -1,6 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { createStyles, Theme } from "@material-ui/core";
+import { createStyles } from "@material-ui/core";
 import { NavLink, Redirect, Route, Switch } from "react-router-dom";
 import Henvendelser from "./Henvendelser";
 import Storage from "./Storage";
@@ -10,7 +10,7 @@ import RegisterTransit from "./register/RegisterTransit";
 import PickUp from "./PickUp";
 import Logo from "../components/icons/logo";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
       display: "grid",

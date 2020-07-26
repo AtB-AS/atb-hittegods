@@ -2,12 +2,12 @@ import React from "react";
 import { useAuth } from "./context/authContext";
 import LoginContainer from "./LoginContainer";
 import Button from "@material-ui/core/Button";
-import { Box, createStyles, Theme } from "@material-ui/core";
+import { Box, createStyles } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Layout from "./Layout";
 import NotificationProvider from "./notificationCenter/NotificationProvider";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     loginButton: {
       "&:hover, &:active, &:focus": {

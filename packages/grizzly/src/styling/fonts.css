@@ -1,0 +1,21 @@
+@font-face {
+  font-family: "UnitOT";
+  src: url("fonts/UnitOT-Bold.woff2") format("woff2"),
+    url("fonts/UnitOT-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: "UnitOT";
+  src: url("fonts/UnitOT-Regular.woff2") format("woff2"),
+    url("fonts/UnitOT-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "UnitOT";
+  src: url("fonts/UnitOT-Medium.woff2") format("woff2"),
+    url("fonts/UnitOT-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+}

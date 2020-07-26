@@ -1,0 +1,13 @@
+export const WIZARD_STEP = {
+  LINE: 0,
+  LOCATION: 1,
+  DETAILS: 2,
+  CONTACT_INFO: 3,
+  CONFIRMATION: 4,
+};
+
+export const WIZARD_DETAILS_STEP = {
+  MAIN_CATEGORY: 0,
+  SUB_CATEGORY: 1,
+  CHARACTERISTICS: 2,
+};

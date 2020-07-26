@@ -1,54 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
-import Stepper from "@material-ui/core/Stepper";
-import Step from "@material-ui/core/Step";
-import MainCategory from "./MainCategory";
-import SubCategory from "./SubCategory";
-import Characteristics from "./Characteristics";
-import Location from "./Location";
-import MissingDate from "./MissingDate";
-import ContactInfo, { ContactInfoType } from "./ContactInfo";
-import Confirmation from "./Confirmation";
+import MainCategory from "../MainCategory";
+import SubCategory from "../SubCategory";
+import Characteristics from "../Characteristics";
+import Location from "../Location";
+import MissingDate from "../MissingDate";
+import ContactInfo, { ContactInfoType } from "../ContactInfo";
+import Confirmation from "../Confirmation";
 import Container from "@material-ui/core/Container";
-import { Box, StepLabel } from "@material-ui/core";
-import moment from "moment";
-import {
-  Room,
-  CalendarToday,
-  HelpOutline,
-  PersonOutline,
-} from "@material-ui/icons";
-import StepIcon from "./wizard/StepIcon";
-import StepConnector from "./wizard/StepConnector";
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      width: "100%",
-    },
-    stepper: {
-      backgroundColor: "transparent",
-      padding: "10px 0",
-    },
-  })
-);
-
-const WIZARD_STEP = {
-  LINE: 0,
-  LOCATION: 1,
-  DETAILS: 2,
-  CONTACT_INFO: 3,
-  CONFIRMATION: 4,
-};
-
-const WIZARD_DETAILS_STEP = {
-  MAIN_CATEGORY: 0,
-  SUB_CATEGORY: 1,
-  CHARACTERISTICS: 2,
-};
+import { Box } from "@material-ui/core";
+import { WIZARD_DETAILS_STEP, WIZARD_STEP } from "./constants";
+import Stepper from "./Stepper";
 
 export default function Wizard() {
-  const classes = useStyles();
   const [activeStep, setActiveStep] = useState(WIZARD_STEP.LINE);
   const [category, setCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
@@ -69,7 +32,7 @@ export default function Wizard() {
   );
   const [submitError, setSubmitError] = useState(false);
 
-  const onNavigation = (event: PopStateEvent) => {
+  const onBrowserBack = (event: PopStateEvent) => {
     const data = event.state;
     if (data) {
       setActiveStep(data.activeStep);
@@ -83,56 +46,15 @@ export default function Wizard() {
 
   useEffect(() => {
     addToBrowserHistory({ activeStep: WIZARD_STEP.LINE });
-    window.addEventListener("popstate", onNavigation);
+    window.addEventListener("popstate", onBrowserBack);
     return () => {
-      window.removeEventListener("popstate", onNavigation);
+      window.removeEventListener("popstate", onBrowserBack);
     };
   }, []);
 
   function addToBrowserHistory(data: object) {
     // eslint-disable-next-line no-restricted-globals
     history.pushState(data, "");
-  }
-
-  function getStepLabelForDate(date: string) {
-    const selectedDate = moment.utc(date);
-    const today = moment.utc();
-    if (selectedDate.isSame(today, "day")) {
-      return "I dag";
-    }
-    if (selectedDate.isSame(today.add(-1, "days"), "day")) {
-      return "I går";
-    }
-    return moment(date, "YYYY-MM-DD").format("DD.MM");
-  }
-
-  function getSteps() {
-    return [
-      {
-        label:
-          activeStep === WIZARD_STEP.LINE
-            ? "Hvor"
-            : line.length
-            ? `Linje ${line}`
-            : "Usikker",
-        icon: Room,
-      },
-      {
-        label:
-          activeStep <= WIZARD_STEP.LOCATION
-            ? "Når"
-            : getStepLabelForDate(date),
-        icon: CalendarToday,
-      },
-      {
-        label: activeStep <= WIZARD_STEP.DETAILS ? "Hva" : subCategory,
-        icon: HelpOutline,
-      },
-      {
-        label: "Kontakt",
-        icon: PersonOutline,
-      },
-    ];
   }
 
   function onCategorySelect(cat: string) {
@@ -224,21 +146,15 @@ export default function Wizard() {
 
   const showNavigationStepper = activeStep < WIZARD_STEP.CONFIRMATION;
   return (
-    <div className={classes.root}>
+    <>
       {showNavigationStepper && (
         <Box mt={2}>
           <Stepper
             activeStep={activeStep}
-            alternativeLabel
-            className={classes.stepper}
-            connector={<StepConnector />}
-          >
-            {getSteps().map((step, index) => (
-              <Step key={step.label} completed={activeStep > index}>
-                <StepLabel StepIconComponent={StepIcon}>{step.label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
+            line={line}
+            date={date}
+            subCategory={subCategory}
+          />
         </Box>
       )}
       <Container maxWidth="sm">
@@ -290,6 +206,6 @@ export default function Wizard() {
           />
         )}
       </Container>
-    </div>
+    </>
   );
 }

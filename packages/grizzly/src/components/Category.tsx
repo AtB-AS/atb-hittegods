@@ -15,16 +15,15 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: "grid",
-      gridTemplateColumns: "max-content 7fr 1fr",
+      gridTemplateColumns: "max-content 1fr 30px",
       gridColumnGap: "10px",
       alignItems: "center",
-      height: "100%",
       border: "1px solid #e2e2e2",
       backgroundColor: "#fff",
       color: theme.palette.primary.main,
 
       textDecoration: "none",
-      padding: "16px",
+      padding: "8px 16px",
       "&:hover": {
         color: "#000",
         textDecoration: "none",
@@ -51,14 +50,15 @@ const useStyles = makeStyles((theme: Theme) =>
     description: {},
     iconContainer: {
       textAlign: "center",
-      display: "inlne-block",
+      display: "inline-block",
       borderRadius: "50%",
       border: `1px solid ${theme.palette.primary.main}`,
-      padding: "10px",
+      padding: "4px 7px",
+      alignSelf: "start",
     },
     icon: {
       width: "30px",
-      height: "auto",
+      height: "30px",
     },
     arrowIcon: {
       alignSelf: "center",
@@ -86,9 +86,7 @@ function Category(props: Props) {
         <Box component="span" className={`title ${styles.title}`}>
           {props.title}
         </Box>
-        <Box component="div" display={{ xs: "none", sm: "block" }}>
-          <p>{props.description}</p>
-        </Box>
+        <Box component="div">{props.description}</Box>
       </span>
       <span className={styles.arrowIcon}>
         <ArrowForwardIosIcon />

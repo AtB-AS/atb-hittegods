@@ -1,7 +1,33 @@
 import React, { useState } from "react";
-import { Box, Chip, Collapse, Fab, Grid } from "@material-ui/core";
+import {
+  Box,
+  Chip,
+  Collapse,
+  createStyles,
+  Fab,
+  Grid,
+  Theme,
+} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { colorData } from "../components/colorConstant";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    colorsContainer: {
+      display: "flex",
+      justifyContent: "space-between",
+      flexWrap: "wrap",
+    },
+    colorOption: {
+      padding: "20px 0",
+      margin: "5px",
+      display: "flex",
+      placeItems: "center",
+      width: "80px",
+    },
+  })
+);
 
 type Props = {
   onColorSelect: (color: string) => void;
@@ -22,6 +48,7 @@ function ColorSelect(props: Props) {
   const [colorOptions, setColorOptions] = useState<Colors>(colorData);
   const [selectedColors, setSelectedColors] = useState<Colors>({ data: [] });
   const [nSelectedColors, setNSelectedColors] = useState<number>(0);
+  const classes = useStyles();
   const maxColors = 1;
 
   //Function not in use. Can be used for the ability to choose more than one color.
@@ -97,18 +124,16 @@ function ColorSelect(props: Props) {
   return (
     <Grid>
       <Box>
-        <Box>
+        <Box className={classes.colorsContainer}>
           {selectedColors.data.map((color) => (
             <Chip
               variant="outlined"
               style={{
                 borderColor: color.primary,
                 background: color.primary,
-                padding: "20px 20px 16px",
-                margin: "5px",
               }}
               key={color.label}
-              //icon={<AddIcon/>}
+              className={classes.colorOption}
               label={
                 <label style={{ color: color.secondary }}>{color.label}</label>
               }
@@ -119,17 +144,16 @@ function ColorSelect(props: Props) {
         </Box>
 
         <Collapse in={openColorSelect} timeout="auto" unmountOnExit>
-          <Box>
+          <Box className={classes.colorsContainer}>
             {colorOptions.data.map((color) => (
               <Chip
                 variant="outlined"
                 style={{
                   borderColor: color.primary,
                   background: color.primary,
-                  padding: "20px 20px 16px",
-                  margin: "5px",
                 }}
                 key={color.label}
+                className={classes.colorOption}
                 label={
                   <label style={{ color: color.secondary }}>
                     {color.label}

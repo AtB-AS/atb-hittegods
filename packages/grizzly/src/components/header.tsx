@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       padding: "10px 0",
       alignItems: "center",
+      textDecoration: "none",
       "&:hover, &:focus, &:active": {
         textDecoration: "none",
         color: "inherit",

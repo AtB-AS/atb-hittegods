@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import LoginContainer from "../LoginContainer";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
-import { createStyles, Theme } from "@material-ui/core";
+import { createStyles } from "@material-ui/core";
 
 interface User {
   given_name: string;
@@ -13,7 +13,7 @@ interface AuthContextInterface {
   user?: User;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
       color: "#fff",
@@ -32,26 +32,28 @@ const AuthProvider: React.FC = ({ children }) => {
   useEffect(() => {
     fetch("/auth/user")
       .then((response) => {
-        if (response.status === 401) {
-          // Request was unauthorized, redirect to login
-          // window.location.href = `${window.location.origin}/login`;
-        } else {
-          return response.json();
+        if (!response.ok) {
+          return null;
         }
+        return response.json();
       })
       .then((data) => {
-        setUser(data);
-        setLoading(false);
+        if (data) {
+          setUser(data);
+        }
       })
       .catch(() => {
         setError(true);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
   if (error) {
     return (
       <LoginContainer>
-        <p>Huff da</p>
+        <p>Login feilet</p>
       </LoginContainer>
     );
   }
